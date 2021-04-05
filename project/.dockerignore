@@ -1,0 +1,4 @@
+.coverage
+.dockerignore
+Dockerfile
+Dockerfile.prod
