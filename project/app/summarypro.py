@@ -14,7 +14,8 @@ torch_device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 class SummarizerProcessor:
-    def __init__(self, model: str = None, service: str = "summ"):
+    def __init__(self, model: str = None ):
+        log.info(model)
         if model is None:
             model = "t5"
 
@@ -30,13 +31,13 @@ class SummarizerProcessor:
             self.tokenizer = T5Tokenizer.from_pretrained(self.path)
             self.model.eval()
             self.model.load_state_dict(torch.load(self.model_path, map_location=torch_device))
-        if model == "google/pegasus-newsroom":
+        elif model == "google/pegasus-newsroom":
             self.config = PegasusConfig.from_json_file(self.config_path)
             # self.model = PegasusForConditionalGeneration(self.config)
             # self.tokenizer = PegasusTokenizer.from_pretrained(self.path)
             self.model = PegasusForConditionalGeneration.from_pretrained(model).to(torch_device)
             self.tokenizer = PegasusTokenizer.from_pretrained(model)
-        if model == "facebook/bart-large-cnn":
+        elif model == "facebook/bart-large-cnn":
             self.config = BartConfig.from_json_file(self.config_path)
             # self.model = PegasusForConditionalGeneration(self.config)
             # self.tokenizer = PegasusTokenizer.from_pretrained(self.path)
@@ -70,7 +71,7 @@ class SummarizerProcessor:
         formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
         formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
         formatted_article_text = formatted_article_text.strip()
-        return self.text
+        return formatted_article_text 
 
     def inference(self, input_url: str):
         """
