@@ -25,7 +25,7 @@ async def create_summary(
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
     new_task = Job()
-    background_tasks.add_task(generate_bulk_summary, new_task.uid, payload.modelName, file)
+    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file)
     return new_task
 
 
