@@ -2,25 +2,36 @@
 
 
 from fastapi import APIRouter, HTTPException, Path, BackgroundTasks
-
+from fastapi import File, UploadFile, Depends
 from typing import List
 
 from app.api import crud
 from app.models.pydantic import (
     SummaryPayloadSchema,
+    BulkSummaryPayloadSchema,
     SummaryResponseSchema,
     SummaryUpdatePayloadSchema,
+    Job
 )
 from app.models.tortoise import SummarySchema
-from app.summarizer import generate_summary
-
+from app.summarizer import generate_summary, generate_bulk_summary
 
 router = APIRouter()
 
 
+@router.post("/bulk", response_model=Job, status_code=202)
+async def create_summary(
+        background_tasks: BackgroundTasks, payload: BulkSummaryPayloadSchema = Depends(), file: UploadFile = File(...)
+) -> SummaryResponseSchema:
+    # logger.info("file " + file.filename)
+    new_task = Job()
+    background_tasks.add_task(generate_bulk_summary, new_task.uid, payload.modelName, file)
+    return new_task
+
+
 @router.post("/", response_model=SummaryResponseSchema, status_code=201)
 async def create_summary(
-    payload: SummaryPayloadSchema, background_tasks: BackgroundTasks
+        payload: SummaryPayloadSchema, background_tasks: BackgroundTasks
 ) -> SummaryResponseSchema:
     summary_id = await crud.post(payload)
 
@@ -57,7 +68,7 @@ async def delete_summary(id: int = Path(..., gt=0)) -> SummaryResponseSchema:
 
 @router.put("/{id}/", response_model=SummarySchema)
 async def update_summary(
-    payload: SummaryUpdatePayloadSchema, id: int = Path(..., gt=0)
+        payload: SummaryUpdatePayloadSchema, id: int = Path(..., gt=0)
 ) -> SummarySchema:
     summary = await crud.put(id, payload)
     if not summary:

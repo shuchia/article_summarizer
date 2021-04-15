@@ -14,7 +14,7 @@ torch_device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 class SummarizerProcessor:
-    def __init__(self, model: str = None ):
+    def __init__(self, model: str = None):
         log.info(model)
         if model is None:
             model = "t5"
@@ -71,7 +71,7 @@ class SummarizerProcessor:
         formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
         formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
         formatted_article_text = formatted_article_text.strip()
-        return formatted_article_text 
+        return formatted_article_text
 
     def inference(self, input_url: str):
         """
@@ -82,9 +82,9 @@ class SummarizerProcessor:
         """
         log.info(input_url)
         self.text = self.preprocess(input_url)
-        log.info(self.text)
+        #log.info(self.text)
         batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
         translated = self.model.generate(**batch)
         tgt_text = self.tokenizer.batch_decode(translated, skip_special_tokens=True)
-
+        log.info(tgt_text)
         return tgt_text

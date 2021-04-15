@@ -13,6 +13,12 @@ async def post(payload: SummaryPayloadSchema) -> int:
     return summary.id
 
 
+async def create(url: str) -> int:
+    summary = TextSummary(url=url, summary="")
+    await summary.save()
+    return summary.id
+
+
 async def get(id: int) -> Union[dict, None]:
     summary = await TextSummary.filter(id=id).first().values()
     if summary:

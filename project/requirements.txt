@@ -8,3 +8,6 @@ uvicorn==0.11.5
 torch
 transformers
 sentencepiece
+pandas
+python-multipart
+openpyxl
