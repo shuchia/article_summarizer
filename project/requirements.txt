@@ -11,3 +11,4 @@ sentencepiece
 pandas
 python-multipart
 openpyxl
+nltk

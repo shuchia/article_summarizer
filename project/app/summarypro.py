@@ -3,7 +3,7 @@ import transformers
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer, PegasusConfig
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 from transformers import BartTokenizer, BartForConditionalGeneration, BartConfig
-import json
+import nltk
 import bs4 as bs  # beautifulsource4
 import urllib.request
 import re
