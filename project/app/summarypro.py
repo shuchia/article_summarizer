@@ -99,9 +99,9 @@ class SummarizerProcessor:
         summaries = []
         for nested in nested_sentences:
             input_tokenized = self.tokenizer.encode(' '.join(nested), truncation=True, return_tensors='pt')
-            input_tokenized = input_tokenized.to(self.device)
-            summary_ids = self.model.to(self.device).generate(input_tokenized,
-                                                              length_penalty=3.0)
+            input_tokenized = input_tokenized.to(torch_device)
+            summary_ids = self.model.to(torch_device).generate(input_tokenized,
+                                                               length_penalty=3.0)
             output = [self.tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in
                       summary_ids]
             summaries.append(output)
