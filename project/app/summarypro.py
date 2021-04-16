@@ -4,11 +4,13 @@ from transformers import PegasusForConditionalGeneration, PegasusTokenizer, Pega
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 from transformers import BartTokenizer, BartForConditionalGeneration, BartConfig
 import nltk
+
 import bs4 as bs  # beautifulsource4
 import urllib.request
 import re
 import logging
 
+nltk.download('punkt')
 log = logging.getLogger(__name__)
 torch_device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
