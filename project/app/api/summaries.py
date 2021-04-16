@@ -3,8 +3,8 @@
 
 from fastapi import APIRouter, HTTPException, Path, BackgroundTasks
 from fastapi import File, UploadFile, Depends
-from typing import List
-
+from typing import List, Dict
+from uuid import UUID
 from app.api import crud
 from app.models.pydantic import (
     SummaryPayloadSchema,
@@ -17,6 +17,7 @@ from app.models.tortoise import SummarySchema
 from app.summarizer import generate_summary, generate_bulk_summary
 
 router = APIRouter()
+jobs: Dict[UUID, Job] = {}
 
 
 @router.post("/bulk", response_model=Job, status_code=202)
@@ -25,6 +26,7 @@ async def create_summary(
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
     new_task = Job()
+    jobs[new_task.uid] = new_task
     background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file)
     return new_task
 
@@ -39,6 +41,11 @@ async def create_summary(
 
     response_object = {"id": summary_id, "url": payload.url}
     return response_object
+
+
+@router.get("/work/{id}/status", response_model=Job)
+async def read_task(uid: UUID) -> Job:
+    return jobs[uid]
 
 
 @router.get("/{id}/", response_model=SummarySchema)

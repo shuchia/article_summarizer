@@ -18,7 +18,7 @@ class SummarizerProcessor:
         log.info(model)
         if model is None:
             model = "t5"
-
+        self.modelName = model
         # path to all the files that will be used for inference
         self.path = f"./app/api/{model}/"
         self.model_path = self.path + "pytorch_model.bin"
@@ -48,6 +48,24 @@ class SummarizerProcessor:
 
         self.text = str()
 
+    def nest_sentences(document):
+        nested = []
+        sent = []
+        length = 0
+        for sentence in nltk.sent_tokenize(document):
+            length += len(sentence)
+            if length < 1024:
+                sent.append(sentence)
+            else:
+                nested.append(sent)
+                sent = [sentence]
+                length = len(sentence)
+
+        if sent:
+            nested.append(sent)
+
+        return nested
+
     def preprocess(self, url):
         headers = {
             'User-Agent': 'Mozilla/5.0'}
@@ -73,6 +91,24 @@ class SummarizerProcessor:
         formatted_article_text = formatted_article_text.strip()
         return formatted_article_text
 
+    def generate_summary(self, nested_sentences):
+        # logger.info("Inside inference before generate summary")
+        # logger.info(self.model.get_input_embeddings())
+        summaries = []
+        for nested in nested_sentences:
+            input_tokenized = self.tokenizer.encode(' '.join(nested), truncation=True, return_tensors='pt')
+            input_tokenized = input_tokenized.to(self.device)
+            summary_ids = self.model.to(self.device).generate(input_tokenized,
+                                                              length_penalty=3.0)
+            output = [self.tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in
+                      summary_ids]
+            summaries.append(output)
+
+        # logger.info("Inside inference after generate summary")
+
+        summaries = [sentence for sublist in summaries for sentence in sublist]
+        return summaries
+
     def inference(self, input_url: str):
         """
         Method to perform the inference
@@ -82,9 +118,14 @@ class SummarizerProcessor:
         """
         log.info(input_url)
         self.text = self.preprocess(input_url)
-        #log.info(self.text)
-        batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
-        translated = self.model.generate(**batch)
-        tgt_text = self.tokenizer.batch_decode(translated, skip_special_tokens=True)
-        log.info(tgt_text)
+        if self.modelName == "google/pegasus-newsroom":
+            batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
+            translated = self.model.generate(**batch)
+            tgt_text = self.tokenizer.batch_decode(translated, skip_special_tokens=True)
+            log.info(tgt_text)
+        elif self.modelName == "facebook/bart-large-cnn":
+            nested = self.nest_sentences(self.text)
+            summarized_text = self.generate_summary(nested)
+            nested_summ = self.nest_sentences(' '.join(summarized_text))
+            tgt_text = self.generate_summary(nested_summ)
         return tgt_text

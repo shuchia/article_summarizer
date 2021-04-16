@@ -4,7 +4,7 @@
 import asyncio
 from app.summarypro import SummarizerProcessor
 from fastapi import File, UploadFile
-from uuid import UUID, uuid4
+
 from app.models.tortoise import TextSummary
 from app.models.pydantic import Job
 import pandas as pd
@@ -38,5 +38,5 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
         await asyncio.sleep(10)
 
         await TextSummary.filter(id=summary_id).update(summary=summary)
-        task.processed_ids.append(summary_id)
+        task.processed_ids[summary_id] = url
     task.status = "Completed"
