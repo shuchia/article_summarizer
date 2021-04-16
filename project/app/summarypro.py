@@ -48,7 +48,7 @@ class SummarizerProcessor:
 
         self.text = str()
 
-    def nest_sentences(document):
+    def nest_sentences(self, document):
         nested = []
         sent = []
         length = 0
