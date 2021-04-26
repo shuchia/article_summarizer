@@ -44,7 +44,7 @@ st.set_option("deprecation.showfileUploaderEncoding", False)
 st.title("Text Summarization")
 
 file = st.file_uploader("Upload an excel file", type="xlsx")
-contentType = st.selectbox("Choose the type", options=content_options)
+contentType = st.selectbox("Choose the type", content_options)
 
 if st.button("Summarize"):
     if file is not None and contentType is not None:
