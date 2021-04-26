@@ -57,7 +57,7 @@ if st.button("Summarize"):
         displayed_urls = []
         model = TYPES[contentType]
         payload = {"modelName": model}
-        res = requests.post(f"http://web:8000/summaries/bulk", data=json.dumps(payload), files=files)
+        res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files)
         my_bar = st.progress(0)
         task = res.json()
         latest_iteration = st.empty()
