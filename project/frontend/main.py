@@ -44,7 +44,7 @@ st.set_option("deprecation.showfileUploaderEncoding", False)
 st.title("Text Summarization")
 
 file = st.file_uploader("Upload an excel file", type="xlsx")
-contentType = st.selectbox("Choose the type", [i for i in content_options.values()])
+contentType = st.selectbox("Choose the type", options=content_options)
 
 if st.button("Summarize"):
     if file is not None and contentType is not None:
@@ -79,7 +79,7 @@ if st.button("Summarize"):
                     displayed_urls.append(url)
                     displayed += 1
                     my_bar.progress(displayed)
-                    latest_iteration.text( "Processed : " + displayed)
+                    latest_iteration.text("Processed : " + displayed)
 
             time.sleep(10)
             res = requests.post(f"http://web:8000/summaries/work/{taskId}/status")
