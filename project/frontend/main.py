@@ -5,16 +5,38 @@ import streamlit as st
 import pandas as pd
 import json
 
+content_options = {
+    "CNN",
+    "Newsroom",
+    "CNN/DailyMail",
+    "Gigaword",
+    "Emails",
+    "Scholarly Articles",
+    "Patents",
+    "US Congressional bills",
+    "MultiNews",
+    "Medical publications",
+    "Reddit",
+    "WikiHow",
+    "Exterme Summary"
+
+}
+
 TYPES = {
-    "general": "bart-large-cnn",
-    "composition 6": "composition_vii",
-    "feathers": "feathers",
-    "la_muse": "la_muse",
-    "mosaic": "mosaic",
-    "starry night": "starry_night",
-    "the scream": "the_scream",
-    "the wave": "the_wave",
-    "udnie": "udnie",
+    "CNN": "facebook/bart-large-cnn",
+    "Newsroom": "google/pegasus-newsroom",
+    "CNN/DailyMail": "feathers",
+    "Gigaword": "la_muse",
+    "Emails": "mosaic",
+    "Scholarly Articles": "starry_night",
+    "Patents": "starry_night",
+    "US Congressional bills": "starry_night",
+    "MultiNews": "starry_night",
+    "Medical publications": "starry_night",
+    "Reddit": "starry_night",
+    "WikiHow": "starry_night",
+    "Exterme Summary": "starry_night"
+
 }
 
 st.set_option("deprecation.showfileUploaderEncoding", False)
@@ -22,8 +44,7 @@ st.set_option("deprecation.showfileUploaderEncoding", False)
 st.title("Text Summarization")
 
 file = st.file_uploader("Upload an excel file", type="xlsx")
-
-contentType = st.selectbox("Choose the type", [i for i in TYPES.values()])
+contentType = st.selectbox("Choose the type", [i for i in content_options.values()])
 
 if st.button("Summarize"):
     if file is not None and contentType is not None:
@@ -34,20 +55,30 @@ if st.button("Summarize"):
         print(total)
         displayed = 0
         displayed_urls = []
-        while displayed < total:
-            for i in range(len(df1)):
-                url = df1.iat[i, 0]
-                print(url)
+        model = TYPES[contentType]
+        payload = {"modelName": model}
+        res = requests.post(f"http://web:8000/summaries/bulk", data=json.dumps(payload), files=files)
+        my_bar = st.progress(0)
+        task = res.json()
+        latest_iteration = st.empty()
+        status = task.status
+        taskId = task.uid
+
+        time.sleep(10)
+        res = requests.post(f"http://web:8000/summaries/work/{taskId}/status")
+        taskResponse = res.json()
+        processed_urls = taskResponse.get("processed_ids")
+
+        while taskResponse.get("status") == "in_progress":
+            for summaryId in processed_urls.keys():
+                url = processed_urls[summaryId]
                 if url not in displayed_urls:
-                    payload = {"url": url}
-                    res = requests.post(f"http://web:8000/summaries/", data=json.dumps(payload))
-                    summaryId_response = res.json()
-                    st.write(summaryId_response.get("url"))
-                    time.sleep(10)
-                    summaryId = summaryId_response.get("id")
-                    res = requests.get(f"http://web:8000/summaries/{summaryId}")
+                    res = requests.post(f"http://web:8000/summaries/{summaryId}")
                     summaryResponse = res.json()
                     st.write(summaryResponse.get("summary"))
-                    displayed += 1
                     displayed_urls.append(url)
-                    print(displayed)
+
+            time.sleep(10)
+            res = requests.post(f"http://web:8000/summaries/work/{taskId}/status")
+            taskResponse = res.json()
+            processed_urls = taskResponse.get("processed_ids")
