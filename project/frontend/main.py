@@ -77,6 +77,9 @@ if st.button("Summarize"):
                     summaryResponse = res.json()
                     st.write(summaryResponse.get("summary"))
                     displayed_urls.append(url)
+                    displayed += 1
+                    my_bar.progress(displayed)
+                    latest_iteration.text( "Processed : " + displayed)
 
             time.sleep(10)
             res = requests.post(f"http://web:8000/summaries/work/{taskId}/status")
