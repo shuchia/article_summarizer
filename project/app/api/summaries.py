@@ -22,12 +22,12 @@ jobs: Dict[UUID, Job] = {}
 
 @router.post("/bulk", response_model=Job, status_code=202)
 async def create_summary(
-        background_tasks: BackgroundTasks, body: BulkSummaryPayloadSchema = Body(...), file: UploadFile = File(...)
+        background_tasks: BackgroundTasks, payload: BulkSummaryPayloadSchema, file: UploadFile = File(...)
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
     new_task = Job()
     jobs[new_task.uid] = new_task
-    background_tasks.add_task(generate_bulk_summary, new_task, body.modelname, file)
+    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelname, file)
     return new_task
 
 
