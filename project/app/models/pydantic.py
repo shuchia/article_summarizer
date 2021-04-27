@@ -7,7 +7,7 @@ from typing import Dict
 
 
 class BulkSummaryPayloadSchema(BaseModel):
-    modelName: str
+    modelname: str
 
     @classmethod
     def __get_validators__(cls):
