@@ -57,7 +57,7 @@ if st.button("Summarize"):
         displayed_urls = []
         model = TYPES[contentType]
         payload = {"modelName": model}
-        res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files)
+        res = requests.post(f"http://web:8000/summaries/bulk", json=payload, files=files)
         my_bar = st.progress(0)
         task = res.json()
         latest_iteration = st.empty()
@@ -66,7 +66,7 @@ if st.button("Summarize"):
 
         time.sleep(10)
         payload = {"uid": taskId}
-        res = requests.post(f"http://web:8000/summaries/work/status", data=payload)
+        res = requests.post(f"http://web:8000/summaries/work/status", json=payload)
         st.write("Generating summaries...")
         taskResponse = res.json()
         processed_urls = taskResponse.get("processed_ids")
@@ -85,6 +85,6 @@ if st.button("Summarize"):
 
             time.sleep(10)
             payload = {"uid": taskId}
-            res = requests.post(f"http://web:8000/summaries/work/status", data=payload)
+            res = requests.post(f"http://web:8000/summaries/work/status", json=payload)
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
