@@ -27,7 +27,7 @@ async def create_summary(
     # logger.info("file " + file.filename)
     new_task = Job()
     jobs[new_task.uid] = new_task
-    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file)
+    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelname, file)
     return new_task
 
 
