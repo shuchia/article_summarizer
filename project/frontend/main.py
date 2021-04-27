@@ -61,8 +61,8 @@ if st.button("Summarize"):
         my_bar = st.progress(0)
         task = res.json()
         latest_iteration = st.empty()
-        status = task.status
-        taskId = task.uid
+
+        taskId = task.get("uid")
 
         time.sleep(10)
         res = requests.post(f"http://web:8000/summaries/work/{taskId}/status")
