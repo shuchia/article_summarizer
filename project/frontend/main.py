@@ -67,6 +67,7 @@ if st.button("Summarize"):
         time.sleep(10)
         payload = {"uid": taskId}
         res = requests.post(f"http://web:8000/summaries/work/status", data=payload)
+        st.write("Generating summaries...")
         taskResponse = res.json()
         processed_urls = taskResponse.get("processed_ids")
 
