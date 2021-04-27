@@ -43,8 +43,8 @@ async def create_summary(
     return response_object
 
 
-@router.get("/work/{id}/status", response_model=Job)
-async def read_task(uid: UUID = Path(..., gt=0)) -> Job:
+@router.get("/work/status", response_model=Job)
+async def read_task(uid: UUID) -> Job:
     return jobs[uid]
 
 
