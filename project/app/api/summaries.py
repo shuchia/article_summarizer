@@ -20,14 +20,14 @@ router = APIRouter()
 jobs: Dict[UUID, Job] = {}
 
 
-@router.post("/bulk", response_model=Job, status_code=202)
+@router.post("/bulk/{modelName}", response_model=Job, status_code=202)
 async def create_summary(
-        background_tasks: BackgroundTasks, payload: BulkSummaryPayloadSchema = Depends(), file: UploadFile = File(...)
+        background_tasks: BackgroundTasks, modelName: str, file: UploadFile = File(...)
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
     new_task = Job()
     jobs[new_task.uid] = new_task
-    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelname, file)
+    background_tasks.add_task(generate_bulk_summary, new_task, modelName, file)
     return new_task
 
 
