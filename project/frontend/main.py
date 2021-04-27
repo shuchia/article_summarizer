@@ -49,6 +49,7 @@ contentType = st.selectbox("Choose the type", options=content_options)
 if st.button("Summarize"):
     if file is not None and contentType is not None:
         files = {"file": file.getvalue()}
+        print(file.getvalue())
         df = pd.read_excel(file.read(), index_col=None, header=None)
         df1 = df.iloc[1:]
         total = len(df1)
@@ -57,7 +58,7 @@ if st.button("Summarize"):
         displayed_urls = []
         model = TYPES[contentType]
         payload = {"modelname": model}
-        res = requests.post(f"http://web:8000/summaries/bulk", params=payload, files=files)
+        res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files)
         my_bar = st.progress(0)
         task = res.json()
         latest_iteration = st.empty()
