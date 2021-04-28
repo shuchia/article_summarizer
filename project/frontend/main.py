@@ -48,7 +48,7 @@ contentType = st.selectbox("Choose the type", options=content_options)
 
 if st.button("Summarize"):
     if file is not None and contentType is not None:
-        files = {"file": file.getvalue()}
+        files = {"file": (file.name, file.getvalue(), file.type)}
         print(file.getvalue())
         df = pd.read_excel(file.read(), index_col=None, header=None)
         df1 = df.iloc[1:]
