@@ -59,7 +59,7 @@ if st.button("Summarize"):
         model = TYPES[contentType]
         headers = {'Content-type': 'multipart/form-data'}
         payload = {"modelname": model}
-        res = requests.post(f"http://web:8000/summaries/bulk", payload=payload, files=files, headers=headers)
+        res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files, headers=headers, verify=False)
 
         my_bar = st.progress(0)
         task = res.json()
