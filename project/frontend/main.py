@@ -67,7 +67,7 @@ if st.button("Summarize"):
 
         taskId = task.get("uid")
 
-        time.sleep(5)
+        time.sleep(2)
 
         res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
 
@@ -80,13 +80,14 @@ if st.button("Summarize"):
                 if url not in displayed_urls:
                     res = requests.get(f"http://web:8000/summaries/{summaryId}")
                     summaryResponse = res.json()
+                    st.write(url)
                     st.write(summaryResponse.get("summary"))
                     displayed_urls.append(url)
                     displayed += 1
                     my_bar.progress(displayed)
                     latest_iteration.text("Processed : " + str(displayed) + " summaries")
 
-            time.sleep(10)
+            time.sleep(2)
 
             res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
             taskResponse = res.json()
