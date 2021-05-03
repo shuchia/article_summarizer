@@ -69,7 +69,7 @@ if st.button("Summarize"):
 
         time.sleep(10)
 
-        res = requests.post(f"http://web:8000/summaries/work/status/{taskId}")
+        res = requests.post(f"http://web:8000/summaries/work/status/?uid=" + taskId)
         st.write("Generating summaries...")
         taskResponse = res.json()
         processed_urls = taskResponse.get("processed_ids")
@@ -88,6 +88,6 @@ if st.button("Summarize"):
 
             time.sleep(10)
 
-            res = requests.post(f"http://web:8000/summaries/work/status/{taskId}")
+            res = requests.post(f"http://web:8000/summaries/work/status/?uid=" + task)
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
