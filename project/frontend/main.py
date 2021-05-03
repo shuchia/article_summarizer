@@ -67,7 +67,7 @@ if st.button("Summarize"):
 
         taskId = task.get("uid")
 
-        time.sleep(10)
+        time.sleep(5)
 
         res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
 
