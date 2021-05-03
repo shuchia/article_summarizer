@@ -84,7 +84,7 @@ if st.button("Summarize"):
                     displayed_urls.append(url)
                     displayed += 1
                     my_bar.progress(displayed)
-                    latest_iteration.text("Processed : " + displayed)
+                    latest_iteration.text("Processed : " + str(displayed) + " summaries")
 
             time.sleep(10)
 
