@@ -60,7 +60,7 @@ if st.button("Summarize"):
         headers = {'Content-type': 'multipart/form-data'}
         payload = {"modelname": model}
         res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files, verify=False)
-
+        st.write("Generating summaries...")
         my_bar = st.progress(0)
         task = res.json()
         latest_iteration = st.empty()
@@ -69,8 +69,8 @@ if st.button("Summarize"):
 
         time.sleep(10)
 
-        res = requests.post(f"http://web:8000/summaries/work/status/?uid=" + taskId)
-        st.write("Generating summaries...")
+        res = requests.get(f"http://web:8000/summaries/work/status?uid=" + taskId)
+
         taskResponse = res.json()
         processed_urls = taskResponse.get("processed_ids")
 
@@ -78,7 +78,7 @@ if st.button("Summarize"):
             for summaryId in processed_urls.keys():
                 url = processed_urls[summaryId]
                 if url not in displayed_urls:
-                    res = requests.post(f"http://web:8000/summaries/{summaryId}")
+                    res = requests.get(f"http://web:8000/summaries/{summaryId}")
                     summaryResponse = res.json()
                     st.write(summaryResponse.get("summary"))
                     displayed_urls.append(url)
@@ -88,6 +88,6 @@ if st.button("Summarize"):
 
             time.sleep(10)
 
-            res = requests.post(f"http://web:8000/summaries/work/status/?uid=" + task)
+            res = requests.get(f"http://web:8000/summaries/work/status?uid=" + task)
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
