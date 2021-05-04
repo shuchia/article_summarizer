@@ -35,10 +35,9 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
         topic = {row['Topic']}
         category = {row['Category']}
         # url = df1.iat[ind, 0]
+        if url and url.strip():
+            summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
-        summary_id = await crud.create(url, timeframe, topic, category, task.uid)
-
-        if url and url.strip(): 
             summary = summary_process.inference(input_url=url)
 
         await asyncio.sleep(5)
