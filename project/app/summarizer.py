@@ -30,7 +30,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
     # df1 = df.iloc[1:]
     # logger.info(len(df))
     for index, row in df.iterrows():
-        url = {row['URL']}
+        url = row['URL'].astype(str)
         timeframe = {row['MM/YY']}
         topic = {row['Topic']}
         category = {row['Category']}
