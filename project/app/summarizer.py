@@ -30,7 +30,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
     # df1 = df.iloc[1:]
     # logger.info(len(df))
     for index, row in df.iterrows():
-        url = {row['url']}
+        url = {row['URL']}
         timeframe = {row['MM/YY']}
         topic = {row['Topic']}
         category = {row['Category']}
@@ -38,7 +38,8 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
 
         summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
-        summary = summary_process.inference(input_url=url)
+        if url and url.strip(): 
+            summary = summary_process.inference(input_url=url)
 
         await asyncio.sleep(5)
 
