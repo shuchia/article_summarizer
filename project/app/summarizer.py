@@ -27,15 +27,20 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
     summary_process = SummarizerProcessor(model=modelname)
 
     df = pd.read_excel(file.file.read(), index_col=None, header=None)
-    df1 = df.iloc[1:]
+    # df1 = df.iloc[1:]
     # logger.info(len(df))
-    for ind in range(len(df1)):
-        url = df1.iat[ind, 0]
-        summary_id = await crud.create(url)
+    for index, row in df.iterrows():
+        url = {row['url']}
+        timeframe = {row['MM/YY']}
+        topic = {row['Topic']}
+        category = {row['Category']}
+        # url = df1.iat[ind, 0]
+
+        summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
         summary = summary_process.inference(input_url=url)
 
-        await asyncio.sleep(10)
+        await asyncio.sleep(5)
 
         await TextSummary.filter(id=summary_id).update(summary=summary)
         task.processed_ids[summary_id] = url

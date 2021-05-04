@@ -5,6 +5,7 @@ from typing import Union, List
 
 from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary
+from uuid import UUID
 
 
 async def post(payload: SummaryPayloadSchema) -> int:
@@ -13,8 +14,8 @@ async def post(payload: SummaryPayloadSchema) -> int:
     return summary.id
 
 
-async def create(url: str) -> int:
-    summary = TextSummary(url=url, summary="")
+async def create(url: str, timeframe: str, topic: str, category: str, uid: UUID) -> int:
+    summary = TextSummary(url=url, timeFrame=timeframe, topic=topic, category=category, uid=uid, summary="")
     await summary.save()
     return summary.id
 
