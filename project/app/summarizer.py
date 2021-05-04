@@ -26,7 +26,7 @@ async def generate_summary(summary_id: int, url: str) -> None:
 async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> None:
     summary_process = SummarizerProcessor(model=modelname)
 
-    df = pd.read_excel(file.file.read(), index_col=None, header=None)
+    df = pd.read_excel(file.file.read(), index_col=0, header=None)
     # df1 = df.iloc[1:]
     # logger.info(len(df))
     for index, row in df.iterrows():
