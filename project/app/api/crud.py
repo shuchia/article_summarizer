@@ -45,3 +45,9 @@ async def put(id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
         updated_summary = await TextSummary.filter(id=id).first().values()
         return updated_summary[0]
     return None
+
+
+async def get_all_for_a_task(uid: UUID) -> List:
+    summaries = await TextSummary.filter(uid=uid).all().values()
+
+    return summaries
