@@ -40,7 +40,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
         category = {row['Category']}
         # url = df1.iat[ind, 0]
         log.info(url)
-        if (url and url.strip()) and (math.isnan(float(url) is False)):
+        if (url and url.strip()) and (url != url is False):
             summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
             summary = summary_process.inference(input_url=url)
