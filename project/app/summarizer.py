@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 
 
 def isNaN(string):
-    return string != string and string == 'nan'
+    return string != string or string == 'nan'
 
 
 async def generate_summary(summary_id: int, url: str) -> None:
