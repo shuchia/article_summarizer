@@ -15,6 +15,10 @@ import math
 log = logging.getLogger(__name__)
 
 
+def isNaN(string):
+    return string != string
+
+
 async def generate_summary(summary_id: int, url: str) -> None:
     summary_process = SummarizerProcessor(model="google/pegasus-newsroom")
 
@@ -39,8 +43,9 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
         topic = {row['Topic']}
         category = {row['Category']}
         # url = df1.iat[ind, 0]
-        log.info(url)
-        if url != url is False:
+        # log.info(url)
+        if isNaN(url) is False:
+            log.info(url)
             summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
             summary = summary_process.inference(input_url=url)
