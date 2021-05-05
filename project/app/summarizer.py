@@ -9,6 +9,10 @@ from app.models.tortoise import TextSummary
 from app.models.pydantic import Job
 import pandas as pd
 from app.api import crud
+import logging
+import math
+
+log = logging.getLogger(__name__)
 
 
 async def generate_summary(summary_id: int, url: str) -> None:
@@ -35,7 +39,8 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
         topic = {row['Topic']}
         category = {row['Category']}
         # url = df1.iat[ind, 0]
-        if url and url.strip():
+        log.info(url)
+        if (url and url.strip()) and (math.isnan(float(url) is False)):
             summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
             summary = summary_process.inference(input_url=url)
