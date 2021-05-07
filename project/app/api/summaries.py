@@ -14,7 +14,7 @@ from app.models.pydantic import (
     Job
 )
 from app.models.tortoise import SummarySchema
-from app.summarizer import generate_summary, generate_bulk_summary
+from app.summarizer import generate_summary, generate_bulk_summary, generate_report
 
 router = APIRouter()
 jobs: Dict[UUID, Job] = {}
@@ -68,11 +68,11 @@ async def read_all_summaries_for_a_task(uid: UUID) -> List[SummarySchema]:
     return await crud.get_all_for_a_task(uid)
 
 
-# @router.get("/generateReports/{uid}/", response_model=Job, status_code=202)
-# async def read_all_summaries_for_a_task(background_tasks: BackgroundTasks, uid: UUID) -> List[SummarySchema]:
-#     new_task = Job()
-#     jobs[new_task.uid] = new_task
-#     background_tasks.add_task(generate_reports, uid)
+@router.get("/generateReports/{uid}/", response_model=Job, status_code=202)
+async def read_all_summaries_for_a_task(background_tasks: BackgroundTasks, uid: UUID) -> List[SummarySchema]:
+    new_task = Job()
+    jobs[new_task.uid] = new_task
+    background_tasks.add_task(generate_report, uid)
 
 
 @router.delete("/{id}/", response_model=SummaryResponseSchema)
