@@ -55,6 +55,16 @@ async def get_all_for_a_task(uid: UUID) -> List:
 
 
 async def get_group_of_topics(uid: UUID) -> List:
-    topics = await TextSummary.annotate(count=Count("id").filter(uid=uid).all()). \
-        group_by("topic").values("topic", "count")
+    topics = await TextSummary.filter(uid=uid).all().group_by("topic").values("topic")
     return topics
+
+
+async def get_group_of_categories_for_topic(uid: UUID, topic: str) -> List:
+    categories = await TextSummary.filter(uid=uid).all().filter(topic=topic).all().group_by("category"). \
+        values("category")
+    return categories
+
+
+async def get_summaries_for_topic_categories(uid: UUID, topic: str, category: str) -> List:
+    summaries = await TextSummary.filter(uid=uid).all().filter(topic=topic).filter(category=category).all().values()
+    return summaries
