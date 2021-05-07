@@ -10,6 +10,7 @@ from app.models.pydantic import Job
 import pandas as pd
 from app.api import crud
 import logging
+from uuid import UUID
 import math
 
 log = logging.getLogger(__name__)
@@ -55,3 +56,10 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
             await TextSummary.filter(id=summary_id).update(summary=summary)
             task.processed_ids[summary_id] = url
     task.status = "Completed"
+
+
+async def generate_report(uid: UUID) -> None:
+    topics = await crud.get_group_of_topics(uid)
+    for topic in topics:
+        for (topic_key, topic_name) in topic.iteritems():
+            categories = await crud.get_group_of_categories_for_topics(uid, topic_name)

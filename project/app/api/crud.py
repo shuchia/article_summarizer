@@ -6,6 +6,7 @@ from typing import Union, List
 from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary
 from uuid import UUID
+from tortoise.functions import Avg, Count, Sum
 
 
 async def post(payload: SummaryPayloadSchema) -> int:
@@ -51,3 +52,9 @@ async def get_all_for_a_task(uid: UUID) -> List:
     summaries = await TextSummary.filter(uid=uid).all().values()
 
     return summaries
+
+
+async def get_group_of_topics(uid: UUID) -> List:
+    topics = await TextSummary.annotate(count=Count("id").filter(uid=uid).all()). \
+        group_by("topic").values("topic", "count")
+    return topics
