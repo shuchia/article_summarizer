@@ -61,14 +61,13 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
 async def generate_report(uid: UUID) -> None:
     topics = await crud.get_group_of_topics(uid)
     for topic in topics:
-        for (topic_key, topic_name) in topic.iteritems():
-            log.info(topic_name)
-            categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
-            for (category_key, category_name) in categories.iteritems():
-                log.info(category_name)
-                summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
-                for summary in summaries:
-                    if "summary" in summary:
-                        log.info(summary["timeFrame"])
-                        log.info(summary["summary"])
-                        log.info(summary["url"])
+        log.info(topic["topic"])
+        categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
+        for category in categories:
+            log.info(category["category"])
+            summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
+            for summary in summaries:
+                if "summary" in summary:
+                    log.info(summary["timeFrame"])
+                    log.info(summary["summary"])
+                    log.info(summary["url"])
