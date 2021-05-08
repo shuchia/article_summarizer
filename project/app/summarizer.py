@@ -81,4 +81,4 @@ async def generate_report(uid: UUID) -> None:
         reportName = topic_name + date.today().strftime('%Y, %m, %d')
         report_id = await crud.createReport(reportName, report)
         report_ids[report_id] = reportName
-        return report_ids
+    return report_ids
