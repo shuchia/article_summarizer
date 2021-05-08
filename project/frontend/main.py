@@ -6,15 +6,14 @@ import pandas as pd
 import streamlit.components.v1 as components
 
 
-def report_link(gist_creator, gist_id, height=600, scrolling=True):
-    components.html(
-        f"""
-	  <script src="https://gist.github.com/{gist_creator}/{gist_id}.js">
-	  </script>
-	""",
-        height=height,
-        scrolling=scrolling,
-    )
+def get_report_download_link(report):
+    """Generates a link allowing the html file to be downloaded
+        in:  reportName
+        out: href string
+        """
+    file_handle = open(report, 'r')
+    href = f'<a href="data:file/csv;base64,{file_handle}">Download Report</a>'
+    return href
 
 
 content_options = [
@@ -105,9 +104,9 @@ if st.button("Summarize"):
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
         if taskResponse.get("status") == "Completed":
-            submit = st.button("Generate Reports")
-        if submit:
-            res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
-            processed_reports = res.get("report_ids")
-            for reportId in processed_reports.keys():
-                st.write(processed_reports[reportId])
+            if st.button("Generate Reports"):
+                res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
+                processed_reports = res.get("report_ids")
+                for reportId in processed_reports.keys():
+                    report_name = processed_reports[reportId]
+                    st.markdown(get_report_download_link(report_name), unsafe_allow_html=True)

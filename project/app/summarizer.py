@@ -64,7 +64,7 @@ async def generate_report(uid: UUID) -> None:
     report_ids: Dict[int, str] = {}
     topics = await crud.get_group_of_topics(uid)
     for topic in topics:
-        report = "<html><head><title></title></head><body><blockquote><p><strong> "
+        report = "<!DOCTYPE html><html><head><title></title></head><body><blockquote><p><strong> "
         topic_name = topic["topic"]
         report += topic_name + "</strong></p>"
         categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
@@ -76,9 +76,11 @@ async def generate_report(uid: UUID) -> None:
                 if "summary" in summary:
                     ts = summary["timeFrame"]
                     report += "<p><strong>" + ts + "</strong></p>"
-                    report += "<p><strong>" + summary["summary"] + "<br>"+ summary["url"] + "</strong></p>"
+                    report += "<p><strong>" + summary["summary"] + "<br>" + summary["url"] + "</strong></p>"
         report += "</body></html>"
-        reportName = topic_name + date.today().strftime('%Y%m%d')
-        report_id = await crud.createReport(reportName, report)
-        report_ids[report_id] = reportName
+        report_name = topic_name + date.today().strftime('%Y%m%d')
+        report_id = await crud.createReport(report_name, report)
+        report_ids[report_id] = report_name + ".html"
+        with open(report_name + ".html", 'w+') as file1:
+            file1.write(report)
     return report_ids
