@@ -18,4 +18,12 @@ class TextSummary(models.Model):
         return self.url
 
 
+class Report(models.Model):
+    name = fields.TextField()
+    report = fields.TextField()
+
+    def __str__(self):
+        return self.name
+
+
 SummarySchema = pydantic_model_creator(TextSummary)

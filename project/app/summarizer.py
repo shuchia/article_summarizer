@@ -2,6 +2,8 @@
 
 
 import asyncio
+from typing import Dict
+
 from app.summarypro import SummarizerProcessor
 from fastapi import File, UploadFile
 
@@ -11,7 +13,7 @@ import pandas as pd
 from app.api import crud
 import logging
 from uuid import UUID
-import math
+from datetime import date
 
 log = logging.getLogger(__name__)
 
@@ -59,17 +61,23 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
 
 
 async def generate_report(uid: UUID) -> None:
+    report_ids = Dict[int, str] = {}
     topics = await crud.get_group_of_topics(uid)
     for topic in topics:
+        report = "<html><head><title></title></head><body><blockquote><p><strong> "
         topic_name = topic["topic"]
-        log.info(topic_name)
+        report += topic_name + "</strong></p>"
         categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
         for category in categories:
             category_name = category["category"]
-            log.info(category_name)
+            report += "<p><strong>" + category_name + "</strong></p>"
             summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
             for summary in summaries:
                 if "summary" in summary:
-                    log.info(summary["timeFrame"])
-                    log.info(summary["summary"])
-                    log.info(summary["url"])
+                    ts = summary["timeFrame"]
+                    report += "<p><strong>" + ts.month_name + ts.year + "</strong></p>"
+                    report += "<p><strong>" + summary["summary"] + summary["url"] + "</strong></p>"
+        reportName = topic_name + date.today().strftime('%Y, %m, %d')
+        report_id = await crud.createReport(reportName, report)
+        report_ids[report_id] = reportName
+        return report_ids

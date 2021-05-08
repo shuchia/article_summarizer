@@ -4,7 +4,7 @@
 from typing import Union, List
 
 from app.models.pydantic import SummaryPayloadSchema
-from app.models.tortoise import TextSummary
+from app.models.tortoise import TextSummary, Report
 from uuid import UUID
 from tortoise.functions import Avg, Count, Sum
 
@@ -19,6 +19,12 @@ async def create(url: str, timeframe: str, topic: str, category: str, uid: UUID)
     summary = TextSummary(url=url, timeFrame=timeframe, topic=topic, category=category, uid=uid, summary="")
     await summary.save()
     return summary.id
+
+
+async def createReport(name: str, content: str) -> int:
+    report = Report(name=name, report=content)
+    await report.save()
+    return report.id
 
 
 async def get(id: int) -> Union[dict, None]:
