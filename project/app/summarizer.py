@@ -61,7 +61,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
 
 
 async def generate_report(uid: UUID) -> None:
-    report_ids = Dict[int, str]
+    report_ids: Dict[int, str] = {}
     topics = await crud.get_group_of_topics(uid)
     for topic in topics:
         report = "<html><head><title></title></head><body><blockquote><p><strong> "
