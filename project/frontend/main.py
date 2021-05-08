@@ -3,7 +3,7 @@ import time
 import requests
 import streamlit as st
 import pandas as pd
-import json
+
 
 content_options = [
     "CNN",
@@ -92,3 +92,7 @@ if st.button("Summarize"):
             res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
+        if taskResponse.get("status") == "Completed":
+            st.button("Generate Reports")
+        if st.button("Generate Reports"):
+            res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
