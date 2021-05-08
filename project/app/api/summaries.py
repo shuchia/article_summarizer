@@ -78,7 +78,7 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
 async def get_report(id: int = Path(..., gt=0)) -> FileResponse:
     report = await crud.getReport(id)
     name = report["name"]
-    return FileResponse(path=name, filename=name, media_type='text/html')
+    return FileResponse(path="../../"+name+".html", filename=name, media_type='text/html')
 
 
 @router.delete("/{id}/", response_model=SummaryResponseSchema)
