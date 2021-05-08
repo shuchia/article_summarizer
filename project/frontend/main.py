@@ -6,15 +6,13 @@ import pandas as pd
 import base64
 
 
-def get_report_download_link(report):
+def get_report_download_link(report_id, name):
     """Generates a link allowing the html file to be downloaded
         in:  reportName
         out: href string
         """
-    with open(report, 'rb') as f:
-        data = f.read()
-    bin_str = base64.b64encode(data).decode()
-    href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{report}">Download {report}</a>'
+
+    href = f'<a href="http://web:8000/summaries/report/"+{report_id}>Download {name}</a>'
     return href
     #
     # file_handle = open(report, 'r')
@@ -115,4 +113,4 @@ if taskResponse.get("status") == "Completed":
         processed_reports = res.get("report_ids")
         for reportId in processed_reports.keys():
             report_name = processed_reports[reportId]
-            st.markdown(get_report_download_link(report_name), unsafe_allow_html=True)
+            st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
