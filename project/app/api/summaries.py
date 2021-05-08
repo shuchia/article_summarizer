@@ -74,7 +74,7 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
     return await generate_report(uid)
 
 
-@router.get("/report/{id}/", response_model=FileResponse)
+@router.get("/report/{id}/")
 async def get_report(id: int = Path(..., gt=0)) -> FileResponse:
     report = await crud.getReport(id)
     name = report["name"]
