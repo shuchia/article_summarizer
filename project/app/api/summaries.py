@@ -3,6 +3,7 @@
 
 from fastapi import APIRouter, HTTPException, Path, BackgroundTasks
 from fastapi import File, UploadFile, Depends, Form
+from fastapi.responses import FileResponse
 from typing import List, Dict
 from uuid import UUID
 from app.api import crud
@@ -73,9 +74,11 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
     return await generate_report(uid)
 
 
-@router.get("/report/{id}/", response_model=ReportSchema)
-async def get_report(id: int = Path(..., gt=0)) -> ReportSchema:
-    return await crud.getReport(id)
+@router.get("/report/{id}/", response_model=FileResponse)
+async def get_report(id: int = Path(..., gt=0)) -> FileResponse:
+    report = await crud.getReport(id)
+    name = report["name"]
+    return FileResponse(path=name, filename=name, media_type='text/html')
 
 
 @router.delete("/{id}/", response_model=SummaryResponseSchema)
