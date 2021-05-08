@@ -27,3 +27,4 @@ class Report(models.Model):
 
 
 SummarySchema = pydantic_model_creator(TextSummary)
+ReportSchema = pydantic_model_creator(Report)

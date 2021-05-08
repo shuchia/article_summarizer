@@ -34,6 +34,13 @@ async def get(id: int) -> Union[dict, None]:
     return None
 
 
+async def getReport(id: int) -> Union[dict, None]:
+    report = await Report.filter(id=id).first().values()
+    if report:
+        return report[0]
+    return None
+
+
 async def get_all() -> List:
     summaries = await TextSummary.all().values()
     return summaries
