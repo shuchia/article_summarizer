@@ -42,9 +42,9 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
     # logger.info(len(df))
     for index, row in df.iterrows():
         url = str(row['URL'])
-        timeframe = {row['MM/YY']}
-        topic = {row['Topic']}
-        category = {row['Category']}
+        timeframe = str(row['MM/YY'])
+        topic = str(row['Topic'])
+        category = str(row['Category'])
         # url = df1.iat[ind, 0]
         # log.info(url)
         if isNaN(url) is False:
