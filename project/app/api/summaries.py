@@ -68,8 +68,8 @@ async def read_all_summaries_for_a_task(uid: UUID) -> List[SummarySchema]:
     return await crud.get_all_for_a_task(uid)
 
 
-@router.get("/generateReports", response_model=List[Dict[int, str]], status_code=201)
-async def generate_reports(uid: UUID) -> List[Dict[int, str]]:
+@router.get("/generateReports", response_model=Dict[int, str], status_code=201)
+async def generate_reports(uid: UUID) -> Dict[int, str]:
     return await generate_report(uid)
 
 
