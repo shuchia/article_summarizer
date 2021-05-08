@@ -107,10 +107,10 @@ if st.button("Summarize"):
             res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
-if taskResponse.get("status") == "Completed":
-    if st.button("Generate Reports"):
-        res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
-        processed_reports = res.get("report_ids")
-        for reportId in processed_reports.keys():
-            report_name = processed_reports[reportId]
-            st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
+        if taskResponse.get("status") == "Completed":
+            if st.button("Generate Reports"):
+                res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
+                processed_reports = res.get("report_ids")
+                for reportId in processed_reports.keys():
+                    report_name = processed_reports[reportId]
+                    st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
