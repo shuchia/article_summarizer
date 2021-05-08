@@ -96,3 +96,6 @@ if st.button("Summarize"):
             st.button("Generate Reports")
         if st.button("Generate Reports"):
             res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
+            processed_reports = res.get("report_ids")
+            for reportId in processed_reports.keys():
+                st.write(processed_reports[reportId])
