@@ -3,7 +3,7 @@ import time
 import requests
 import streamlit as st
 import pandas as pd
-import streamlit.components.v1 as components
+import base64
 
 
 def get_report_download_link(report):
@@ -11,9 +11,15 @@ def get_report_download_link(report):
         in:  reportName
         out: href string
         """
-    file_handle = open(report, 'r')
-    href = f'<a href="data:file/csv;base64,{file_handle}">Download Report</a>'
+    with open(report, 'rb') as f:
+        data = f.read()
+    bin_str = base64.b64encode(data).decode()
+    href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{report}">Download {report}</a>'
     return href
+    #
+    # file_handle = open(report, 'r')
+    # href = f'<a href="data:text/html;base64,{file_handle}">Download Report</a>'
+    # return href
 
 
 content_options = [
@@ -56,7 +62,7 @@ st.title("Text Summarization")
 
 file = st.file_uploader("Upload an excel file", type="xlsx")
 contentType = st.selectbox("Choose the type", options=content_options)
-
+taskResponse: {}
 if st.button("Summarize"):
     if file is not None and contentType is not None:
         files = {"file": (file.name, file.getvalue(), file.type)}
@@ -103,10 +109,10 @@ if st.button("Summarize"):
             res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
-        if taskResponse.get("status") == "Completed":
-            if st.button("Generate Reports"):
-                res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
-                processed_reports = res.get("report_ids")
-                for reportId in processed_reports.keys():
-                    report_name = processed_reports[reportId]
-                    st.markdown(get_report_download_link(report_name), unsafe_allow_html=True)
+if taskResponse.get("status") == "Completed":
+    if st.button("Generate Reports"):
+        res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
+        processed_reports = res.get("report_ids")
+        for reportId in processed_reports.keys():
+            report_name = processed_reports[reportId]
+            st.markdown(get_report_download_link(report_name), unsafe_allow_html=True)
