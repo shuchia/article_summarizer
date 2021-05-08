@@ -75,7 +75,7 @@ async def generate_report(uid: UUID) -> None:
             for summary in summaries:
                 if "summary" in summary:
                     ts = summary["timeFrame"]
-                    report += "<p><strong>" + ts.month_name + ts.year + "</strong></p>"
+                    report += "<p><strong>" + ts + "</strong></p>"
                     report += "<p><strong>" + summary["summary"] + summary["url"] + "</strong></p>"
         report += "</body></html>"
         reportName = topic_name + date.today().strftime('%Y, %m, %d')
