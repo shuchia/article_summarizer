@@ -16,6 +16,7 @@ from app.models.pydantic import (
 )
 from app.models.tortoise import SummarySchema, ReportSchema
 from app.summarizer import generate_summary, generate_bulk_summary, generate_report
+import os
 
 router = APIRouter()
 jobs: Dict[UUID, Job] = {}
@@ -78,7 +79,8 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
 async def get_report(id: int = Path(..., gt=0)) -> FileResponse:
     report = await crud.getReport(id)
     name = report["name"]
-    return FileResponse(path="../../"+name+".html", filename=name, media_type='text/html')
+    file_path = os.getcwd() + "/" + name + ".html"
+    return FileResponse(path=file_path, filename=name + ".html", media_type='text/html')
 
 
 @router.delete("/{id}/", response_model=SummaryResponseSchema)
