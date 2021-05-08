@@ -77,6 +77,7 @@ async def generate_report(uid: UUID) -> None:
                     ts = summary["timeFrame"]
                     report += "<p><strong>" + ts.month_name + ts.year + "</strong></p>"
                     report += "<p><strong>" + summary["summary"] + summary["url"] + "</strong></p>"
+        report += "</body></html>"
         reportName = topic_name + date.today().strftime('%Y, %m, %d')
         report_id = await crud.createReport(reportName, report)
         report_ids[report_id] = reportName
