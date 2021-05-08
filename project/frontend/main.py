@@ -3,6 +3,18 @@ import time
 import requests
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
+
+
+def report_link(gist_creator, gist_id, height=600, scrolling=True):
+    components.html(
+        f"""
+	  <script src="https://gist.github.com/{gist_creator}/{gist_id}.js">
+	  </script>
+	""",
+        height=height,
+        scrolling=scrolling,
+    )
 
 
 content_options = [
@@ -93,8 +105,8 @@ if st.button("Summarize"):
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
         if taskResponse.get("status") == "Completed":
-            st.button("Generate Reports")
-        if st.button("Generate Reports"):
+            submit = st.button("Generate Reports")
+        if submit:
             res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
             processed_reports = res.get("report_ids")
             for reportId in processed_reports.keys():
