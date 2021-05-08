@@ -70,7 +70,7 @@ async def read_all_summaries_for_a_task(uid: UUID) -> List[SummarySchema]:
 
 @router.get("/generateReports/{uid}/", response_model=List[Dict[int, str]], status_code=201)
 async def generate_Reports(uid: UUID) -> List[Dict[int, str]]:
-    return generate_report(uid)
+    return await generate_report(uid)
 
 
 @router.delete("/{id}/", response_model=SummaryResponseSchema)
