@@ -111,10 +111,8 @@ if session_state.button_summarize:
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
         if taskResponse.get("status") == "Completed":
-            session_state.report = st.button("Generate Reports")
-            if session_state.report:
-                res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
-                processed_reports = res.get("report_ids")
-                for reportId in processed_reports.keys():
-                    report_name = processed_reports[reportId]
-                    st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
+            res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
+            processed_reports = res.get("report_ids")
+            for reportId in processed_reports.keys():
+                report_name = processed_reports[reportId]
+                st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
