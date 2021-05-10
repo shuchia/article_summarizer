@@ -3,7 +3,7 @@ import time
 import requests
 import streamlit as st
 import pandas as pd
-import base64
+import SessionState
 
 
 def get_report_download_link(report_id, name):
@@ -60,8 +60,11 @@ st.title("Text Summarization")
 
 file = st.file_uploader("Upload an excel file", type="xlsx")
 contentType = st.selectbox("Choose the type", options=content_options)
-taskResponse: {}
-if st.button("Summarize"):
+session_state = SessionState.get(name="", button_summarize=False)
+button_summarize = st.button("Summarize")
+if button_summarize:
+    session_state.button_summarize = True
+if session_state.button_summarize:
     if file is not None and contentType is not None:
         files = {"file": (file.name, file.getvalue(), file.type)}
         # print(file.getvalue())
@@ -108,7 +111,8 @@ if st.button("Summarize"):
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
         if taskResponse.get("status") == "Completed":
-            if st.button("Generate Reports"):
+            session_state.report = st.button("Generate Reports")
+            if session_state.report:
                 res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
                 processed_reports = res.get("report_ids")
                 for reportId in processed_reports.keys():
