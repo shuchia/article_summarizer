@@ -112,7 +112,7 @@ if session_state.button_summarize:
             taskResponse = res.json()
             processed_urls = taskResponse.get("processed_ids")
         if taskResponse.get("status") == "Completed":
-            res = requests.get(f"http://web:8000/summaries/generateReports?uid=2c902d91-a248-4011-8c83-f8eabb216dba")
+            res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
             processed_reports = res.json()
             for reportId in processed_reports.keys():
                 report_name = processed_reports[reportId]
