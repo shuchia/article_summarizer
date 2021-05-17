@@ -13,9 +13,21 @@ import pandas as pd
 from app.api import crud
 import logging
 from uuid import UUID
-from datetime import date
+from datetime import date, datetime
 
 log = logging.getLogger(__name__)
+
+NUMBERS = {"1": "&#x2776;",
+           "2": '&#x2777;',
+           "3": '&#x2778;',
+           "4": '&#x2779;',
+           "5": '&#x277A;',
+           "6": '&#x277B;',
+           "7": '&#x277C;',
+           "8": '&#x277D;',
+           "9": '&#x277E;',
+           "10": '&#x277F;'
+           }
 
 
 def isNaN(string):
@@ -64,18 +76,24 @@ async def generate_report(uid: UUID) -> None:
     report_ids: Dict[int, str] = {}
     topics = await crud.get_group_of_topics(uid)
     for topic in topics:
+        category_counter = 1
         report = "<!DOCTYPE html><html><head><title></title></head><body><blockquote><p><strong> "
         topic_name = topic["topic"]
         report += topic_name + "</strong></p>"
         categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
         for category in categories:
             category_name = category["category"]
-            report += "<p><strong>" + category_name + "</strong></p>"
+            counter = NUMBERS[str(category_counter)]
+            report += "<p><strong>" + counter + "</strong><strong>" + category_name + "</strong></p>"
+            category_counter += 1
             summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
             for summary in summaries:
                 if "summary" in summary:
                     ts = summary["timeFrame"]
-                    report += "<p><strong>" + ts + "</strong></p>"
+                    dt_object2 = datetime.strptime(ts, "%m/%d/%Y %H:%M:%S")
+                    month_name = dt_object2.strftime("%b")
+                    year = dt_object2.year
+                    report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
                     report += "<p><strong>" + summary["summary"] + "<br>" + summary["url"] + "</strong></p>"
         report += "</body></html>"
         report_name = topic_name + date.today().strftime('%Y%m%d')
