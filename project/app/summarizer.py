@@ -84,7 +84,7 @@ async def generate_report(uid: UUID) -> None:
         for category in categories:
             category_name = category["category"]
             counter = NUMBERS[str(category_counter)]
-            report += "<p><strong>" + counter + "</strong><strong>" + category_name + "</strong></p>"
+            report += "<p><strong>" + counter + "&nbsp;</strong><strong>" + category_name + "</strong></p>"
             category_counter += 1
             summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
             for summary in summaries:
