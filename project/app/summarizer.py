@@ -90,7 +90,7 @@ async def generate_report(uid: UUID) -> None:
             for summary in summaries:
                 if "summary" in summary:
                     ts = summary["timeFrame"]
-                    dt_object2 = datetime.strptime(ts, "%m/%d/%Y %H:%M:%S")
+                    dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
                     month_name = dt_object2.strftime("%b")
                     year = dt_object2.year
                     report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
