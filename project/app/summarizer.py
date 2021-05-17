@@ -92,7 +92,7 @@ async def generate_report(uid: UUID) -> None:
                     ts = summary["timeFrame"]
                     dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
                     month_name = dt_object2.strftime("%b")
-                    year = dt_object2.year
+                    year = dt_object2.strftime("%Y")
                     report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
                     report += "<p><strong>" + summary["summary"] + "<br>" + summary["url"] + "</strong></p>"
         report += "</body></html>"
