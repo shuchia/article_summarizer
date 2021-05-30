@@ -12,7 +12,7 @@ def get_report_download_link(report_id, name):
         out: href string
         """
 
-    href = f'<a href=window.open("http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/summaries/report/{report_id}")>Download {name}</a>'
+    href = f'<a href="http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/summaries/report/{report_id}" target="_blank">Download {name}</a>'
     return href
     #
     # file_handle = open(report, 'r')

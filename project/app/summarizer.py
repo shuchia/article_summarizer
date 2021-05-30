@@ -96,7 +96,7 @@ async def generate_report(uid: UUID) -> None:
                     year = dt_object2.strftime("%Y")
                     report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
                     report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
-                        "url"] + "</a></strong></p> "
+                        "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
         report += "</body></html>"
         report_name = topic_name + date.today().strftime('%Y%m%d')
         report_id = await crud.createReport(report_name, report)
