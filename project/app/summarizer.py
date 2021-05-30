@@ -3,7 +3,7 @@
 
 import asyncio
 from typing import Dict
-
+import logging
 from app.summarypro import SummarizerProcessor
 from fastapi import File, UploadFile
 
@@ -11,10 +11,9 @@ from app.models.tortoise import TextSummary
 from app.models.pydantic import Job
 import pandas as pd
 from app.api import crud
-import logging
+
 from uuid import UUID
 from datetime import date, datetime
-
 log = logging.getLogger(__name__)
 
 NUMBERS = {"1": "&#x2776;",
@@ -47,9 +46,11 @@ async def generate_summary(summary_id: int, url: str) -> None:
 
 
 async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> None:
+
     summary_process = SummarizerProcessor(model=modelname)
 
     df = pd.read_excel(file.file.read(), index_col=None, header=0)
+
     # df1 = df.iloc[1:]
     # logger.info(len(df))
     for index, row in df.iterrows():
@@ -63,7 +64,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
             log.info(url)
             summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
-            summary = summary_process.inference(input_url=url)
+            summary = await summary_process.inference(input_url=url)
 
             await asyncio.sleep(5)
 

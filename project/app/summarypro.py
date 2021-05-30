@@ -111,7 +111,7 @@ class SummarizerProcessor:
         summaries = [sentence for sublist in summaries for sentence in sublist]
         return summaries
 
-    def inference(self, input_url: str):
+    async def inference(self, input_url: str):
         """
         Method to perform the inference
         :param input_url: Input url for the inference
