@@ -118,7 +118,7 @@ class SummarizerProcessor:
 
         :return: correct category and confidence for that category
         """
-        log.info(input_url)
+        #log.info(input_url)
         self.text = self.preprocess(input_url)
         if self.modelName == "google/pegasus-newsroom":
             batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)

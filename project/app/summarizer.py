@@ -66,7 +66,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
 
             summary = await summary_process.inference(input_url=url)
 
-            await asyncio.sleep(5)
+            await asyncio.sleep(1)
 
             await TextSummary.filter(id=summary_id).update(summary=summary)
             task.processed_ids[summary_id] = url
