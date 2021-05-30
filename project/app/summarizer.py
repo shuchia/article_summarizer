@@ -14,6 +14,7 @@ from app.api import crud
 
 from uuid import UUID
 from datetime import date, datetime
+
 log = logging.getLogger(__name__)
 
 NUMBERS = {"1": "&#x2776;",
@@ -46,7 +47,6 @@ async def generate_summary(summary_id: int, url: str) -> None:
 
 
 async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> None:
-
     summary_process = SummarizerProcessor(model=modelname)
 
     df = pd.read_excel(file.file.read(), index_col=None, header=0)
@@ -95,11 +95,12 @@ async def generate_report(uid: UUID) -> None:
                     month_name = dt_object2.strftime("%b")
                     year = dt_object2.strftime("%Y")
                     report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
-                    report += "<p><strong>" + summary["summary"] + "<br>" + summary["url"] + "</strong></p>"
+                    report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
+                        "url"] + "</a></strong></p> "
         report += "</body></html>"
         report_name = topic_name + date.today().strftime('%Y%m%d')
         report_id = await crud.createReport(report_name, report)
         report_ids[report_id] = report_name + ".html"
-        with open(report_name + ".html", 'w+') as file1:
-            file1.write(report)
+        # with open(report_name + ".html", 'w+') as file1:
+        # file1.write(report)
     return report_ids
