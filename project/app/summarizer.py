@@ -62,14 +62,19 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> 
         # log.info(url)
         if isNaN(url) is False:
             log.info(url)
-            summary_id = await crud.create(url, timeframe, topic, category, task.uid)
+            try:
+                summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
-            summary = await summary_process.inference(input_url=url)
+                summary = await summary_process.inference(input_url=url)
 
-            await asyncio.sleep(1)
+                await asyncio.sleep(1)
 
-            await TextSummary.filter(id=summary_id).update(summary=summary)
-            task.processed_ids[summary_id] = url
+                await TextSummary.filter(id=summary_id).update(summary=summary)
+                task.processed_ids[summary_id] = url
+            except:
+                pass
+            finally:
+                pass
     task.status = "Completed"
 
 
