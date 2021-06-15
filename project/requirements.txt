@@ -13,3 +13,5 @@ python-multipart
 openpyxl
 nltk
 aiofiles
+passlib
+starlette
