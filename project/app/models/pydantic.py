@@ -36,3 +36,23 @@ class Job(BaseModel):
     uid: UUID = Field(default_factory=uuid4)
     status: str = "in_progress"
     processed_ids: Dict[int, str] = {}
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str = None
+
+
+class User(BaseModel):
+    username: str
+    email: str = None
+    full_name: str = None
+    disabled: bool = None
+
+
+class UserInDB(User):
+    hashed_password: str
