@@ -15,4 +15,4 @@ nltk
 aiofiles
 passlib
 starlette
-jwt
+PyJWT
