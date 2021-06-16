@@ -56,7 +56,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearerCookie(tokenUrl="/token")
 
-router = APIRouter(docs_url=None, redoc_url=None, openapi_url=None)
+router = APIRouter()
 jobs: Dict[UUID, Job] = {}
 
 

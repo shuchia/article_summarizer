@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 
 def create_application() -> FastAPI:
-    application = FastAPI()
+    application = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
     application.include_router(ping.router)
     application.include_router(
         summaries.router, prefix="/summaries", tags=["summaries"]
