@@ -1,10 +1,10 @@
 # project/app/api/summaries.py
 
 
-from fastapi import APIRouter, HTTPException, Path, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Path, BackgroundTasks, status
 from fastapi import File, UploadFile, Depends, Form
 from fastapi.responses import HTMLResponse
-from typing import List, Dict, Optional
+from typing import List, Dict
 import base64
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
@@ -14,6 +14,7 @@ import jwt
 from jwt import PyJWTError
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2
 from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from fastapi.openapi.utils import get_openapi
 
@@ -51,6 +52,8 @@ fake_users_db = {
     }
 }
 basic_auth = BasicAuth(auto_error=False)
+
+security = HTTPBasic()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -143,14 +146,18 @@ async def route_logout_and_remove_cookie():
 
 
 @router.get("/login_basic")
-async def login_basic(auth: BasicAuth = Depends(basic_auth)):
-    if not auth:
-        response = Response(headers={"WWW-Authenticate": "Basic"}, status_code=401)
-        return response
+async def login_basic(credentials: HTTPBasicCredentials = Depends(security)):
+    username = credentials.username
+    password = credentials.password
+    if not (username and password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Incorrect email or password.',
+            headers={'WWW-Authenticate': 'Basic'},
+        )
 
     try:
-        decoded = base64.b64decode(auth).decode("ascii")
-        username, _, password = decoded.partition(":")
+
         user = authenticate_user(fake_users_db, username, password)
         if not user:
             raise HTTPException(status_code=400, detail="Incorrect email or password")
