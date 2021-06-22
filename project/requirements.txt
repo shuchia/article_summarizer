@@ -16,3 +16,4 @@ aiofiles
 passlib
 starlette
 PyJWT
+httpx
