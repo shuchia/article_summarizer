@@ -44,9 +44,14 @@ router = APIRouter()
 jobs: Dict[UUID, Job] = {}
 
 
-def has_access(credentials: HTTPBasicCredentials = Depends(security)):
-
-    result = httpx.get("http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/api/access/auth", headers={'Authorization': credentials.credentials})
+def has_access(credentials: HTTPBasicCredentials = Depends(security), authorization: Optional[str] = Header(None)):
+    if not authorization:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='No access to resource. Credentials missing!',
+        )
+    headers = {'Authorization': authorization}
+    result = httpx.get("http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/api/access/auth", headers=headers)
     if result.status_code == 401:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
