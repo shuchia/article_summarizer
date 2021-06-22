@@ -44,7 +44,7 @@ router = APIRouter()
 jobs: Dict[UUID, Job] = {}
 
 
-def has_access(credentials: HTTPBasicCredentials = Depends(security), authorization: Optional[str] = Header(None)):
+def has_access(authorization: Optional[str] = Header(None)):
     if not authorization:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -56,6 +56,7 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='No access to resource. Login first.',
+            headers={"WWW-Authenticate": "Basic"}
         )
 
 
