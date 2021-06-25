@@ -9,8 +9,9 @@ from passlib.context import CryptContext
 from app.api import ping, summaries
 from app.db import init_db
 from app.models.pydantic import (
-UserInDB,
-User)
+    UserInDB,
+    User)
+import base64
 
 log = logging.getLogger(__name__)
 
@@ -42,6 +43,14 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
+def check_password(plain_password, hashed_password):
+    decoded_pwd = base64.b64decode(hashed_password).decode("ascii")
+    if plain_password == decoded_pwd:
+        return True
+    else:
+        return False
+
+
 def get_password_hash(password):
     return pwd_context.hash(password)
 
@@ -55,9 +64,10 @@ def get_user(db, username: str):
 def authenticate_user(fake_db, username: str, password: str):
     user = get_user(fake_db, username)
     log.info(user.hashed_password)
+    log.info("unhashd pwd" + password)
     if not user:
         return False
-    if not verify_password(password, user.hashed_password):
+    if not check_password(password, user.hashed_password):
         return False
     return user
 
@@ -125,4 +135,4 @@ async def shutdown_event():
 
 @app.get('/api/access/auth', dependencies=[Depends(authorize)])
 def auth():
-    return {"Granted": True}
+    return True

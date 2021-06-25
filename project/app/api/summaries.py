@@ -77,14 +77,16 @@ async def get_documentation():
 
 @router.post("/bulk", response_model=Job, status_code=202, dependencies=[Depends(has_access)])
 async def create_summary(
-        background_tasks: BackgroundTasks, modelname: str = Form(...), file: UploadFile = File(...)
+        background_tasks: BackgroundTasks, modelname: str = Form(...), file: UploadFile = File(...), authorized: bool =
+        Depends(has_access)
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
-    new_task = Job()
-    jobs[new_task.uid] = new_task
-    payload = BulkSummaryPayloadSchema(modelName=modelname)
-    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file)
-    return new_task
+    if authorized:
+        new_task = Job()
+        jobs[new_task.uid] = new_task
+        payload = BulkSummaryPayloadSchema(modelName=modelname)
+        background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file)
+        return new_task
 
 
 @router.post("/summary", response_model=SummaryResponseSchema, status_code=201)
