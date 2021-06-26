@@ -1,7 +1,6 @@
 # project/app/api/summaries.py
 
 import httpx
-import base64
 import logging
 from fastapi import APIRouter, HTTPException, Path, BackgroundTasks, status
 from fastapi import File, UploadFile, Depends, Form, Header
@@ -32,7 +31,6 @@ from app.models.pydantic import (
 
 from app.models.tortoise import SummarySchema, ReportSchema
 from app.summarizer import generate_summary, generate_bulk_summary, generate_report
-from app.main import get_user_email
 
 SECRET_KEY = "a9032cb3b87e7ad1d842e1a20fbf22901a2826d359a63ab6a6b6a8a7d1e9c019"
 ALGORITHM = "HS256"
@@ -66,12 +64,12 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
         return result.json()
 
 
-def get_current_useremail(authorization: Optional[str] = Header(None)):
+def get_current_user_email(authorization: Optional[str] = Header(None)):
     log.info(authorization)
-    decoded = base64.b64decode(authorization).decode("ascii")
-    username, _, password = decoded.partition(":")
-    email = get_user_email(username)
-    return email
+    headers = {'Authorization': authorization}
+    result = httpx.get("http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/api/access/auth/email", headers=headers)
+    email = result.json()
+    return email.get("email")
 
 
 @router.get("/")
@@ -90,7 +88,7 @@ async def get_documentation():
 
 
 @router.get("/users/me")
-def read_current_user(username: str = Depends(get_current_username)):
+def read_current_user(username: str = Depends(get_current_user_email)):
     return {"username": username}
 
 
@@ -99,7 +97,7 @@ async def create_summary(
         background_tasks: BackgroundTasks, modelname: str = Form(...), file: UploadFile = File(...)
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
-    user_email = get_current_useremail()
+    user_email = get_current_user_email()
     log.info("current user email " + user_email)
     new_task = Job()
     jobs[new_task.uid] = new_task

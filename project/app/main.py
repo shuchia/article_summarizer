@@ -2,9 +2,10 @@
 
 import logging
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Header
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from passlib.context import CryptContext
+from typing import Optional
 
 from app.api import ping, summaries
 from app.db import init_db
@@ -144,3 +145,11 @@ async def shutdown_event():
 @app.get('/api/access/auth', dependencies=[Depends(authorize)])
 def auth():
     return {"Granted": True}
+
+
+@app.get('/api/access/auth/email')
+def email(authorization: Optional[str] = Header(None)):
+    decoded = base64.b64decode(authorization).decode("ascii")
+    username, _, password = decoded.partition(":")
+    email = get_user_email(username)
+    return {"email": email}
