@@ -135,4 +135,4 @@ async def shutdown_event():
 
 @app.get('/api/access/auth', dependencies=[Depends(authorize)])
 def auth():
-    return True
+    return {"Granted": True}
