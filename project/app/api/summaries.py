@@ -32,7 +32,7 @@ from app.models.pydantic import (
 
 from app.models.tortoise import SummarySchema, ReportSchema
 from app.summarizer import generate_summary, generate_bulk_summary, generate_report
-from app.oauth2 import BasicAuth, OAuth2PasswordBearerCookie
+from app.main import get_user_email
 
 SECRET_KEY = "a9032cb3b87e7ad1d842e1a20fbf22901a2826d359a63ab6a6b6a8a7d1e9c019"
 ALGORITHM = "HS256"
@@ -66,11 +66,12 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
         return result.json()
 
 
-def get_current_username(authorization: Optional[str] = Header(None)):
+def get_current_useremail(authorization: Optional[str] = Header(None)):
     log.info(authorization)
     decoded = base64.b64decode(authorization).decode("ascii")
     username, _, password = decoded.partition(":")
-    return username
+    email = get_user_email(username)
+    return email
 
 
 @router.get("/")
@@ -98,10 +99,12 @@ async def create_summary(
         background_tasks: BackgroundTasks, modelname: str = Form(...), file: UploadFile = File(...)
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
+    user_email = get_current_useremail()
+    log.info("current user email " + user_email)
     new_task = Job()
     jobs[new_task.uid] = new_task
     payload = BulkSummaryPayloadSchema(modelName=modelname)
-    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file)
+    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file, user_email)
     return new_task
 
 

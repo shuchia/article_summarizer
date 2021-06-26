@@ -19,7 +19,7 @@ fake_users_db = {
     "nsbharath": {
         "username": "nsbharath",
         "full_name": "NS Bharath",
-        "email": "nsbharath@yahoo.com",
+        "email": "nsbharath@fipointer.com",
         "hashed_password": "Zmlwb2ludGVyMTIz",
         "disabled": False,
     }
@@ -61,10 +61,18 @@ def get_user(db, username: str):
         return UserInDB(**user_dict)
 
 
+def get_user_email(username: str):
+    user = get_user(fake_users_db, username)
+    if not user:
+        return False
+    else:
+        return user.email
+
+
 def authenticate_user(fake_db, username: str, password: str):
     user = get_user(fake_db, username)
-    log.info(user.hashed_password)
-    log.info("unhashd pwd" + password)
+    # log.info(user.hashed_password)
+    # log.info("unhashd pwd" + password)
     if not user:
         return False
     if not check_password(password, user.hashed_password):
@@ -108,7 +116,7 @@ def authenticate_user(fake_db, username: str, password: str):
 
 
 def authorize(credentials: HTTPBasicCredentials = Depends(security)):
-    log.info(credentials.username, credentials.password)
+    # log.info(credentials.username, credentials.password)
     user = authenticate_user(fake_users_db, credentials.username, credentials.password)
 
     if not user:

@@ -46,7 +46,7 @@ async def generate_summary(summary_id: int, url: str) -> None:
     await TextSummary.filter(id=summary_id).update(summary=summary)
 
 
-async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile) -> None:
+async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str) -> None:
     summary_process = SummarizerProcessor(model=modelname)
 
     df = pd.read_excel(file.file.read(), index_col=None, header=0)
