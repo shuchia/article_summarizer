@@ -1,6 +1,8 @@
 # project/app/api/summaries.py
 
 import httpx
+import base64
+import logging
 from fastapi import APIRouter, HTTPException, Path, BackgroundTasks, status
 from fastapi import File, UploadFile, Depends, Form, Header
 from fastapi.responses import HTMLResponse
@@ -38,13 +40,14 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 180
 
 security = HTTPBasic()
 
-oauth2_scheme = OAuth2PasswordBearerCookie(tokenUrl="/token")
+log = logging.getLogger(__name__)
 
 router = APIRouter()
 jobs: Dict[UUID, Job] = {}
 
 
 def has_access(credentials: HTTPBasicCredentials = Depends(security), authorization: Optional[str] = Header(None)):
+    log.info(authorization)
     if not authorization:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -63,6 +66,13 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
         return result.json()
 
 
+def get_current_username(authorization: Optional[str] = Header(None)):
+    log.info(authorization)
+    decoded = base64.b64decode(authorization).decode("ascii")
+    username, _, password = decoded.partition(":")
+    return username
+
+
 @router.get("/")
 async def homepage():
     return "Welcome to the security test!"
@@ -76,6 +86,11 @@ async def get_open_api_endpoint():
 @router.get("/docs", dependencies=[Depends(has_access)])
 async def get_documentation():
     return get_swagger_ui_html(openapi_url="/openapi.json", title="docs")
+
+
+@router.get("/users/me")
+def read_current_user(username: str = Depends(get_current_username)):
+    return {"username": username}
 
 
 @router.post("/bulk", response_model=Job, status_code=202, dependencies=[Depends(has_access)])
