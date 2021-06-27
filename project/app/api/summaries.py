@@ -31,7 +31,7 @@ from app.models.pydantic import (
     User
 )
 
-from app.models.tortoise import SummarySchema, ReportSchema
+from app.models.tortoise import SummarySchema, ReportSchema,URLSummarySchema
 from app.summarizer import generate_summary, generate_bulk_summary, generate_report
 
 SECRET_KEY = "a9032cb3b87e7ad1d842e1a20fbf22901a2826d359a63ab6a6b6a8a7d1e9c019"
@@ -140,8 +140,8 @@ async def read_summary(id: int = Path(..., gt=0)) -> SummarySchema:
     return summary
 
 
-@router.get("/url_summary/{id}/", response_model=SummarySchema)
-async def read_url_summary(id: int = Path(..., gt=0)) -> SummarySchema:
+@router.get("/url_summary/{id}/", response_model=URLSummarySchema)
+async def read_url_summary(id: int = Path(..., gt=0)) -> URLSummarySchema:
     summary = await crud.get(id)
     if not summary:
         raise HTTPException(status_code=404, detail="Summary not found")
