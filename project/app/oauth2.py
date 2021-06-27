@@ -3,10 +3,29 @@ from fastapi.security.base import SecurityBase
 from fastapi.security.utils import get_authorization_scheme_param
 
 from typing import Optional
+from app.models.pydantic import (
+    UserInDB,
+    User)
 from starlette.requests import Request
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 from starlette.status import HTTP_403_FORBIDDEN
+
+fake_users_db = {
+    "nsbharath": {
+        "username": "nsbharath",
+        "full_name": "NS Bharath",
+        "email": "nsbharath@fipointer.com",
+        "hashed_password": "Zmlwb2ludGVyMTIz",
+        "disabled": False,
+    }
+}
+
+
+def get_user(db, username: str):
+    if username in db:
+        user_dict = db[username]
+        return UserInDB(**user_dict)
 
 
 class OAuth2PasswordBearerCookie(OAuth2):

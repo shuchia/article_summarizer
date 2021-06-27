@@ -4,8 +4,6 @@ import logging
 
 from fastapi import FastAPI, Depends, HTTPException, status, Header
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from passlib.context import CryptContext
-from typing import Optional
 
 from app.api import ping, summaries
 from app.db import init_db
@@ -13,21 +11,11 @@ from app.models.pydantic import (
     UserInDB,
     User)
 import base64
+from oauth2 import fake_users_db, get_user
 
 log = logging.getLogger(__name__)
 
-fake_users_db = {
-    "nsbharath": {
-        "username": "nsbharath",
-        "full_name": "NS Bharath",
-        "email": "nsbharath@fipointer.com",
-        "hashed_password": "Zmlwb2ludGVyMTIz",
-        "disabled": False,
-    }
-}
 security = HTTPBasic()
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_application() -> FastAPI:
@@ -40,26 +28,12 @@ def create_application() -> FastAPI:
     return application
 
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-
 def check_password(plain_password, hashed_password):
     decoded_pwd = base64.b64decode(hashed_password).decode("ascii")
     if plain_password == decoded_pwd:
         return True
     else:
         return False
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
 
 
 def authenticate_user(fake_db, username: str, password: str):

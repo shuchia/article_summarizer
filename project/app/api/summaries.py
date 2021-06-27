@@ -2,6 +2,8 @@
 
 import httpx
 import logging
+import base64
+from oauth2 import fake_users_db, get_user
 from fastapi import APIRouter, HTTPException, Path, BackgroundTasks, status
 from fastapi import File, UploadFile, Depends, Form, Header
 from fastapi.responses import HTMLResponse
@@ -66,11 +68,10 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
 
 def get_current_user_email(authorization: Optional[str] = Header(None)):
     log.info(authorization)
-    headers = {'Authorization': authorization}
-    result = httpx.get("http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/api/access/auth/email", timeout=None,
-                       headers=headers)
-    email = result.json()
-    return email.get("email")
+    decoded = base64.b64decode(authorization).decode("ascii")
+    username, _, password = decoded.partition(":")
+    user = get_user(fake_users_db, username)
+    return user.email
 
 
 @router.get("/")
