@@ -3,7 +3,7 @@
 import httpx
 import logging
 import base64
-from oauth2 import fake_users_db, get_user
+from app.oauth2 import fake_users_db, get_user
 from fastapi import APIRouter, HTTPException, Path, BackgroundTasks, status
 from fastapi import File, UploadFile, Depends, Form, Header
 from fastapi.responses import HTMLResponse
