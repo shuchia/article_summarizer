@@ -67,8 +67,13 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
 
 
 def get_current_user_email(authorization: Optional[str] = Header(None)):
+    PREFIX = 'Basic'
     log.info("get current user " + authorization)
-    decoded = base64.b64decode(authorization).decode("ascii")
+    bearer, _, token = authorization.partition(' ')
+    if bearer != PREFIX:
+        raise ValueError('Invalid token')
+
+    decoded = base64.b64decode(token).decode("ascii")
     username, _, password = decoded.partition(":")
     user = get_user(fake_users_db, username)
     return user.email
