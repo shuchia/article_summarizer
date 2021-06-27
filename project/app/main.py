@@ -11,7 +11,7 @@ from app.models.pydantic import (
     UserInDB,
     User)
 import base64
-from oauth2 import fake_users_db, get_user
+from app.oauth2 import fake_users_db, get_user
 
 log = logging.getLogger(__name__)
 
