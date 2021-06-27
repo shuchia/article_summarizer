@@ -150,7 +150,7 @@ with col2:
             res = requests.post(f"http://web:8000/summaries/summary", json=payload)
             summary_id = res.json().get("id")
             time.sleep(1)
-            res = requests.get(f"http://web:8000/summaries/{summary_id}")
+            res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}")
             summaryResponse = res.json()
             st.write(summaryResponse.get("url"))
             st.write(summaryResponse.get("summary"))

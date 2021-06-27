@@ -122,7 +122,7 @@ async def create_summary(
 
     background_tasks.add_task(generate_summary, summary_id, payload.url, payload.model_name)
 
-    response_object = {"id": summary_id, "url": payload.url, "model_name":payload.model_name}
+    response_object = {"id": summary_id, "url": payload.url, "model_name": payload.model_name}
     return response_object
 
 
@@ -131,8 +131,17 @@ async def read_task(uid: UUID) -> Job:
     return jobs[uid]
 
 
-@router.get("/{id}/", response_model=SummarySchema)
+@router.get("/{id}/", response_model=SummarySchema, dependencies=[Depends(has_access)])
 async def read_summary(id: int = Path(..., gt=0)) -> SummarySchema:
+    summary = await crud.get(id)
+    if not summary:
+        raise HTTPException(status_code=404, detail="Summary not found")
+
+    return summary
+
+
+@router.get("/url_summary/{id}/", response_model=SummarySchema)
+async def read_url_summary(id: int = Path(..., gt=0)) -> SummarySchema:
     summary = await crud.get(id)
     if not summary:
         raise HTTPException(status_code=404, detail="Summary not found")

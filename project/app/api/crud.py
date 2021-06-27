@@ -6,7 +6,7 @@ from typing import Union, List
 from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary, Report, URLSummary
 from uuid import UUID
-from tortoise.functions import Avg, Count, Sum
+
 
 
 async def post(payload: SummaryPayloadSchema) -> int:
@@ -29,6 +29,13 @@ async def createReport(name: str, content: str) -> int:
 
 async def get(id: int) -> Union[dict, None]:
     summary = await TextSummary.filter(id=id).first().values()
+    if summary:
+        return summary[0]
+    return None
+
+
+async def get_url_summary(id: int) -> Union[dict, None]:
+    summary = await URLSummary.filter(id=id).first().values()
     if summary:
         return summary[0]
     return None
