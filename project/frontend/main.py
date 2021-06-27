@@ -147,7 +147,7 @@ with col2:
             payload = {"url": text_input}
             st.write("Generating summary...")
 
-            res = requests.post(f"http://web:8000/summaries/summary", data=payload)
+            res = requests.post(f"http://web:8000/summaries/summary", json=payload)
             summary_id = res.json().get("id")
             time.sleep(1)
             res = requests.get(f"http://web:8000/summaries/{summary_id}")

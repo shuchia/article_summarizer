@@ -34,8 +34,8 @@ def isNaN(string):
     return string != string or string == 'nan'
 
 
-async def generate_summary(summary_id: int, url: str) -> None:
-    summary_process = SummarizerProcessor(model="google/pegasus-newsroom")
+async def generate_summary(summary_id: int, url: str, model_name:str) -> None:
+    summary_process = SummarizerProcessor(model=model_name)
 
     summary = summary_process.inference(
         input_url=url

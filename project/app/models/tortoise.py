@@ -5,6 +5,15 @@ from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 
+class URLSummary(models.Model):
+    url = fields.TextField()
+    summary = fields.TextField()
+
+
+def __str__(self):
+    return self.url
+
+
 class TextSummary(models.Model):
     url = fields.TextField()
     summary = fields.TextField()

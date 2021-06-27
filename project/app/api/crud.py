@@ -4,13 +4,13 @@
 from typing import Union, List
 
 from app.models.pydantic import SummaryPayloadSchema
-from app.models.tortoise import TextSummary, Report
+from app.models.tortoise import TextSummary, Report, URLSummary
 from uuid import UUID
 from tortoise.functions import Avg, Count, Sum
 
 
 async def post(payload: SummaryPayloadSchema) -> int:
-    summary = TextSummary(url=payload.url, summary="")
+    summary = URLSummary(url=payload.url, summary="")
     await summary.save()
     return summary.id
 

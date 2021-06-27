@@ -22,6 +22,7 @@ class BulkSummaryPayloadSchema(BaseModel):
 
 class SummaryPayloadSchema(BaseModel):
     url: AnyHttpUrl
+    model_name: str
 
 
 class SummaryResponseSchema(SummaryPayloadSchema):
