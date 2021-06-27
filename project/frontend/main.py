@@ -64,11 +64,11 @@ with col1:
         contentType = st.selectbox("Choose the type", options=content_options)
 
         submitted1 = st.form_submit_button('Generate Summaries')
-        session_state = SessionState.get(name="", button_summarize=False)
+        session_state = SessionState.get(name="", submitted1=False)
 
         if submitted1:
-            session_state.button_summarize = True
-        if session_state.button_summarize:
+            session_state.submitted1 = True
+        if session_state.submitted1:
             if file is not None and contentType is not None:
                 files = {"file": (file.name, file.getvalue(), file.type)}
                 # print(file.getvalue())
@@ -130,4 +130,16 @@ with col2:
         text_input = st.text_input(label='Enter a URL')
         contentType = st.selectbox("Choose the type", options=content_options)
         submitted2 = st.form_submit_button('Summarize')
+        payload = {"url": text_input}
+        st.write("Generating summary...")
+
+        res = requests.post(f"http://web:8000/summaries/summary", data=payload)
+        summary_id = res.json().get("id")
+        time.sleep(1)
+        res = requests.get(f"http://web:8000/summaries/{summary_id}")
+        summaryResponse = res.json()
+        st.write(summaryResponse.get("url"))
+        st.write(summaryResponse.get("summary"))
+
+
 
