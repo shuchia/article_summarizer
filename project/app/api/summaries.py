@@ -67,7 +67,7 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
 
 
 def get_current_user_email(authorization: Optional[str] = Header(None)):
-    log.info(authorization)
+    log.info("get current user " + authorization)
     decoded = base64.b64decode(authorization).decode("ascii")
     username, _, password = decoded.partition(":")
     user = get_user(fake_users_db, username)
