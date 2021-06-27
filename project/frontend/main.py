@@ -144,7 +144,8 @@ with col2:
         if submitted2:
             session_state.submitted2 = True
         if session_state.submitted2:
-            payload = {"url": text_input}
+            payload = {"url": text_input,
+                       "model_name": contentType}
             st.write("Generating summary...")
 
             res = requests.post(f"http://web:8000/summaries/summary", json=payload)
