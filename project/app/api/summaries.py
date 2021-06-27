@@ -94,11 +94,11 @@ def read_current_user(username: str = Depends(get_current_user_email)):
 
 @router.post("/bulk", response_model=Job, status_code=202, dependencies=[Depends(has_access)])
 async def create_summary(
-        background_tasks: BackgroundTasks, model_name: str = Form(...), file: UploadFile = File(...), email: str =
-        Depends(get_current_user_email())
+        background_tasks: BackgroundTasks, model_name: str = Form(...), file: UploadFile = File(...),
+        authorization: Optional[str] = Header(None)
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
-    # user_email = get_current_user_email()
+    email = get_current_user_email(authorization)
     log.info("current user email " + email)
     new_task = Job()
     jobs[new_task.uid] = new_task
