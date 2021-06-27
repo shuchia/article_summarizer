@@ -62,14 +62,6 @@ def get_user(db, username: str):
         return UserInDB(**user_dict)
 
 
-def get_user_email(username: str):
-    user = get_user(fake_users_db, username)
-    if not user:
-        return False
-    else:
-        return user.email
-
-
 def authenticate_user(fake_db, username: str, password: str):
     user = get_user(fake_db, username)
     # log.info(user.hashed_password)
@@ -115,6 +107,10 @@ def authenticate_user(fake_db, username: str, password: str):
 #         raise HTTPException(status_code=400, detail="Inactive user")
 #     return current_user
 
+async def get_current_active_user(credentials: HTTPBasicCredentials = Depends(security)):
+    user = get_user(fake_users_db, credentials.username)
+    return user
+
 
 def authorize(credentials: HTTPBasicCredentials = Depends(security)):
     # log.info(credentials.username, credentials.password)
@@ -148,8 +144,5 @@ def auth():
 
 
 @app.get('/api/access/auth/email')
-def email(authorization: Optional[str] = Header(None)):
-    decoded = base64.b64decode(authorization).decode("ascii")
-    username, _, password = decoded.partition(":")
-    email = get_user_email(username)
-    return {"email": email}
+def get_email(current_user: User = Depends(get_current_active_user)):
+    return {"email": current_user.email}
