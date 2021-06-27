@@ -1,6 +1,6 @@
 import time
 
-import requests
+import requests, base64
 import streamlit as st
 import pandas as pd
 import SessionState
@@ -63,12 +63,17 @@ with col1:
         file = st.file_uploader("Upload an excel file", type="xlsx")
         contentType = st.selectbox("Choose the type", options=content_options)
 
+        username = st.text_input("Enter username")
+        password = st.text_input("Enter password", type="password")
+
         submitted1 = st.form_submit_button('Generate Summaries')
         session_state = SessionState.get(name="", submitted1=False)
 
         if submitted1:
             session_state.submitted1 = True
         if session_state.submitted1:
+            usrPass = username + ":" + password
+            b64Val = base64.b64encode(usrPass)
             if file is not None and contentType is not None:
                 files = {"file": (file.name, file.getvalue(), file.type)}
                 # print(file.getvalue())
@@ -83,7 +88,8 @@ with col1:
                 payload = {"modelname": model}
                 st.write("Generating summaries...")
                 my_bar = st.progress(0)
-                res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files, verify=False)
+                res = requests.post(f"http://web:8000/summaries/bulk", headers={"Authorization": "Basic %s" % b64Val},
+                                    data=payload, files=files, verify=False)
 
                 task = res.json()
                 latest_iteration = st.empty()
@@ -95,7 +101,8 @@ with col1:
 
                 time.sleep(1)
 
-                res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
+                res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId),
+                                   headers={"Authorization": "Basic %s" % b64Val})
 
                 taskResponse = res.json()
                 processed_urls = taskResponse.get("processed_ids")
@@ -115,11 +122,13 @@ with col1:
 
                     time.sleep(1)
 
-                    res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
+                    res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId),
+                                       headers={"Authorization": "Basic %s" % b64Val})
                     taskResponse = res.json()
                     processed_urls = taskResponse.get("processed_ids")
                 if taskResponse.get("status") == "Completed":
-                    res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
+                    res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId),
+                                       headers={"Authorization": "Basic %s" % b64Val})
                     processed_reports = res.json()
                     for reportId in processed_reports.keys():
                         report_name = processed_reports[reportId]
@@ -130,16 +139,18 @@ with col2:
         text_input = st.text_input(label='Enter a URL')
         contentType = st.selectbox("Choose the type", options=content_options)
         submitted2 = st.form_submit_button('Summarize')
-        payload = {"url": text_input}
-        st.write("Generating summary...")
+        session_state = SessionState.get(name="", submitted2=False)
 
-        res = requests.post(f"http://web:8000/summaries/summary", data=payload)
-        summary_id = res.json().get("id")
-        time.sleep(1)
-        res = requests.get(f"http://web:8000/summaries/{summary_id}")
-        summaryResponse = res.json()
-        st.write(summaryResponse.get("url"))
-        st.write(summaryResponse.get("summary"))
+        if submitted2:
+            session_state.submitted2 = True
+        if session_state.submitted2:
+            payload = {"url": text_input}
+            st.write("Generating summary...")
 
-
-
+            res = requests.post(f"http://web:8000/summaries/summary", data=payload)
+            summary_id = res.json().get("id")
+            time.sleep(1)
+            res = requests.get(f"http://web:8000/summaries/{summary_id}")
+            summaryResponse = res.json()
+            st.write(summaryResponse.get("url"))
+            st.write(summaryResponse.get("summary"))
