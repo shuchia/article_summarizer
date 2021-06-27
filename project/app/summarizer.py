@@ -7,7 +7,7 @@ import logging
 from app.summarypro import SummarizerProcessor
 from fastapi import File, UploadFile
 
-from app.models.tortoise import TextSummary
+from app.models.tortoise import TextSummary,URLSummary
 from app.models.pydantic import Job
 import pandas as pd
 from app.api import crud
@@ -37,13 +37,13 @@ def isNaN(string):
 async def generate_summary(summary_id: int, url: str, model_name:str) -> None:
     summary_process = SummarizerProcessor(model=model_name)
 
-    summary = summary_process.inference(
+    summary = await summary_process.inference(
         input_url=url
     )
 
-    await asyncio.sleep(10)
+    await asyncio.sleep(1)
 
-    await TextSummary.filter(id=summary_id).update(summary=summary)
+    await URLSummary.filter(id=summary_id).update(summary=summary)
 
 
 async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str) -> None:
