@@ -67,7 +67,8 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
 def get_current_user_email(authorization: Optional[str] = Header(None)):
     log.info(authorization)
     headers = {'Authorization': authorization}
-    result = httpx.get("http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/api/access/auth/email", headers=headers)
+    result = httpx.get("http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/api/access/auth/email", timeout=None,
+                       headers=headers)
     email = result.json()
     return email.get("email")
 
