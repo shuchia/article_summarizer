@@ -142,7 +142,7 @@ async def read_summary(id: int = Path(..., gt=0)) -> SummarySchema:
 
 @router.get("/url_summary/{id}/", response_model=URLSummarySchema)
 async def read_url_summary(id: int = Path(..., gt=0)) -> URLSummarySchema:
-    summary = await crud.get(id)
+    summary = await crud.get_url_summary(id)
     if not summary:
         raise HTTPException(status_code=404, detail="Summary not found")
 
