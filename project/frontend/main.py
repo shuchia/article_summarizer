@@ -142,8 +142,8 @@ with col2:
         session_state = SessionState.get(name="", submitted2=False)
 
         if submitted2:
-            session_state.submitted2 = True
-        if session_state.submitted2:
+            #     session_state.submitted2 = True
+            # if session_state.submitted2:
             payload = {"url": text_input,
                        "model_name": contentType}
             st.write("Generating summary...")
