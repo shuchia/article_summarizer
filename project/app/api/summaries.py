@@ -122,7 +122,7 @@ async def create_summary(
 
     background_tasks.add_task(generate_summary, summary_id, payload.url, payload.model_name)
 
-    response_object = {"id": summary_id, "url": payload.url}
+    response_object = {"id": summary_id, "url": payload.url, "model_name":payload.model_name}
     return response_object
 
 
