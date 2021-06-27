@@ -54,66 +54,80 @@ TYPES = {
 
 }
 
-
 st.set_option("deprecation.showfileUploaderEncoding", False)
 
 st.title("Text Summarization")
+col1, col2 = st.beta_columns(2)
+with col1:
+    with st.form(key='form1'):
+        file = st.file_uploader("Upload an excel file", type="xlsx")
+        contentType = st.selectbox("Choose the type", options=content_options)
 
-file = st.file_uploader("Upload an excel file", type="xlsx")
-contentType = st.selectbox("Choose the type", options=content_options)
-session_state = SessionState.get(name="", button_summarize=False)
-button_summarize = st.button("Summarize")
-if button_summarize:
-    session_state.button_summarize = True
-if session_state.button_summarize:
-    if file is not None and contentType is not None:
-        files = {"file": (file.name, file.getvalue(), file.type)}
-        # print(file.getvalue())
-        df = pd.read_excel(file.read(), index_col=None, header=None)
-        df1 = df.iloc[1:]
-        total = len(df1)
-        print(total)
-        displayed = 0
-        displayed_urls = []
-        model = TYPES[contentType]
-        headers = {'Content-type': 'multipart/form-data'}
-        payload = {"modelname": model}
-        res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files, verify=False)
-        st.write("Generating summaries...")
-        my_bar = st.progress(0)
-        task = res.json()
-        latest_iteration = st.empty()
+        submitted1 = st.form_submit_button('Generate Summaries')
+        session_state = SessionState.get(name="", button_summarize=False)
 
-        taskId = task.get("uid")
+        if submitted1:
+            session_state.button_summarize = True
+        if session_state.button_summarize:
+            if file is not None and contentType is not None:
+                files = {"file": (file.name, file.getvalue(), file.type)}
+                # print(file.getvalue())
+                df = pd.read_excel(file.read(), index_col=None, header=None)
+                df1 = df.iloc[1:]
+                total = len(df1)
+                print(total)
+                displayed = 0
+                displayed_urls = []
+                model = TYPES[contentType]
+                headers = {'Content-type': 'multipart/form-data'}
+                payload = {"modelname": model}
+                st.write("Generating summaries...")
+                my_bar = st.progress(0)
+                res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files, verify=False)
 
-        time.sleep(1)
+                task = res.json()
+                latest_iteration = st.empty()
 
-        res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
+                taskId = task.get("uid")
+                st.write("Please use this URL to generate reports...")
+                st.write(
+                    "http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/summaries/generateReports?uid=" + str(taskId))
 
-        taskResponse = res.json()
-        processed_urls = taskResponse.get("processed_ids")
+                time.sleep(1)
 
-        while taskResponse.get("status") == "in_progress":
-            for summaryId in processed_urls.keys():
-                url = processed_urls[summaryId]
-                if url not in displayed_urls:
-                    res = requests.get(f"http://web:8000/summaries/{summaryId}")
-                    summaryResponse = res.json()
-                    st.write(url)
-                    st.write(summaryResponse.get("summary"))
-                    displayed_urls.append(url)
-                    displayed += 1
-                    my_bar.progress(displayed)
-                    latest_iteration.text("Processed : " + str(displayed) + " summaries")
+                res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
 
-            time.sleep(1)
+                taskResponse = res.json()
+                processed_urls = taskResponse.get("processed_ids")
 
-            res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
-            taskResponse = res.json()
-            processed_urls = taskResponse.get("processed_ids")
-        if taskResponse.get("status") == "Completed":
-            res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
-            processed_reports = res.json()
-            for reportId in processed_reports.keys():
-                report_name = processed_reports[reportId]
-                st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
+                while taskResponse.get("status") == "in_progress":
+                    for summaryId in processed_urls.keys():
+                        url = processed_urls[summaryId]
+                        if url not in displayed_urls:
+                            res = requests.get(f"http://web:8000/summaries/{summaryId}")
+                            summaryResponse = res.json()
+                            st.write(url)
+                            st.write(summaryResponse.get("summary"))
+                            displayed_urls.append(url)
+                            displayed += 1
+                            my_bar.progress(displayed)
+                            latest_iteration.text("Processed : " + str(displayed) + " summaries")
+
+                    time.sleep(1)
+
+                    res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId))
+                    taskResponse = res.json()
+                    processed_urls = taskResponse.get("processed_ids")
+                if taskResponse.get("status") == "Completed":
+                    res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId))
+                    processed_reports = res.json()
+                    for reportId in processed_reports.keys():
+                        report_name = processed_reports[reportId]
+                        st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
+
+with col2:
+    with st.form(key='form2'):
+        text_input = st.text_input(label='Enter a URL')
+        contentType = st.selectbox("Choose the type", options=content_options)
+        submitted2 = st.form_submit_button('Summarize')
+
