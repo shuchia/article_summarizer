@@ -94,6 +94,7 @@ with col1:
                                     headers={"Authorization": "Basic %s" % b64Val}, verify=False)
 
                 task = res.json()
+                print(task)
                 latest_iteration = st.empty()
 
                 taskId = task.get("uid")
