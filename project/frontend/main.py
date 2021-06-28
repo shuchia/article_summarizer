@@ -90,8 +90,8 @@ with col1:
                 my_bar = st.progress(0)
                 print(usrPass)
                 print(b64Val)
-                res = requests.post(f"http://web:8000/summaries/bulk", headers={"Authorization": "Basic %s" % b64Val},
-                                    data=payload, files=files, verify=False)
+                res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files,
+                                    headers={"Authorization": "Basic %s" % b64Val}, verify=False)
 
                 task = res.json()
                 latest_iteration = st.empty()
