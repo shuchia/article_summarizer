@@ -1,5 +1,4 @@
 import torch
-import transformers
 from transformers import PegasusForConditionalGeneration, PegasusTokenizer, PegasusConfig
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 from transformers import BartTokenizer, BartForConditionalGeneration, BartConfig
@@ -116,11 +115,14 @@ class SummarizerProcessor:
     def generate_simple_summary(self, text):
         # logger.info("Inside inference before generate summary")
         # logger.info(self.model.get_input_embeddings())
+        inputs = self.tokenizer([text], max_length=1024, return_tensors='pt')
 
-        input_tokenized = self.tokenizer.encode(text, truncation=True, return_tensors='pt')
-        input_tokenized = input_tokenized.to(torch_device)
-        summary_ids = self.model.to(torch_device).generate(input_tokenized,
-                                                           length_penalty=3.0)
+        # Generate Summary
+        summary_ids = self.model.generate(inputs['input_ids'], num_beams=4, max_length=5, early_stopping=True)
+        # print([tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in summary_ids])
+        # input_tokenized = self.tokenizer.encode(text, truncation=True, return_tensors='pt')
+        # input_tokenized = input_tokenized.to(torch_device)
+        # summary_ids = self.model.to(torch_device).generate(input_tokenized)
         output = [self.tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in
                   summary_ids]
 
