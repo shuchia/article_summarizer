@@ -4,7 +4,8 @@ import httpx
 import logging
 import base64
 from app.oauth2 import fake_users_db, get_user
-from fastapi import FastAPI, APIRouter, HTTPException, Path, BackgroundTasks, status, RequestValidationError
+from fastapi import FastAPI, APIRouter, HTTPException, Path, BackgroundTasks, status
+from fastapi.exceptions import RequestValidationError
 from fastapi import File, UploadFile, Depends, Form, Header
 from fastapi.responses import HTMLResponse
 from typing import List, Dict, Optional
