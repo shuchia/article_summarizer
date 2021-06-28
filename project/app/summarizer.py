@@ -7,7 +7,7 @@ import logging
 from app.summarypro import SummarizerProcessor
 from fastapi import File, UploadFile
 
-from app.models.tortoise import TextSummary,URLSummary
+from app.models.tortoise import TextSummary, URLSummary
 from app.models.pydantic import Job
 import pandas as pd
 from app.api import crud
@@ -34,7 +34,7 @@ def isNaN(string):
     return string != string or string == 'nan'
 
 
-async def generate_summary(summary_id: int, url: str, model_name:str) -> None:
+async def generate_summary(summary_id: int, url: str, model_name: str) -> None:
     summary_process = SummarizerProcessor(model=model_name)
 
     summary = await summary_process.inference(

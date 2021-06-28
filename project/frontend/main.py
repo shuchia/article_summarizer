@@ -111,7 +111,8 @@ with col1:
                     for summaryId in processed_urls.keys():
                         url = processed_urls[summaryId]
                         if url not in displayed_urls:
-                            res = requests.get(f"http://web:8000/summaries/{summaryId}")
+                            res = requests.get(f"http://web:8000/summaries/{summaryId}",
+                                               headers={"Authorization": "Basic %s" % b64Val})
                             summaryResponse = res.json()
                             st.write(url)
                             st.write(summaryResponse.get("summary"))
