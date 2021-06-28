@@ -85,7 +85,7 @@ with col1:
                 displayed_urls = []
                 model = TYPES[contentType]
                 headers = {'Content-type': 'multipart/form-data'}
-                payload = {"modelname": model}
+                payload = {"model_name": model}
                 st.write("Generating summaries...")
                 my_bar = st.progress(0)
                 print(usrPass)
