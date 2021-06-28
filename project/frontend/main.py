@@ -73,7 +73,7 @@ with col1:
             session_state.submitted1 = True
         if session_state.submitted1:
             usrPass = username + ":" + password
-            b64Val = base64.b64encode(usrPass.encode())
+            b64Val = base64.b64encode(usrPass.encode().replace(b'=', b'a').decode())
             if file is not None and contentType is not None:
                 files = {"file": (file.name, file.getvalue(), file.type)}
                 # print(file.getvalue())
