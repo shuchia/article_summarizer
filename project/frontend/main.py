@@ -90,8 +90,9 @@ with col1:
                 my_bar = st.progress(0)
                 print(usrPass)
                 print(b64Val)
+                headers = {"Authorization": "Basic %s" % b64Val}
                 res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files,
-                                    headers={"Authorization": "Basic %s" % b64Val}, verify=False)
+                                    headers=headers, verify=False)
 
                 task = res.json()
                 print(task)
@@ -103,9 +104,6 @@ with col1:
                     "http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/summaries/generateReports?uid=" + str(taskId))
 
                 time.sleep(1)
-                headers = {"Authorization": "Basic %s" % b64Val,
-                           "Content-Type": "multipart/form-data",
-                           "accept": "application / json"}
 
                 res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId), headers=headers)
 
@@ -117,7 +115,7 @@ with col1:
                         url = processed_urls[summaryId]
                         if url not in displayed_urls:
                             res = requests.get(f"http://web:8000/summaries/{summaryId}",
-                                               headers={"Authorization": "Basic %s" % b64Val})
+                                               headers=headers)
                             summaryResponse = res.json()
                             st.write(url)
                             st.write(summaryResponse.get("summary"))
@@ -129,12 +127,12 @@ with col1:
                     time.sleep(1)
 
                     res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId),
-                                       headers={"Authorization": "Basic %s" % b64Val})
+                                       headers=headers)
                     taskResponse = res.json()
                     processed_urls = taskResponse.get("processed_ids")
                 if taskResponse.get("status") == "Completed":
                     res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId),
-                                       headers={"Authorization": "Basic %s" % b64Val})
+                                       headers=headers)
                     processed_reports = res.json()
                     for reportId in processed_reports.keys():
                         report_name = processed_reports[reportId]
