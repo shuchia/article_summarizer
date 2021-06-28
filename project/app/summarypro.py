@@ -143,10 +143,10 @@ class SummarizerProcessor:
             tgt_text = self.tokenizer.batch_decode(translated, skip_special_tokens=True)
             # log.info(tgt_text)
         elif self.modelName == "facebook/bart-large-cnn":
-            # nested = nest_sentences(self.text)
-            # summarized_text = self.generate_summary(nested)
-            # nested_summ = nest_sentences(' '.join(summarized_text))
-            # tgt_text_list = self.generate_summary(nested_summ)
-            # tgt_text = tgt_text_list[0]
-            tgt_text = self.generate_simple_summary(self.text)
+            nested = nest_sentences(self.text)
+            summarized_text = self.generate_summary(nested)
+            nested_summ = nest_sentences(' '.join(summarized_text))
+            tgt_text_list = self.generate_summary(nested_summ)
+            tgt_text = tgt_text_list[0]
+            # tgt_text = self.generate_simple_summary(self.text)
         return tgt_text
