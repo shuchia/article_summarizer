@@ -127,7 +127,7 @@ async def create_summary(
     return response_object
 
 
-@router.get("/work/status", response_model=Job)
+@router.get("/work/status", response_model=Job, dependencies=[Depends(has_access)])
 async def read_task(uid: UUID) -> Job:
     return jobs[uid]
 
@@ -160,12 +160,12 @@ async def read_all_summaries_for_a_task(uid: UUID) -> List[SummarySchema]:
     return await crud.get_all_for_a_task(uid)
 
 
-@router.get("/generateReports", response_model=Dict[int, str], status_code=201)
+@router.get("/generateReports", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
 async def generate_reports(uid: UUID) -> Dict[int, str]:
     return await generate_report(uid)
 
 
-@router.get("/report/{id}/")
+@router.get("/report/{id}/", dependencies=[Depends(has_access)])
 async def get_report(id: int = Path(..., gt=0)) -> HTMLResponse:
     report = await crud.getReport(id)
     # name = report["name"]
