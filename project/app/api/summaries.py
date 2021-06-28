@@ -5,11 +5,11 @@ import logging
 import base64
 from app.oauth2 import fake_users_db, get_user
 from fastapi import FastAPI, APIRouter, HTTPException, Path, BackgroundTasks, status
-from fastapi.exceptions import RequestValidationError
+
 from fastapi import File, UploadFile, Depends, Form, Header
 from fastapi.responses import HTMLResponse
 from typing import List, Dict, Optional
-from starlette.requests import Request
+
 from starlette.responses import RedirectResponse, Response, JSONResponse
 
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -78,16 +78,6 @@ def get_current_user_email(authorization: Optional[str] = Header(None)):
     username, _, password = decoded.partition(":")
     user = get_user(fake_users_db, username)
     return user.email
-
-
-def register_exception(app: FastAPI):
-    @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(request: Request, exc: RequestValidationError):
-        exc_str = f'{exc}'.replace('\n', ' ').replace('   ', ' ')
-        # or logger.error(f'{exc}')
-        log.error(request, exc_str)
-        content = {'status_code': 10422, 'message': exc_str, 'data': None}
-        return JSONResponse(content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 
 @router.get("/")
