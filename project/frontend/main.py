@@ -88,6 +88,8 @@ with col1:
                 payload = {"modelname": model}
                 st.write("Generating summaries...")
                 my_bar = st.progress(0)
+                print(usrPass)
+                print(b64Val)
                 res = requests.post(f"http://web:8000/summaries/bulk", headers={"Authorization": "Basic %s" % b64Val},
                                     data=payload, files=files, verify=False)
 
