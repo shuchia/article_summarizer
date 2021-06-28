@@ -102,9 +102,11 @@ with col1:
                     "http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/summaries/generateReports?uid=" + str(taskId))
 
                 time.sleep(1)
+                headers = {"Authorization": "Basic %s" % b64Val,
+                           "Content-Type": "multipart/form-data",
+                           "accept": "application / json"}
 
-                res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId),
-                                   headers={"Authorization": "Basic %s" % b64Val})
+                res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId), headers=headers)
 
                 taskResponse = res.json()
                 processed_urls = taskResponse.get("processed_ids")
