@@ -6,6 +6,23 @@ import pandas as pd
 import SessionState
 
 
+def main():
+    # Register your pages
+    pages = {
+        "Summarize": page_first,
+        "Generate Reports": page_second,
+    }
+
+    st.sidebar.title("Summary Wizard")
+
+    # Widget to select your page, you can choose between radio buttons or a selectbox
+    page = st.sidebar.radio("Go to", tuple(pages.keys()))
+    # page = st.sidebar.selectbox("Select your page", tuple(pages.keys()))
+
+    # Display the selected page
+    pages[page]()
+
+
 def get_report_download_link(report_id, name):
     """Generates a link allowing the html file to be downloaded
         in:  reportName
@@ -54,109 +71,132 @@ TYPES = {
 
 }
 
-st.set_option("deprecation.showfileUploaderEncoding", False)
 
-st.title("Text Summarization")
-col1, col2 = st.beta_columns(2)
-with col1:
-    with st.form(key='form1'):
-        file = st.file_uploader("Upload an excel file", type="xlsx")
-        contentType = st.selectbox("Choose the type", options=content_options)
+def page_first():
+    st.set_option("deprecation.showfileUploaderEncoding", False)
+    st.title("Text Summarization")
+    col1, col2 = st.beta_columns([5, 5])
+    with col1:
+        with st.form(key='form1'):
+            file = st.file_uploader("Upload an excel file", type="xlsx")
+            contentType = st.selectbox("Choose the type", options=content_options)
 
-        username = st.text_input("Enter username")
-        password = st.text_input("Enter password", type="password")
+            username = st.text_input("Enter username")
+            password = st.text_input("Enter password", type="password")
 
-        submitted1 = st.form_submit_button('Generate Summaries')
-        session_state = SessionState.get(name="", submitted1=False)
+            submitted1 = st.form_submit_button('Generate Summaries')
+            session_state = SessionState.get(name="", submitted1=False)
 
-        if submitted1:
-            session_state.submitted1 = True
-        if session_state.submitted1:
-            usrPass = username + ":" + password
-            b64Val = base64.b64encode(usrPass.encode()).decode()
-            if file is not None and contentType is not None:
-                files = {"file": (file.name, file.getvalue(), file.type)}
-                # print(file.getvalue())
-                df = pd.read_excel(file.read(), index_col=None, header=None)
-                df1 = df.iloc[1:]
-                total = len(df1)
-                print(total)
-                displayed = 0
-                displayed_urls = []
-                model = TYPES[contentType]
-                headers = {'Content-type': 'multipart/form-data'}
-                payload = {"model_name": model}
-                st.write("Generating summaries...")
-                my_bar = st.progress(0)
-                print(usrPass)
-                print(b64Val)
-                headers = {"Authorization": "Basic %s" % b64Val}
-                res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files,
-                                    headers=headers, verify=False)
+            if submitted1:
+                session_state.submitted1 = True
+            if session_state.submitted1:
+                usrPass = username + ":" + password
+                b64Val = base64.b64encode(usrPass.encode()).decode()
+                if file is not None and contentType is not None:
+                    files = {"file": (file.name, file.getvalue(), file.type)}
+                    # print(file.getvalue())
+                    df = pd.read_excel(file.read(), index_col=None, header=None)
+                    df1 = df.iloc[1:]
+                    total = len(df1)
+                    print(total)
+                    displayed = 0
+                    displayed_urls = []
+                    model = TYPES[contentType]
+                    headers = {'Content-type': 'multipart/form-data'}
+                    payload = {"model_name": model}
+                    st.write("Generating summaries...")
+                    my_bar = st.progress(0)
+                    print(usrPass)
+                    print(b64Val)
+                    headers = {"Authorization": "Basic %s" % b64Val}
+                    res = requests.post(f"http://web:8000/summaries/bulk", data=payload, files=files,
+                                        headers=headers, verify=False)
 
-                task = res.json()
-                print(task)
-                latest_iteration = st.empty()
+                    task = res.json()
+                    print(task)
+                    latest_iteration = st.empty()
 
-                taskId = task.get("uid")
-                st.write("Please use this URL to generate reports...")
-                st.write(
-                    "http://ec2-54-152-94-32.compute-1.amazonaws.com:8002/summaries/generateReports?uid=" + str(taskId))
-
-                time.sleep(1)
-
-                res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId), headers=headers)
-
-                taskResponse = res.json()
-                processed_urls = taskResponse.get("processed_ids")
-
-                while taskResponse.get("status") == "in_progress":
-                    for summaryId in processed_urls.keys():
-                        url = processed_urls[summaryId]
-                        if url not in displayed_urls:
-                            res = requests.get(f"http://web:8000/summaries/{summaryId}",
-                                               headers=headers)
-                            summaryResponse = res.json()
-                            st.write(url)
-                            st.write(summaryResponse.get("summary"))
-                            displayed_urls.append(url)
-                            displayed += 1
-                            my_bar.progress(displayed)
-                            latest_iteration.text("Processed : " + str(displayed) + " summaries")
+                    taskId = task.get("uid")
+                    st.write("Please use this UID to generate reports using the nav menu...")
+                    st.write(str(taskId))
 
                     time.sleep(1)
 
-                    res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId),
-                                       headers=headers)
+                    res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId), headers=headers)
+
                     taskResponse = res.json()
                     processed_urls = taskResponse.get("processed_ids")
-                if taskResponse.get("status") == "Completed":
-                    res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId),
-                                       headers=headers)
-                    processed_reports = res.json()
-                    for reportId in processed_reports.keys():
-                        report_name = processed_reports[reportId]
-                        st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
 
-with col2:
-    with st.form(key='form2'):
-        text_input = st.text_input(label='Enter a URL')
-        contentType = st.selectbox("Choose the type", options=content_options)
-        submitted2 = st.form_submit_button('Summarize')
-        session_state = SessionState.get(name="", submitted2=False)
+                    while taskResponse.get("status") == "in_progress":
+                        for summaryId in processed_urls.keys():
+                            url = processed_urls[summaryId]
+                            if url not in displayed_urls:
+                                res = requests.get(f"http://web:8000/summaries/{summaryId}",
+                                                   headers=headers)
+                                summaryResponse = res.json()
+                                st.write(url)
+                                st.write(summaryResponse.get("summary"))
+                                displayed_urls.append(url)
+                                displayed += 1
+                                my_bar.progress(displayed)
+                                latest_iteration.text("Processed : " + str(displayed) + " summaries")
 
+                        time.sleep(1)
+
+                        res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId),
+                                           headers=headers)
+                        taskResponse = res.json()
+                        processed_urls = taskResponse.get("processed_ids")
+                    if taskResponse.get("status") == "Completed":
+                        res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId),
+                                           headers=headers)
+                        processed_reports = res.json()
+                        for reportId in processed_reports.keys():
+                            report_name = processed_reports[reportId]
+                            st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
+
+    with col2:
+        with st.form(key='form2'):
+            text_input = st.text_input(label='Enter a URL')
+            contentType = st.selectbox("Choose the type", options=content_options)
+            submitted2 = st.form_submit_button('Summarize')
+            session_state = SessionState.get(name="", submitted2=False)
+
+            if submitted2:
+                #     session_state.submitted2 = True
+                # if session_state.submitted2:
+                model = TYPES[contentType]
+                payload = {"url": text_input,
+                           "model_name": model}
+                st.write("Generating summary...")
+
+                res = requests.post(f"http://web:8000/summaries/summary", json=payload)
+                summary_id = res.json().get("id")
+                time.sleep(1)
+                res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}")
+                summaryResponse = res.json()
+                st.write(summaryResponse.get("url"))
+                st.write(summaryResponse.get("summary"))
+
+
+def page_second():
+    st.title("Generate Reports")
+    with st.form(key='generate'):
+        taskId = st.text_input(label='Enter ID')
+        username = st.text_input("Enter username")
+        password = st.text_input("Enter password", type="password")
+        submitted2 = st.form_submit_button('Generate')
         if submitted2:
-            #     session_state.submitted2 = True
-            # if session_state.submitted2:
-            model = TYPES[contentType]
-            payload = {"url": text_input,
-                       "model_name": model}
-            st.write("Generating summary...")
+            usrPass = username + ":" + password
+            b64Val = base64.b64encode(usrPass.encode()).decode()
+            headers = {"Authorization": "Basic %s" % b64Val}
+            res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId),
+                               headers=headers)
+            processed_reports = res.json()
+            for reportId in processed_reports.keys():
+                report_name = processed_reports[reportId]
+                st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
 
-            res = requests.post(f"http://web:8000/summaries/summary", json=payload)
-            summary_id = res.json().get("id")
-            time.sleep(1)
-            res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}")
-            summaryResponse = res.json()
-            st.write(summaryResponse.get("url"))
-            st.write(summaryResponse.get("summary"))
+
+if __name__ == "__main__":
+    main()
