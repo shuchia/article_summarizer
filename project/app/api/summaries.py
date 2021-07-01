@@ -67,7 +67,7 @@ def has_access(credentials: HTTPBasicCredentials = Depends(security), authorizat
         return result.json()
 
 
-def get_current_user_email(authorization: Optional[str] = Header(None)):
+def get_current_user(authorization: Optional[str] = Header(None)):
     PREFIX = 'Basic'
     log.info("get current user " + authorization)
     bearer, _, token = authorization.partition(' ')
@@ -77,6 +77,11 @@ def get_current_user_email(authorization: Optional[str] = Header(None)):
     decoded = base64.b64decode(token).decode("ascii")
     username, _, password = decoded.partition(":")
     user = get_user(fake_users_db, username)
+    return user
+
+
+def get_current_user_email(authorization: Optional[str] = Header(None)):
+    user = get_current_user(authorization)
     return user.email
 
 
@@ -106,12 +111,13 @@ async def create_summary(
         authorization: Optional[str] = Header(None)
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
+    user = get_current_user(authorization)
     email = get_current_user_email(authorization)
     log.info("current user email " + email)
     new_task = Job()
     jobs[new_task.uid] = new_task
     payload = BulkSummaryPayloadSchema(modelName=model_name)
-    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file, email)
+    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file, email, user.full_name)
     return new_task
 
 
