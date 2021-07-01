@@ -77,7 +77,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
                 pass
             finally:
                 pass
-    log.info(send_email(email, str(task.uid)))
+    log.info(await(send_email(email, str(task.uid))))
     task.status = "Completed"
 
 
