@@ -31,6 +31,8 @@ client = boto3.client('ses', region_name=AWS_REGION)
 async def send_email(recipient: str, uuid: str, full_name: str) -> None:
     # Try to send the email.
     print(uuid)
+    template_data='{ "name:"' + full_name + ',"uuid: "' + uuid + '}'
+    print(template_data)
     try:
         # Provide the contents of the email.
         response = client.send_templated_email(
@@ -41,7 +43,7 @@ async def send_email(recipient: str, uuid: str, full_name: str) -> None:
                 ],
             },
             Template='TEMPLATE_NAME',
-            TemplateData='{ "name:"' + full_name + ',"uuid: "' + uuid + '}'
+            TemplateData=template_data
 
             # If you are not using a configuration set, comment or delete the
             # following line
