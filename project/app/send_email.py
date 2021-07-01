@@ -27,17 +27,6 @@ CHARSET = "UTF-8"
 # Create a new SES resource and specify a region.
 client = boto3.client('ses', region_name=AWS_REGION)
 
-client.create_template(
-    Template={
-        'TemplateName': 'REPORTS_TEMPLATE',
-        'SubjectPart': SUBJECT,
-        'TextPart': 'Dear {{name}},\r\nYour reports are ready to be downloaded, '
-                    'please use this {{uuid}} on generate reports menu at http://ml.fipointer.com ',
-        'HtmlPart': '<h1>Dear {{name}},</H1)<p>Your reports are ready to be downloaded, '
-                    'please use this {{uuid}} on generate reports menu at http://ml.fipointer.com </p>'
-    }
-)
-
 
 async def send_email(recipient: str, uuid: str) -> None:
     # Try to send the email.
