@@ -5,6 +5,7 @@ import asyncio
 from typing import Dict
 import logging
 from app.summarypro import SummarizerProcessor
+from app.send_email import send_email
 from fastapi import File, UploadFile
 
 from app.models.tortoise import TextSummary, URLSummary
@@ -72,9 +73,11 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
                 await TextSummary.filter(id=summary_id).update(summary=summary)
                 task.processed_ids[summary_id] = url
             except:
+                log.error("url errored " + url)
                 pass
             finally:
                 pass
+    log.info(send_email(email, str(task.uid)))
     task.status = "Completed"
 
 
