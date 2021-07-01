@@ -42,7 +42,7 @@ async def send_email(recipient: str, uuid: str, full_name: str) -> None:
                     recipient,
                 ],
             },
-            Template='TEMPLATE_NAME',
+            Template='REPORTS_TEMPLATE',
             TemplateData=template_data
 
             # If you are not using a configuration set, comment or delete the
