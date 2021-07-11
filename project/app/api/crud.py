@@ -48,7 +48,7 @@ async def getReport(id: int) -> Union[dict, None]:
 
 
 async def get_reports_for_topic(topic: str) -> Union[dict, None]:
-    report = await Report.filter(id=id).all().filter(topic__icontains=topic).all().values()
+    report = await Report.filter(id=id).all().filter(name__icontains=topic).all().values()
     if report:
         return report[0]
     return None
