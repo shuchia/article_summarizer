@@ -47,7 +47,7 @@ async def generate_summary(summary_id: int, url: str, model_name: str) -> None:
     await URLSummary.filter(id=summary_id).update(summary=summary)
 
 
-async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name:str) -> None:
+async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str) -> None:
     summary_process = SummarizerProcessor(model=modelname)
 
     df = pd.read_excel(file.file.read(), index_col=None, header=0)
@@ -109,6 +109,18 @@ async def generate_report(uid: UUID) -> None:
         report_name = topic_name + date.today().strftime('%Y%m%d')
         report_id = await crud.createReport(report_name, report)
         report_ids[report_id] = report_name + ".html"
+        # with open(report_name + ".html", 'w+') as file1:
+        # file1.write(report)
+    return report_ids
+
+
+async def get_reports(uid: UUID) -> None:
+    report_ids: Dict[int, str] = {}
+    topics = await crud.get_group_of_topics(uid)
+    for topic in topics:
+        report = await crud.get_reports_for_topic(topic)
+
+        report_ids[report["id"]] = report["name"]
         # with open(report_name + ".html", 'w+') as file1:
         # file1.write(report)
     return report_ids

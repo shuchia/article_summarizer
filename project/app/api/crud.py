@@ -8,7 +8,6 @@ from app.models.tortoise import TextSummary, Report, URLSummary
 from uuid import UUID
 
 
-
 async def post(payload: SummaryPayloadSchema) -> int:
     summary = URLSummary(url=payload.url, summary="")
     await summary.save()
@@ -43,6 +42,13 @@ async def get_url_summary(id: int) -> Union[dict, None]:
 
 async def getReport(id: int) -> Union[dict, None]:
     report = await Report.filter(id=id).first().values()
+    if report:
+        return report[0]
+    return None
+
+
+async def get_reports_for_topic(topic: str) -> Union[dict, None]:
+    report = await Report.filter(id=id).all().filter(topic__icontains=topic).all().values()
     if report:
         return report[0]
     return None

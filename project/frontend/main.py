@@ -11,6 +11,7 @@ def main():
     pages = {
         "Summarize": page_first,
         "Generate Reports": page_second,
+        "Retrieve Reports": page_third
     }
 
     st.sidebar.title("Summary Wizard")
@@ -120,40 +121,40 @@ def page_first():
                     st.write("Please use this UID to generate reports using the nav menu...")
                     st.write(str(taskId))
 
-                    time.sleep(1)
-
-                    res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId), headers=headers)
-
-                    taskResponse = res.json()
-                    processed_urls = taskResponse.get("processed_ids")
-
-                    while taskResponse.get("status") == "in_progress":
-                        for summaryId in processed_urls.keys():
-                            url = processed_urls[summaryId]
-                            if url not in displayed_urls:
-                                res = requests.get(f"http://web:8000/summaries/{summaryId}",
-                                                   headers=headers)
-                                summaryResponse = res.json()
-                                st.write(url)
-                                st.write(summaryResponse.get("summary"))
-                                displayed_urls.append(url)
-                                displayed += 1
-                                my_bar.progress(displayed)
-                                latest_iteration.text("Processed : " + str(displayed) + " summaries")
-
-                        time.sleep(1)
-
-                        res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId),
-                                           headers=headers)
-                        taskResponse = res.json()
-                        processed_urls = taskResponse.get("processed_ids")
-                    if taskResponse.get("status") == "Completed":
-                        res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId),
-                                           headers=headers)
-                        processed_reports = res.json()
-                        for reportId in processed_reports.keys():
-                            report_name = processed_reports[reportId]
-                            st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
+                    # time.sleep(1)
+                    #
+                    # res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId), headers=headers)
+                    #
+                    # taskResponse = res.json()
+                    # processed_urls = taskResponse.get("processed_ids")
+                    #
+                    # while taskResponse.get("status") == "in_progress":
+                    #     for summaryId in processed_urls.keys():
+                    #         url = processed_urls[summaryId]
+                    #         if url not in displayed_urls:
+                    #             res = requests.get(f"http://web:8000/summaries/{summaryId}",
+                    #                                headers=headers)
+                    #             summaryResponse = res.json()
+                    #             st.write(url)
+                    #             st.write(summaryResponse.get("summary"))
+                    #             displayed_urls.append(url)
+                    #             displayed += 1
+                    #             my_bar.progress(displayed)
+                    #             latest_iteration.text("Processed : " + str(displayed) + " summaries")
+                    #
+                    #     time.sleep(1)
+                    #
+                    #     res = requests.get(f"http://web:8000/summaries/work/status?uid=" + str(taskId),
+                    #                        headers=headers)
+                    #     taskResponse = res.json()
+                    #     processed_urls = taskResponse.get("processed_ids")
+                    # if taskResponse.get("status") == "Completed":
+                    #     res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId),
+                    #                        headers=headers)
+                    #     processed_reports = res.json()
+                    #     for reportId in processed_reports.keys():
+                    #         report_name = processed_reports[reportId]
+                    #         st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
 
     with col2:
         with st.form(key='form2'):
@@ -191,6 +192,25 @@ def page_second():
             b64Val = base64.b64encode(usrPass.encode()).decode()
             headers = {"Authorization": "Basic %s" % b64Val}
             res = requests.get(f"http://web:8000/summaries/generateReports?uid=" + str(taskId),
+                               headers=headers)
+            processed_reports = res.json()
+            for reportId in processed_reports.keys():
+                report_name = processed_reports[reportId]
+                st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
+
+
+def page_third():
+    st.title("Retrieve Reports")
+    with st.form(key='retrieve'):
+        taskId = st.text_input(label='Enter ID')
+        username = st.text_input("Enter username")
+        password = st.text_input("Enter password", type="password")
+        submitted3 = st.form_submit_button('Retrieve')
+        if submitted3:
+            usrPass = username + ":" + password
+            b64Val = base64.b64encode(usrPass.encode()).decode()
+            headers = {"Authorization": "Basic %s" % b64Val}
+            res = requests.get(f"http://web:8000/summaries/getReports?uid=" + str(taskId),
                                headers=headers)
             processed_reports = res.json()
             for reportId in processed_reports.keys():
