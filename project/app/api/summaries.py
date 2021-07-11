@@ -172,7 +172,7 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
 
 
 @router.get("/getReports", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
-async def get_reports(uid: UUID) -> Dict[int, str]:
+async def get_reports_for_uid(uid: UUID) -> Dict[int, str]:
     return await get_reports(uid)
 
 
