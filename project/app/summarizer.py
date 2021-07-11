@@ -124,3 +124,13 @@ async def get_reports(uid: UUID) -> None:
         # with open(report_name + ".html", 'w+') as file1:
         # file1.write(report)
     return report_ids
+
+
+async def get_reports_for_topic(topic: str) -> None:
+    report_ids: Dict[int, str] = {}
+    reports = await crud.get_reports_for_topic(topic)
+    for report in reports:
+        report_ids[report["id"]] = report["name"]
+        # with open(report_name + ".html", 'w+') as file1:
+        # file1.write(report)
+    return report_ids

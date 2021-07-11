@@ -33,7 +33,7 @@ from app.models.pydantic import (
 )
 
 from app.models.tortoise import SummarySchema, ReportSchema, URLSummarySchema
-from app.summarizer import generate_summary, generate_bulk_summary, generate_report, get_reports
+from app.summarizer import generate_summary, generate_bulk_summary, generate_report, get_reports, get_reports_for_topic
 
 SECRET_KEY = "a9032cb3b87e7ad1d842e1a20fbf22901a2826d359a63ab6a6b6a8a7d1e9c019"
 ALGORITHM = "HS256"
@@ -107,7 +107,7 @@ def read_current_user(username: str = Depends(get_current_user_email)):
 
 @router.post("/bulk", response_model=Job, status_code=202, dependencies=[Depends(has_access)])
 async def create_summary(
-        background_tasks: BackgroundTasks, model_name: str = Form(...), file: UploadFile = File(...),
+        background_tasks: BackgroundTasks, model_name: str = Form(...), length: str = Form(...), file: UploadFile = File(...),
         authorization: Optional[str] = Header(None)
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
@@ -117,7 +117,7 @@ async def create_summary(
     new_task = Job()
     jobs[new_task.uid] = new_task
     payload = BulkSummaryPayloadSchema(modelName=model_name)
-    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file, email, user.full_name)
+    background_tasks.add_task(generate_bulk_summary, new_task, payload.modelName, file, email, user.full_name, length)
     return new_task
 
 
@@ -172,8 +172,8 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
 
 
 @router.get("/getReports", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
-async def get_reports_for_uid(uid: UUID) -> Dict[int, str]:
-    return await get_reports(uid)
+async def get_reports_for_topic(topic: str) -> Dict[int, str]:
+    return await get_reports_for_topic(topic)
 
 
 @router.get("/report/{id}/")
