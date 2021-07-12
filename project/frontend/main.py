@@ -202,7 +202,7 @@ def page_second():
 def page_third():
     st.title("Retrieve Reports")
     with st.form(key='retrieve'):
-        taskId = st.text_input(label='Enter ID')
+        topic = st.text_input(label='Enter Topic')
         username = st.text_input("Enter username")
         password = st.text_input("Enter password", type="password")
         submitted3 = st.form_submit_button('Retrieve')
@@ -210,7 +210,7 @@ def page_third():
             usrPass = username + ":" + password
             b64Val = base64.b64encode(usrPass.encode()).decode()
             headers = {"Authorization": "Basic %s" % b64Val}
-            res = requests.get(f"http://web:8000/summaries/getReports?uid=" + str(taskId),
+            res = requests.get(f"http://web:8000/summaries/getReports?topic=" + str(topic),
                                headers=headers)
             processed_reports = res.json()
             for reportId in processed_reports.keys():
