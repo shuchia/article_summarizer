@@ -13,6 +13,24 @@ nltk.download('punkt')
 log = logging.getLogger(__name__)
 torch_device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+PERCENTAGE = {"short": 10,
+              "medium": 20,
+              "long": 30
+              }
+
+
+def percentage(percent, whole):
+    return (percent * whole) / 100.0
+
+
+def number_of_words(article_text):
+    word_count = len(article_text.split(" "))
+    return word_count
+
+
+def summary_length(number, count):
+    return round(percentage(number, count))
+
 
 def nest_sentences(document):
     nested = []
@@ -94,7 +112,7 @@ class SummarizerProcessor:
 
         self.text = str()
 
-    def generate_summary(self, nested_sentences):
+    def generate_summary(self, nested_sentences, min_length, max_length):
         # logger.info("Inside inference before generate summary")
         # logger.info(self.model.get_input_embeddings())
         summaries = []
@@ -102,7 +120,8 @@ class SummarizerProcessor:
             input_tokenized = self.tokenizer.encode(' '.join(nested), truncation=True, return_tensors='pt')
             input_tokenized = input_tokenized.to(torch_device)
             summary_ids = self.model.to(torch_device).generate(input_tokenized,
-                                                               length_penalty=3.0)
+                                                               length_penalty=3.0, min_length=min_length,
+                                                               max_length=max_length)
             output = [self.tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in
                       summary_ids]
             summaries.append(output)
@@ -128,15 +147,21 @@ class SummarizerProcessor:
 
         return output
 
-    async def inference(self, input_url: str):
+    async def inference(self, input_url: str, length: str):
         """
         Method to perform the inference
+        :param length:
         :param input_url: Input url for the inference
 
         :return: correct category and confidence for that category
         """
         # log.info(input_url)
+
         self.text = preprocess(input_url)
+        word_count = number_of_words(self.text)
+        min_length_percentage = PERCENTAGE[length]
+        min_length = summary_length(word_count, min_length_percentage)
+        max_length = summary_length(word_count, 40)
         if self.modelName == "google/pegasus-newsroom":
             batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
             translated = self.model.generate(**batch)
@@ -144,7 +169,7 @@ class SummarizerProcessor:
             # log.info(tgt_text)
         elif self.modelName == "facebook/bart-large-cnn":
             nested = nest_sentences(self.text)
-            summarized_text = self.generate_summary(nested)
+            summarized_text = self.generate_summary(nested, min_length, max_length)
             nested_summ = nest_sentences(' '.join(summarized_text))
             tgt_text_list = self.generate_summary(nested_summ)
             tgt_text = tgt_text_list[0]

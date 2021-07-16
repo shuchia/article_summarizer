@@ -47,7 +47,7 @@ async def generate_summary(summary_id: int, url: str, model_name: str) -> None:
     await URLSummary.filter(id=summary_id).update(summary=summary)
 
 
-async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str) -> None:
+async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str, length: str) -> None:
     summary_process = SummarizerProcessor(model=modelname)
 
     df = pd.read_excel(file.file.read(), index_col=None, header=0)
@@ -66,7 +66,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
             try:
                 summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
-                summary = await summary_process.inference(input_url=url)
+                summary = await summary_process.inference(input_url=url, length=length)
 
                 await asyncio.sleep(1)
 
