@@ -72,7 +72,7 @@ TYPES = {
 
 }
 
-length_options = ['low', 'medium', 'high']
+length_options = ['short', 'medium', 'long']
 
 
 def page_first():
