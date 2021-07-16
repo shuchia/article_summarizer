@@ -72,6 +72,8 @@ TYPES = {
 
 }
 
+length_options = ['low', 'medium', 'high']
+
 
 def page_first():
     st.set_option("deprecation.showfileUploaderEncoding", False)
@@ -81,6 +83,7 @@ def page_first():
         with st.form(key='form1'):
             file = st.file_uploader("Upload an excel file", type="xlsx")
             contentType = st.selectbox("Choose the type", options=content_options)
+            length = st.select_slider("Choose  length of the summary", options=length_options)
 
             username = st.text_input("Enter username")
             password = st.text_input("Enter password", type="password")
@@ -104,7 +107,7 @@ def page_first():
                     displayed_urls = []
                     model = TYPES[contentType]
                     headers = {'Content-type': 'multipart/form-data'}
-                    payload = {"model_name": model}
+                    payload = {"model_name": model, "length": length}
                     st.write("Generating summaries...")
                     my_bar = st.progress(0)
                     print(usrPass)
@@ -160,6 +163,7 @@ def page_first():
         with st.form(key='form2'):
             text_input = st.text_input(label='Enter a URL')
             contentType = st.selectbox("Choose the type", options=content_options)
+            length = st.select_slider("Choose  length of the summary", options=length_options)
             submitted2 = st.form_submit_button('Summarize')
             session_state = SessionState.get(name="", submitted2=False)
 
@@ -168,7 +172,8 @@ def page_first():
                 # if session_state.submitted2:
                 model = TYPES[contentType]
                 payload = {"url": text_input,
-                           "model_name": model}
+                           "model_name": model,
+                           "length": length}
                 st.write("Generating summary...")
 
                 res = requests.post(f"http://web:8000/summaries/summary", json=payload)
