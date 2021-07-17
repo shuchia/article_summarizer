@@ -2,6 +2,7 @@
 
 
 import asyncio
+import sys
 from typing import Dict
 import logging
 from app.summarypro import SummarizerProcessor
@@ -37,17 +38,20 @@ def isNaN(string):
 
 async def generate_summary(summary_id: int, url: str, model_name: str, length: str) -> None:
     summary_process = SummarizerProcessor(model=model_name)
+    try:
+        summary = await summary_process.inference(
+            input_url=url, length=length
+        )
 
-    summary = await summary_process.inference(
-        input_url=url, length = length
-    )
+        await asyncio.sleep(1)
 
-    await asyncio.sleep(1)
-
-    await URLSummary.filter(id=summary_id).update(summary=summary)
+        await URLSummary.filter(id=summary_id).update(summary=summary)
+    except:
+        log.error("url errored " + url + sys.exc_info()[0])
 
 
-async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str, length: str) -> None:
+async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str,
+                                length: str) -> None:
     summary_process = SummarizerProcessor(model=modelname)
 
     df = pd.read_excel(file.file.read(), index_col=None, header=0)
@@ -73,7 +77,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
                 await TextSummary.filter(id=summary_id).update(summary=summary)
                 task.processed_ids[summary_id] = url
             except:
-                log.error("url errored " + url)
+                log.error("url errored " + url + sys.exc_info()[0])
                 pass
             finally:
                 pass
