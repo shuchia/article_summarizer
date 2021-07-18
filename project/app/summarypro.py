@@ -3,6 +3,7 @@ from transformers import PegasusForConditionalGeneration, PegasusTokenizer, Pega
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 from transformers import BartTokenizer, BartForConditionalGeneration, BartConfig
 import nltk
+import sys
 
 import bs4 as bs  # beautifulsource4
 import urllib.request
@@ -57,24 +58,29 @@ def preprocess(url):
     opener = urllib.request.URLopener()
     opener.addheader('User-Agent', 'Mozilla/5.0')
 
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    scraped_data = urllib.request.urlopen(req, timeout=20)
+    try:
 
-    article = scraped_data.read()
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        scraped_data = urllib.request.urlopen(req, timeout=20)
 
-    parsed_article = bs.BeautifulSoup(article, 'lxml')
-    parsed_article = bs.BeautifulSoup(article, 'lxml')
+        article = scraped_data.read()
 
-    paragraphs = parsed_article.find_all('p')
+        # parsed_article = bs.BeautifulSoup(article, 'lxml')
+        parsed_article = bs.BeautifulSoup(article, 'lxml')
 
-    article_text = ""
+        paragraphs = parsed_article.find_all('p')
 
-    for p in paragraphs:
-        article_text += ' ' + p.text
-    formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
-    formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
-    formatted_article_text = formatted_article_text.strip()
-    return formatted_article_text
+        article_text = ""
+
+        for p in paragraphs:
+            article_text += ' ' + p.text
+        formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
+        formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
+        formatted_article_text = formatted_article_text.strip()
+
+    except:
+        log.error("url errored " + url + sys.exc_info()[0])
+        return formatted_article_text
 
 
 class SummarizerProcessor:
