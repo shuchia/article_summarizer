@@ -74,7 +74,7 @@ def preprocess(url):
         formatted_article_text = formatted_article_text.strip()
 
     except:
-        log.error("url errored " + url + str(sys.exc_info()[0]))
+        log.exception("url errored " + url)
         return formatted_article_text
 
 

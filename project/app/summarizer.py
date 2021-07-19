@@ -47,7 +47,7 @@ async def generate_summary(summary_id: int, url: str, model_name: str, length: s
 
         await URLSummary.filter(id=summary_id).update(summary=summary)
     except:
-        log.error("url errored " + url + str(sys.exc_info()[0]))
+        log.exception("url errored " + url)
 
 
 async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str,
@@ -77,7 +77,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
                 await TextSummary.filter(id=summary_id).update(summary=summary)
                 task.processed_ids[summary_id] = url
             except:
-                log.error("url errored " + url + str(sys.exc_info()[0]))
+                log.exception("url errored " + url)
                 pass
             finally:
                 pass
