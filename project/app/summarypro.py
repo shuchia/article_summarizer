@@ -6,7 +6,7 @@ import nltk
 import sys
 
 import bs4 as bs  # beautifulsource4
-import urllib.request
+from urllib.request import Request, urlopen
 import re
 import logging
 
@@ -55,8 +55,8 @@ def nest_sentences(document):
 def preprocess(url):
     try:
 
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        scraped_data = urllib.request.urlopen(req, timeout=20)
+        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        scraped_data = urlopen(req, timeout=20)
 
         article = scraped_data.read()
 
