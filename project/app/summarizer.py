@@ -40,13 +40,12 @@ async def generate_summary(summary_id: int, url: str, model_name: str, length: s
     summary_process = SummarizerProcessor(model=model_name)
 
     summary = await summary_process.inference(
-            input_url=url, length=length
-        )
+        input_url=url, length=length
+    )
 
     await asyncio.sleep(1)
 
     await URLSummary.filter(id=summary_id).update(summary=summary)
-
 
 
 async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str,

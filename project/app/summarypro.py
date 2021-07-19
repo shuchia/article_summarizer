@@ -54,29 +54,25 @@ def nest_sentences(document):
 
 
 def preprocess(url):
-    try:
+    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    scraped_data = urlopen(req, timeout=200)
 
-        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        scraped_data = urlopen(req, timeout=200)
+    article = scraped_data.read()
 
-        article = scraped_data.read()
+    parsed_article = bs.BeautifulSoup(article, 'lxml')
+    parsed_article = bs.BeautifulSoup(article, 'lxml')
 
-        parsed_article = bs.BeautifulSoup(article, 'lxml')
-        parsed_article = bs.BeautifulSoup(article, 'lxml')
+    paragraphs = parsed_article.find_all('p')
 
-        paragraphs = parsed_article.find_all('p')
+    article_text = ""
 
-        article_text = ""
+    for p in paragraphs:
+        article_text += ' ' + p.text
+    formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
+    formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
+    formatted_article_text = formatted_article_text.strip()
 
-        for p in paragraphs:
-            article_text += ' ' + p.text
-        formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
-        formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
-        formatted_article_text = formatted_article_text.strip()
-
-    except Exception as error:
-        log.exception(error)
-        return formatted_article_text
+    return formatted_article_text
 
 
 class SummarizerProcessor:
