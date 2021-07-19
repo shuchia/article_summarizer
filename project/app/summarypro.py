@@ -25,6 +25,7 @@ def percentage(percent, whole):
 
 
 def number_of_words(article_text):
+    log(article_text)
     word_count = len(article_text.split(" "))
     return word_count
 
@@ -56,11 +57,11 @@ def preprocess(url):
     try:
 
         req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        scraped_data = urlopen(req, timeout=20)
+        scraped_data = urlopen(req, timeout=200)
 
         article = scraped_data.read()
 
-        # parsed_article = bs.BeautifulSoup(article, 'lxml')
+        parsed_article = bs.BeautifulSoup(article, 'lxml')
         parsed_article = bs.BeautifulSoup(article, 'lxml')
 
         paragraphs = parsed_article.find_all('p')
