@@ -74,8 +74,8 @@ def preprocess(url):
         formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
         formatted_article_text = formatted_article_text.strip()
 
-    except:
-        log.exception("url errored " + url)
+    except Exception as error:
+        log.exception(error)
         return formatted_article_text
 
 
