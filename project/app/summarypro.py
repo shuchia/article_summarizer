@@ -160,6 +160,7 @@ class SummarizerProcessor:
         # log.info(input_url)
 
         self.text = preprocess(input_url)
+        log.info(self.text)
         word_count = number_of_words(self.text)
         min_length_percentage = PERCENTAGE[length]
         min_length = summary_length(word_count, min_length_percentage)
