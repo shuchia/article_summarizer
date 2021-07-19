@@ -53,11 +53,6 @@ def nest_sentences(document):
 
 
 def preprocess(url):
-    headers = {
-        'User-Agent': 'Mozilla/5.0'}
-    opener = urllib.request.URLopener()
-    opener.addheader('User-Agent', 'Mozilla/5.0')
-
     try:
 
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -177,7 +172,7 @@ class SummarizerProcessor:
             nested = nest_sentences(self.text)
             summarized_text = self.generate_summary(nested, min_length, max_length)
             nested_summ = nest_sentences(' '.join(summarized_text))
-            tgt_text_list = self.generate_summary(nested_summ,min_length, max_length)
+            tgt_text_list = self.generate_summary(nested_summ, min_length, max_length)
             tgt_text = tgt_text_list[0]
             # tgt_text = self.generate_simple_summary(self.text)
         return tgt_text
