@@ -38,16 +38,15 @@ def isNaN(string):
 
 async def generate_summary(summary_id: int, url: str, model_name: str, length: str) -> None:
     summary_process = SummarizerProcessor(model=model_name)
-    try:
-        summary = await summary_process.inference(
+
+    summary = await summary_process.inference(
             input_url=url, length=length
         )
 
-        await asyncio.sleep(1)
+    await asyncio.sleep(1)
 
-        await URLSummary.filter(id=summary_id).update(summary=summary)
-    except:
-        log.exception("url errored " + url)
+    await URLSummary.filter(id=summary_id).update(summary=summary)
+
 
 
 async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str,
