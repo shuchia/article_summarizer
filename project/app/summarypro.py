@@ -25,7 +25,7 @@ def percentage(percent, whole):
 
 
 def number_of_words(article_text):
-    log(article_text)
+    log.info(article_text)
     word_count = len(article_text.split(" "))
     return word_count
 
