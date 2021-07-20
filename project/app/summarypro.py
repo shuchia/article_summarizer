@@ -25,7 +25,7 @@ def percentage(percent, whole):
 
 
 def number_of_words(article_text):
-    log.info(article_text)
+    # log.info(article_text)
     word_count = len(article_text.split(" "))
     return word_count
 
@@ -156,7 +156,7 @@ class SummarizerProcessor:
         # log.info(input_url)
 
         self.text = preprocess(input_url)
-        log.info(self.text)
+        #log.info(self.text)
         word_count = number_of_words(self.text)
         min_length_percentage = PERCENTAGE[length]
         min_length = summary_length(word_count, min_length_percentage)
