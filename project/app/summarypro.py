@@ -13,7 +13,7 @@ import logging
 nltk.download('punkt')
 log = logging.getLogger(__name__)
 torch_device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+log.info(torch_device)
 PERCENTAGE = {"short": 10,
               "medium": 20,
               "long": 30
