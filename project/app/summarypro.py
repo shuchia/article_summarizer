@@ -12,8 +12,7 @@ import logging
 
 nltk.download('punkt')
 log = logging.getLogger(__name__)
-torch_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-log.info(torch_device)
+
 PERCENTAGE = {"short": 10,
               "medium": 20,
               "long": 30
@@ -78,6 +77,8 @@ def preprocess(url):
 class SummarizerProcessor:
     def __init__(self, model: str = None):
         log.info(model)
+        torch_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        log.info(torch_device)
         if model is None:
             model = "t5"
         self.modelName = model
