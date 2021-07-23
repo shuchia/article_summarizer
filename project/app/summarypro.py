@@ -110,7 +110,7 @@ class SummarizerProcessor:
 
         self.text = str()
 
-    def generate_summary(self, nested_sentences, min_length, max_length):
+    def generate_summary(self, nested_sentences, max_length):
         # logger.info("Inside inference before generate summary")
         # logger.info(self.model.get_input_embeddings())
         summaries = []
@@ -118,7 +118,7 @@ class SummarizerProcessor:
             input_tokenized = self.tokenizer.encode(' '.join(nested), truncation=True, return_tensors='pt')
             input_tokenized = input_tokenized.to(torch_device)
             summary_ids = self.model.to(torch_device).generate(input_tokenized,
-                                                               length_penalty=3.0, min_length=min_length,
+                                                               length_penalty=3.0,
                                                                max_length=max_length)
             output = [self.tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in
                       summary_ids]
@@ -156,11 +156,11 @@ class SummarizerProcessor:
         # log.info(input_url)
 
         self.text = preprocess(input_url)
-        #log.info(self.text)
-        word_count = number_of_words(self.text)
-        min_length_percentage = PERCENTAGE[length]
-        min_length = summary_length(word_count, min_length_percentage)
-        max_length = summary_length(word_count, 40)
+        # log.info(self.text)
+        # word_count = number_of_words(self.text)
+        length_of_summary = PERCENTAGE[length]
+        # min_length = summary_length(word_count, min_length_percentage)
+        max_length = 1000
         if self.modelName == "google/pegasus-newsroom":
             batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
             translated = self.model.generate(**batch)
@@ -168,9 +168,16 @@ class SummarizerProcessor:
             # log.info(tgt_text)
         elif self.modelName == "facebook/bart-large-cnn":
             nested = nest_sentences(self.text)
-            summarized_text = self.generate_summary(nested, min_length, max_length)
-            nested_summ = nest_sentences(' '.join(summarized_text))
-            tgt_text_list = self.generate_summary(nested_summ, min_length, max_length)
-            tgt_text = tgt_text_list[0]
+            summarized_text = self.generate_summary(nested, max_length)
+            list_length = len(summarized_text)
+            number_items = summary_length(list_length, length_of_summary)
+
+            # nested_summ = nest_sentences(' '.join(summarized_text))
+            # tgt_text_list = self.generate_summary(nested_summ,  max_length)
+            index = 0
+            tgt_text = ""
+            while index < number_items:
+                tgt_text.append(summarized_text[index])
+                index += 1
             # tgt_text = self.generate_simple_summary(self.text)
         return tgt_text
