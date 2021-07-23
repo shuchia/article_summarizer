@@ -114,6 +114,7 @@ class SummarizerProcessor:
     def generate_summary(self, nested_sentences, max_length):
         # logger.info("Inside inference before generate summary")
         # logger.info(self.model.get_input_embeddings())
+        torch_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         summaries = []
         for nested in nested_sentences:
             input_tokenized = self.tokenizer.encode(' '.join(nested), truncation=True, return_tensors='pt')
