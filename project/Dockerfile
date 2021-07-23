@@ -22,7 +22,7 @@ RUN apt-get update \
 RUN pip3 install --upgrade pip3
 COPY ./requirements.txt .
 COPY ./requirements-dev.txt .
-RUN pip install -r requirements-dev.txt
+RUN pip3  install -r requirements-dev.txt
 
 # add app
 COPY . .
