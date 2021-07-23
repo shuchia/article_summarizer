@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.2-base
+FROM pure/python:3.8-cuda10.2-cudnn7-runtime
 CMD nvidia-smi
 
 ENV TZ=US/Eastern
@@ -13,16 +13,14 @@ ENV PYTHONUNBUFFERED 1
 
 # install system dependencies
 RUN apt-get update \
-  && apt-get -y install python3.8 python3-pip python3.8-dev netcat gcc postgresql \
+  && apt-get -y install netcat gcc postgresql \
   && apt-get clean
 
-
-
 # install python dependencies
-#RUN pip3 install --upgrade pip3
+RUN pip install --upgrade pip
 COPY ./requirements.txt .
 COPY ./requirements-dev.txt .
-RUN pip3  install -r requirements-dev.txt
+RUN pip  install -r requirements-dev.txt
 
 # add app
 COPY . .
