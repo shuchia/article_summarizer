@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED 1
 
 # install system dependencies
 RUN apt-get update \
-  && apt-get -y install python3 netcat gcc postgresql \
+  && apt-get -y install python3 python3-pip netcat gcc postgresql \
   && apt-get clean
 
 
