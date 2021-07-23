@@ -19,7 +19,7 @@ RUN apt-get update \
 
 
 # install python dependencies
-RUN pip install --upgrade pip
+RUN pip3 install --upgrade pip3
 COPY ./requirements.txt .
 COPY ./requirements-dev.txt .
 RUN pip install -r requirements-dev.txt
