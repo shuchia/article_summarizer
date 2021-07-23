@@ -177,7 +177,7 @@ class SummarizerProcessor:
             index = 0
             tgt_text = ""
             while index < number_items:
-                tgt_text.append(summarized_text[index])
+                tgt_text += summarized_text[index]
                 index += 1
             # tgt_text = self.generate_simple_summary(self.text)
         return tgt_text
