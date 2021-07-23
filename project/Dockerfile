@@ -1,7 +1,7 @@
 FROM nvidia/cuda:10.2-base
 CMD nvidia-smi
 
-ENV TZ=US/Boston
+ENV TZ=US/Eastern
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # set working directory
