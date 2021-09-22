@@ -9,8 +9,8 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              count: all
-              capabilities: [gpu, utility]
+              device_ids: ['0']
+              capabilities: [gpu]
     volumes:
       - ./project:/usr/src/app
     ports:
@@ -44,4 +44,4 @@ services:
     volumes:
         - ./project:/usr/src/app
     environment:
-      PYTHONUNBUFFERED: '1'
+      PYTHONUNBUFFERED: '1'        

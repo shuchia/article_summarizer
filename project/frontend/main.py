@@ -78,7 +78,7 @@ length_options = ['short', 'medium', 'long']
 def page_first():
     st.set_option("deprecation.showfileUploaderEncoding", False)
     st.title("Text Summarization")
-    col1, col2 = st.beta_columns([5, 5])
+    col1, col2 = st.columns([5, 5])
     with col1:
         with st.form(key='form1'):
             file = st.file_uploader("Upload an excel file", type="xlsx")
@@ -178,10 +178,11 @@ def page_first():
 
                 res = requests.post(f"http://web:8000/summaries/summary", json=payload)
                 summary_id = res.json().get("id")
-                time.sleep(1)
-                res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}")
+                time.sleep(10)
+                res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}/")
                 summaryResponse = res.json()
-                st.write(summaryResponse.get("url"))
+                #st.write(summaryResponse.get("url"))
+                print(summaryResponse)
                 st.write(summaryResponse.get("summary"))
 
 

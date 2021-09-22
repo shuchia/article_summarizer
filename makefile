@@ -43,7 +43,7 @@ rebuild:  ## Rebuild docker images
 	@docker-compose up -d --build
 
 rebuild-db:  ## Rebuild db in docker image
-	@docker-compose exec web python app/db.py
+	@docker-compose exec web python3 app/db.py
 
 start:  # Start docker containers
 	@docker-compose up -d

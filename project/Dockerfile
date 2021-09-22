@@ -1,5 +1,5 @@
-FROM pure/python:3.8-cuda10.2-cudnn7-runtime
-CMD nvidia-smi
+FROM nvidia/cuda:11.4.2-runtime-ubuntu20.04 
+#CMD nvidia-smi
 
 ENV TZ=US/Eastern
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -13,17 +13,21 @@ ENV PYTHONUNBUFFERED 1
 
 # install system dependencies
 RUN apt-get update \
-  && apt-get -y install netcat gcc postgresql \
+  && apt-get -y install netcat gcc postgresql python3 python3-pip \
   && apt-get clean
 
 # install python dependencies
+
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
 COPY ./requirements-dev.txt .
 RUN pip  install -r requirements-dev.txt
-
+#RUN pip install torch torchvision
 # add app
 COPY . .
 
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+#ENTRYPOINT ["sh"]
+#ENTRYPOINT ["tail"]
+#CMD ["-f","/dev/null"]
