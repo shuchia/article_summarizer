@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 asyncpg
 bs4
 lxml
@@ -8,15 +8,6 @@ requests
 tortoise-orm
 uvicorn
 torch
-=======
-asyncpg==0.20.1
-fastapi==0.55.1
-gunicorn==20.0.4
-newspaper3k==0.2.8
-requests==2.23.0
-tortoise-orm==0.16.12
-uvicorn==0.11.5
->>>>>>> 42a9104b8aacfb5528e0a539a28b6a7bcca171fe
 transformers
 sentencepiece
 pandas
