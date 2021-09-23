@@ -126,10 +126,11 @@ async def create_summary(
         payload: SummaryPayloadSchema, background_tasks: BackgroundTasks
 ) -> SummaryResponseSchema:
     summary_id = await crud.post(payload)
+    new_task = Job()
+    background_tasks.add_task(generate_summary, new_task, summary_id, payload.url, payload.model_name, payload.length)
 
-    background_tasks.add_task(generate_summary, summary_id, payload.url, payload.model_name, payload.length)
-
-    response_object = {"id": summary_id, "url": payload.url, "model_name": payload.model_name, "length": payload.length}
+    response_object = {"id": summary_id, "url": payload.url, "model_name": payload.model_name, "length": payload.length,
+                       "status": new_task.status}
     return response_object
 
 

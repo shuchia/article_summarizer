@@ -36,7 +36,7 @@ def isNaN(string):
     return string != string or string == 'nan'
 
 
-async def generate_summary(summary_id: int, url: str, model_name: str, length: str) -> None:
+async def generate_summary(task: Job, summary_id: int, url: str, model_name: str, length: str) -> None:
     summary_process = SummarizerProcessor(model=model_name)
 
     summary = await summary_process.inference(
@@ -46,6 +46,7 @@ async def generate_summary(summary_id: int, url: str, model_name: str, length: s
     await asyncio.sleep(1)
 
     await URLSummary.filter(id=summary_id).update(summary=summary)
+    task.status = "Completed"
 
 
 async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, email: str, full_name: str,
