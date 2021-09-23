@@ -1,7 +1,7 @@
 # Article Summarizer
-> Article Summarizer is an asynchronous RESTful API built with Python and FastAPI. It utilizes Newspaper3k to provide real-time text summarization from a given URL. 
+> Article Summarizer is an asynchronous RESTful API built with Python and FastAPI. It utilizes Hugging Face transformers library to provide real-time text summarization from a given URL. 
+>It also takes an excel file as an input with four columns ( Topic,Category,MM?YY,URL ) and generates reports with summaries of the URLs
 
-![CI/CD](https://github.com/sbathgate/fastapi-tdd-docker/workflows/CI%20CD/badge.svg?branch=master)
 
 ## Development setup
 
@@ -13,34 +13,28 @@ First, install the system dependencies:
 
 Second, download the source code
 ```sh
-git clone https://github.com/sbathgate/fastapi-tdd-docker.git
-cd fastapi-tdd-docker/
+https://github.com/shuchia/article_summarizer
+cd article_summarizer/
 ```
 
 Third, build the project image. 
 ```sh
-make build
+make rebuild
 ```
 
 ## Technologies
 * Python 3.8
 * FastAPI 
 * PostgreSQL
-* Heroku
 * Gunicorn 
 * Tortoise-ORM 
-* Newspaper3k
-* Pytest
-* Black 
-* Flake8
-* iSort
+* HuggingFace transformers
+
 
 ## File Structure
-### Within the download you'll find the following directories and files:
+### Within the download you'll find some of the below listed directories and files:
 ```
 ├── .github
-│   └── workflows
-│       └── main.yml
 ├── .gitignore
 ├── README.md
 ├── docker-compose.yml
@@ -93,7 +87,7 @@ This project wouldn't have been possible without the excellent [Test-Driven Deve
 
 ## Contributing
 
-1. Fork it (<https://github.com/sbathgate/article-summarizer/fork>)
+1. Fork it (<https://github.com/shuchia/article-summarizer/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
