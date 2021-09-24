@@ -24,11 +24,11 @@ class SummaryPayloadSchema(BaseModel):
     url: AnyHttpUrl
     model_name: str
     length: str
-    status: str
 
 
 class SummaryResponseSchema(SummaryPayloadSchema):
     id: int
+    status: str
 
 
 class SummaryUpdatePayloadSchema(SummaryPayloadSchema):
