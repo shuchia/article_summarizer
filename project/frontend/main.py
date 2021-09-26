@@ -177,15 +177,22 @@ def page_first():
                 st.write("Generating summary...")
 
                 res = requests.post(f"http://web:8000/summaries/summary", json=payload)
+                #time.sleep(10)
                 summary_id = res.json().get("id")
+                #print (summary_id)
                 status = res.json().get("status")
-                time.sleep(1)
-                if status == "Completed":
-                    res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}/")
-                    summaryResponse = res.json()
-                    st.write(summaryResponse.get("url"))
-                    print(summaryResponse)
-                    st.write(summaryResponse.get("summary"))
+                #print(status)
+                taskId = res.json().get("task_id")
+                while  status == "in_progress":
+                    res = requests.get(f"http://web:8000/summaries/task/status?uid=" + str(taskId))
+                    taskResponse = res.json()
+                    if taskResponse.get("status") == "Completed":    
+                        res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}/")
+                        summaryResponse = res.json()
+                        st.write(summaryResponse.get("url"))
+                        #print(summaryResponse)
+                        st.write(summaryResponse.get("summary"))
+                        break
 
 
 def page_second():
