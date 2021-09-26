@@ -175,7 +175,8 @@ class SummarizerProcessor:
             log.info(input_url)
             log.info(list_length)
             number_items = summary_length(list_length, length_of_summary)
-
+            if number_items == 0:
+                number_items = 1
             # nested_summ = nest_sentences(' '.join(summarized_text))
             # tgt_text_list = self.generate_summary(nested_summ,  max_length)
             index = 0
