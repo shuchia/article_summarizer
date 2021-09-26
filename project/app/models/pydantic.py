@@ -29,6 +29,7 @@ class SummaryPayloadSchema(BaseModel):
 class SummaryResponseSchema(SummaryPayloadSchema):
     id: int
     status: str
+    task_id: UUID = Field(default_factory=uuid4)
 
 
 class SummaryUpdatePayloadSchema(SummaryPayloadSchema):
