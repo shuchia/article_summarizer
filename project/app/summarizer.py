@@ -46,6 +46,7 @@ async def generate_summary(task: Job, summary_id: int, url: str, model_name: str
     await asyncio.sleep(1)
 
     await URLSummary.filter(id=summary_id).update(summary=summary)
+    task.processed_ids[summary_id] = url
     task.status = "Completed"
 
 
