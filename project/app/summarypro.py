@@ -172,7 +172,8 @@ class SummarizerProcessor:
             nested = nest_sentences(self.text)
             summarized_text = self.generate_summary(nested, max_length)
             list_length = len(summarized_text)
-            log.info(list_length+input_url)
+            log.info(input_url)
+            log.info(list_length)
             number_items = summary_length(list_length, length_of_summary)
 
             # nested_summ = nest_sentences(' '.join(summarized_text))
