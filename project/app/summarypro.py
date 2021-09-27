@@ -13,9 +13,9 @@ import logging
 nltk.download('punkt')
 log = logging.getLogger(__name__)
 
-PERCENTAGE = {"short": 10,
-              "medium": 20,
-              "long": 30
+PERCENTAGE = {"short": 30,
+              "medium": 60,
+              "long": 90
               }
 
 
