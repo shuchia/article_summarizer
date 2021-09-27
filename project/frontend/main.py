@@ -7,6 +7,17 @@ import SessionState
 
 
 def main():
+    st.set_page_config(
+        page_title="FiPointer Text Summary",
+        page_icon="🧊",
+        layout="wide",
+        initial_sidebar_state="expanded",
+        menu_items={
+            'Get Help': 'https://www.extremelycoolapp.com/help',
+            'Report a bug': "https://www.extremelycoolapp.com/bug",
+            'About': "# Text summarization for news articles using machine learning NLP models"
+        }
+    )
     # Register your pages
     pages = {
         "Summarize": page_first,
@@ -177,20 +188,20 @@ def page_first():
                 st.write("Generating summary...")
 
                 res = requests.post(f"http://web:8000/summaries/summary", json=payload)
-                #time.sleep(10)
+                # time.sleep(10)
                 summary_id = res.json().get("id")
-                #print (summary_id)
+                # print (summary_id)
                 status = res.json().get("status")
-                #print(status)
+                # print(status)
                 taskId = res.json().get("task_id")
-                while  status == "in_progress":
+                while status == "in_progress":
                     res = requests.get(f"http://web:8000/summaries/task/status?uid=" + str(taskId))
                     taskResponse = res.json()
-                    if taskResponse.get("status") == "Completed":    
+                    if taskResponse.get("status") == "Completed":
                         res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}/")
                         summaryResponse = res.json()
                         st.write(summaryResponse.get("url"))
-                        #print(summaryResponse)
+                        # print(summaryResponse)
                         st.write(summaryResponse.get("summary"))
                         break
 
