@@ -212,10 +212,7 @@ def page_first():
     with col1:
         with st.form(key='summarize'):
             placeholder = st.empty()
-            text_input = placeholder.text_area('text')
-            click_clear = st.button('Delete text', key=1)
-            if click_clear:
-                text_input = st.text_area('text', value="Paste text")
+            text_input = placeholder.text_area('Enter text to summarize')
             url_input = st.text_input(label='Enter a URL')
             if url_input != '':
                 text_input.empty()
