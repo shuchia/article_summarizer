@@ -249,9 +249,9 @@ def page_first():
     with col2:
         placeholder = st.empty()
         if summaryResponse != '':
-            placeholder.text_input('', value=summaryResponse.get("url"), height="1000")
+            placeholder.text_input('', value=summaryResponse.get("url"), height=None)
             # print(summaryResponse)
-            placeholder.text_area('', value=summaryResponse.get("summary"))
+            placeholder.text_area('', value=summaryResponse.get("summary"), height="1000")
 
 
 def page_third():
