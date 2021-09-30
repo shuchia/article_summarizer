@@ -215,7 +215,8 @@ def page_first():
             text_input = placeholder.text_area('Enter text to summarize')
             url_input = st.text_input(label='Enter a URL')
             if url_input != '':
-                text_input.empty()
+                placeholder.empty()
+
             length = st.select_slider("Choose  length of the summary", options=length_options)
             submitted2 = st.form_submit_button('Summarize')
             if submitted2:
