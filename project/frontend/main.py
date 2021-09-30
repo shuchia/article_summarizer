@@ -208,7 +208,7 @@ def page_second():
 def page_first():
     st.title("Text Summarizer")
     col1, col2 = st.columns([5, 5])
-    summaryResponse=''
+    summaryResponse = ''
     with col1:
         with st.form(key='summarize'):
             placeholder = st.empty()
@@ -242,15 +242,16 @@ def page_first():
                         if taskResponse.get("status") == "Completed":
                             res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}/")
                             summaryResponse = res.json()
-                            #st.write(summaryResponse.get("url"))
+                            # st.write(summaryResponse.get("url"))
                             # print(summaryResponse)
-                            #st.write(summaryResponse.get("summary"))
+                            # st.write(summaryResponse.get("summary"))
                             break
     with col2:
+        placeholder = st.empty()
         if summaryResponse != '':
-            st.write(summaryResponse.get("url"))
+            placeholder.text_input('', value=summaryResponse.get("url"))
             # print(summaryResponse)
-            st.write(summaryResponse.get("summary"))
+            placeholder.text_area('', value=summaryResponse.get("summary"))
 
 
 def page_third():
