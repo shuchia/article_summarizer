@@ -249,7 +249,7 @@ def page_first():
     with col2:
         placeholder = st.empty()
         if summaryResponse != '':
-            placeholder.text_input('', value=summaryResponse.get("url"))
+            placeholder.text_input('', value=summaryResponse.get("url"), height="1000")
             # print(summaryResponse)
             placeholder.text_area('', value=summaryResponse.get("summary"))
 
