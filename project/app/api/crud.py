@@ -14,7 +14,7 @@ async def post(payload: SummaryPayloadSchema) -> int:
     return summary.id
 
 
-async def post(payload: TextSummaryPayloadSchema) -> int:
+async def post_text(payload: TextSummaryPayloadSchema) -> int:
     summary = Summary(url="", summary="", text=payload.text)
     await summary.save()
     return summary.id

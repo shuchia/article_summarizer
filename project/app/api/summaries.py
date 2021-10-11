@@ -141,7 +141,7 @@ async def create_summary(
 async def create_summary(
         payload: TextSummaryPayloadSchema, background_tasks: BackgroundTasks
 ) -> SummaryResponseSchema:
-    summary_id = await crud.post(payload)
+    summary_id = await crud.post_text(payload)
     new_task = Job()
     jobs[new_task.uid] = new_task
     background_tasks.add_task(generate_summary, new_task, summary_id, "", payload.text, payload.model_name, payload.length)
