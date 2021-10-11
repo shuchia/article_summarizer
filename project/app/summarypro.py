@@ -147,9 +147,10 @@ class SummarizerProcessor:
 
         return output
 
-    async def inference(self, input_url: str, text: str, length: str):
+    async def inference(self, input_url: str, input_text: str, length: str):
         """
         Method to perform the inference
+        :param input_text:
         :param text:
         :param length:
         :param input_url: Input url for the inference
@@ -160,7 +161,7 @@ class SummarizerProcessor:
         if input_url != "":
             self.text = preprocess(input_url)
         else:
-            self.text = text
+            self.text = input_text
         # log.info(self.text)
         # word_count = number_of_words(self.text)
         length_of_summary = PERCENTAGE[length]
