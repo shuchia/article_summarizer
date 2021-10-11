@@ -33,7 +33,7 @@ class TextSummaryPayloadSchema(BaseSummarySchema):
     text: str
 
 
-class SummaryResponseSchema(SummaryPayloadSchema):
+class SummaryResponseSchema(BaseSummarySchema):
     id: int
     status: str
     task_id: UUID
