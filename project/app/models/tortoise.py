@@ -38,5 +38,5 @@ class Report(models.Model):
 
 
 SummarySchema = pydantic_model_creator(TextSummary)
-URLSummarySchema = pydantic_model_creator(URLSummary)
+URLSummarySchema = pydantic_model_creator(Summary)
 ReportSchema = pydantic_model_creator(Report)
