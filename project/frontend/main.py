@@ -1,9 +1,10 @@
 import time
 
-import requests, base64
-import streamlit as st
-import pandas as pd
 import SessionState
+import base64
+import pandas as pd
+import requests
+import streamlit as st
 
 
 def main():
@@ -169,41 +170,6 @@ def page_second():
                 #         report_name = processed_reports[reportId]
                 #         st.markdown(get_report_download_link(reportId, report_name), unsafe_allow_html=True)
 
-    with col2:
-        with st.form(key='form2'):
-            text_input = st.text_input(label='Enter a URL')
-            contentType = st.selectbox("Choose the type", options=content_options)
-            length = st.select_slider("Choose  length of the summary", options=length_options)
-            submitted2 = st.form_submit_button('Summarize')
-            session_state = SessionState.get(name="", submitted2=False)
-
-            if submitted2:
-                #     session_state.submitted2 = True
-                # if session_state.submitted2:
-                model = TYPES[contentType]
-                payload = {"url": text_input,
-                           "model_name": model,
-                           "length": length}
-                st.write("Generating summary...")
-
-                res = requests.post(f"http://web:8000/summaries/summary", json=payload)
-                # time.sleep(10)
-                summary_id = res.json().get("id")
-                # print (summary_id)
-                status = res.json().get("status")
-                # print(status)
-                taskId = res.json().get("task_id")
-                while status == "in_progress":
-                    res = requests.get(f"http://web:8000/summaries/task/status?uid=" + str(taskId))
-                    taskResponse = res.json()
-                    if taskResponse.get("status") == "Completed":
-                        res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}/")
-                        summaryResponse = res.json()
-                        st.write(summaryResponse.get("url"))
-                        # print(summaryResponse)
-                        st.write(summaryResponse.get("summary"))
-                        break
-
 
 def page_first():
     st.title("Text Summarizer")
@@ -230,22 +196,30 @@ def page_first():
                     st.write("Generating summary...")
 
                     res = requests.post(f"http://web:8000/summaries/summary", json=payload)
+                elif text_input != '':
+                    payload = {
+                        "text": text_input,
+                        "model_name": model,
+                        "length": length}
+                    st.write("Generating summary...")
+                    res = requests.post(f"http://web:8000/summaries/textsummary", json=payload)
                     # time.sleep(10)
-                    summary_id = res.json().get("id")
-                    # print (summary_id)
-                    status = res.json().get("status")
-                    # print(status)
-                    taskId = res.json().get("task_id")
-                    while status == "in_progress":
-                        res = requests.get(f"http://web:8000/summaries/task/status?uid=" + str(taskId))
-                        taskResponse = res.json()
-                        if taskResponse.get("status") == "Completed":
-                            res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}/")
-                            summaryResponse = res.json()
-                            # st.write(summaryResponse.get("url"))
-                            # print(summaryResponse)
-                            # st.write(summaryResponse.get("summary"))
-                            break
+                summary_id = res.json().get("id")
+                # print (summary_id)
+                status = res.json().get("status")
+                # print(status)
+                taskId = res.json().get("task_id")
+                while status == "in_progress":
+                    time.sleep(2)
+                    res = requests.get(f"http://web:8000/summaries/task/status?uid=" + str(taskId))
+                    taskResponse = res.json()
+                    if taskResponse.get("status") == "Completed":
+                        res = requests.get(f"http://web:8000/summaries/url_summary/{summary_id}/")
+                        summaryResponse = res.json()
+                        # st.write(summaryResponse.get("url"))
+                        # print(summaryResponse)
+                        # st.write(summaryResponse.get("summary"))
+                        break
     with col2:
         placeholder = st.empty()
         if summaryResponse != '':

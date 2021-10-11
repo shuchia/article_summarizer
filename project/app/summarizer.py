@@ -36,11 +36,11 @@ def isNaN(string):
     return string != string or string == 'nan'
 
 
-async def generate_summary(task: Job, summary_id: int, url: str, model_name: str, length: str) -> None:
+async def generate_summary(task: Job, summary_id: int, url: str, text: str, model_name: str, length: str) -> None:
     summary_process = SummarizerProcessor(model=model_name)
 
     summary = await summary_process.inference(
-        input_url=url, length=length
+        input_url=url, input_text=text, length=length
     )
 
     await asyncio.sleep(1)

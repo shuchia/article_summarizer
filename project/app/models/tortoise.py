@@ -5,9 +5,10 @@ from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 
-class URLSummary(models.Model):
+class Summary(models.Model):
     url = fields.TextField()
     summary = fields.TextField()
+    text = fields.TextField()
 
 
 def __str__(self):
@@ -22,6 +23,7 @@ class TextSummary(models.Model):
     category = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
     uid = fields.UUIDField()
+    text = fields.TextField()
 
     def __str__(self):
         return self.url

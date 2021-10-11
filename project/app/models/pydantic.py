@@ -20,10 +20,17 @@ class BulkSummaryPayloadSchema(BaseModel):
         return value
 
 
-class SummaryPayloadSchema(BaseModel):
-    url: AnyHttpUrl
+class BaseSummarySchema(BaseModel):
     model_name: str
     length: str
+
+
+class SummaryPayloadSchema(BaseSummarySchema):
+    url: AnyHttpUrl
+
+
+class TextSummaryPayloadSchema(BaseSummarySchema):
+    text: str
 
 
 class SummaryResponseSchema(SummaryPayloadSchema):
