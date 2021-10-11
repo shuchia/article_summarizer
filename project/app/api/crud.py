@@ -40,7 +40,7 @@ async def get(id: int) -> Union[dict, None]:
 
 
 async def get_url_summary(id: int) -> Union[dict, None]:
-    summary = await URLSummary.filter(id=id).first().values()
+    summary = await Summary.filter(id=id).first().values()
     if summary:
         return summary[0]
     return None

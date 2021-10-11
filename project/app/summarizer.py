@@ -9,7 +9,7 @@ from app.summarypro import SummarizerProcessor
 from app.send_email import send_email
 from fastapi import File, UploadFile
 
-from app.models.tortoise import TextSummary, URLSummary
+from app.models.tortoise import TextSummary, Summary
 from app.models.pydantic import Job
 import pandas as pd
 from app.api import crud
@@ -45,7 +45,7 @@ async def generate_summary(task: Job, summary_id: int, url: str, text: str, mode
 
     await asyncio.sleep(1)
 
-    await URLSummary.filter(id=summary_id).update(summary=summary)
+    await Summary.filter(id=summary_id).update(summary=summary)
     task.processed_ids[summary_id] = url
     task.status = "Completed"
 
