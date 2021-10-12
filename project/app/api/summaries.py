@@ -22,7 +22,6 @@ from app.api import crud
 from app.models.pydantic import (
     SummaryPayloadSchema,
     BulkSummaryPayloadSchema,
-    TextSummaryPayloadSchema,
     SummaryResponseSchema,
     SummaryUpdatePayloadSchema,
     Job,
@@ -130,23 +129,11 @@ async def create_summary(
     summary_id = await crud.post(payload)
     new_task = Job()
     jobs[new_task.uid] = new_task
-    background_tasks.add_task(generate_summary, new_task, summary_id, payload.url, "", payload.model_name, payload.length)
+    background_tasks.add_task(generate_summary, new_task, summary_id, payload.url, payload.text, payload.model_name,
+                              payload.length)
 
-    response_object = {"id": summary_id, "url": payload.url, "text": "", "model_name": payload.model_name, "length": payload.length,
-                       "status": new_task.status, "task_id": new_task.uid}
-    return response_object
-
-
-@router.post("/textsummary", response_model=SummaryResponseSchema, status_code=201)
-async def create_summary(
-        payload: TextSummaryPayloadSchema, background_tasks: BackgroundTasks
-) -> SummaryResponseSchema:
-    summary_id = await crud.post_text(payload)
-    new_task = Job()
-    jobs[new_task.uid] = new_task
-    background_tasks.add_task(generate_summary, new_task, summary_id, "", payload.text, payload.model_name, payload.length)
-
-    response_object = {"id": summary_id, "url": "", "text": payload.text, "model_name": payload.model_name, "length": payload.length,
+    response_object = {"id": summary_id, "url": payload.url, "text": payload.text, "model_name": payload.model_name,
+                       "length": payload.length,
                        "status": new_task.status, "task_id": new_task.uid}
     return response_object
 

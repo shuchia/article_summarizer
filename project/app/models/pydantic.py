@@ -27,9 +27,6 @@ class BaseSummarySchema(BaseModel):
 
 class SummaryPayloadSchema(BaseSummarySchema):
     url: AnyHttpUrl
-
-
-class TextSummaryPayloadSchema(BaseSummarySchema):
     text: str
 
 

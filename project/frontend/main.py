@@ -189,21 +189,14 @@ def page_first():
                 #     session_state.submitted2 = True
                 # if session_state.submitted2:
                 model = "facebook/bart-large-cnn"
-                if url_input != '':
-                    payload = {"url": url_input,
-                               "model_name": model,
-                               "length": length}
-                    st.write("Generating summary...")
+                payload = {"url": url_input,
+                           "text": text_input,
+                           "model_name": model,
+                           "length": length}
+                st.write("Generating summary...")
 
-                    res = requests.post(f"http://web:8000/summaries/summary", json=payload)
-                elif text_input != '':
-                    payload = {
-                        "text": text_input,
-                        "model_name": model,
-                        "length": length}
-                    st.write("Generating summary...")
-                    res = requests.post(f"http://web:8000/summaries/textsummary", json=payload)
-                    # time.sleep(10)
+                res = requests.post(f"http://web:8000/summaries/summary", json=payload)
+
                 summary_id = res.json().get("id")
                 # print (summary_id)
                 status = res.json().get("status")

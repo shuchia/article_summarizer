@@ -3,19 +3,13 @@
 
 from typing import Union, List
 
-from app.models.pydantic import SummaryPayloadSchema, TextSummaryPayloadSchema
+from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary, Report, Summary
 from uuid import UUID
 
 
 async def post(payload: SummaryPayloadSchema) -> int:
-    summary = Summary(url=payload.url, summary="", text="")
-    await summary.save()
-    return summary.id
-
-
-async def post_text(payload: TextSummaryPayloadSchema) -> int:
-    summary = Summary(url="", summary="", text=payload.text)
+    summary = Summary(url=payload.url, summary="", text=payload.text)
     await summary.save()
     return summary.id
 

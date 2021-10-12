@@ -42,11 +42,14 @@ async def generate_summary(task: Job, summary_id: int, url: str, text: str, mode
     summary = await summary_process.inference(
         input_url=url, input_text=text, length=length
     )
-
+    log.info(summary_id)
     await asyncio.sleep(1)
-
+    log.info(summary)
     await Summary.filter(id=summary_id).update(summary=summary)
-    task.processed_ids[summary_id] = url
+    if url != "":
+        task.processed_ids[summary_id] = url
+    elif text != "":
+        task.processed_ids[summary_id] = text
     task.status = "Completed"
 
 
