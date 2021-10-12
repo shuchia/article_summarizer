@@ -37,6 +37,8 @@ class SummaryResponseSchema(BaseSummarySchema):
     id: int
     status: str
     task_id: UUID
+    url: str
+    text: str
 
 
 class SummaryUpdatePayloadSchema(SummaryPayloadSchema):
