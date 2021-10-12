@@ -23,7 +23,6 @@ class TextSummary(models.Model):
     category = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
     uid = fields.UUIDField()
-    text = fields.TextField()
 
     def __str__(self):
         return self.url
