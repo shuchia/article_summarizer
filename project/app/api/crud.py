@@ -2,11 +2,12 @@
 
 
 from typing import Union, List
-
+import logging
 from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary, Report, Summary
 from uuid import UUID
 
+log = logging.getLogger(__name__)
 
 async def post(payload: SummaryPayloadSchema) -> int:
     summary = Summary(url=payload.url, summary="", text=payload.text)
@@ -35,6 +36,7 @@ async def get(id: int) -> Union[dict, None]:
 
 async def get_url_summary(id: int) -> Union[dict, None]:
     summary = await Summary.filter(id=id).first().values()
+    log.info(summary)
     if summary:
         return summary[0]
     return None

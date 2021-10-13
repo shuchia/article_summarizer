@@ -48,7 +48,7 @@ async def generate_summary(task: Job, summary_id: int, url: str, text: str, mode
     try:
         await Summary.filter(id=summary_id).update(summary=summary)
     except:
-        log.exception("summary_id " + summary_id)
+        log.exception("summary_id " + str(summary_id))
     if url != "":
         task.processed_ids[summary_id] = url
     elif text != "":
