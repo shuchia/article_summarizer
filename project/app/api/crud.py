@@ -30,7 +30,7 @@ async def createReport(name: str, content: str) -> int:
 async def get(id: int) -> Union[dict, None]:
     summary = await TextSummary.filter(id=id).first().values()
     if summary:
-        return summary[0]
+        return summary
     return None
 
 
