@@ -3,7 +3,7 @@ import json
 
 from pydantic import BaseModel, AnyHttpUrl, Field
 from uuid import UUID, uuid4
-from typing import Dict
+from typing import Dict, Optional
 
 
 class BulkSummaryPayloadSchema(BaseModel):
@@ -26,7 +26,7 @@ class BaseSummarySchema(BaseModel):
 
 
 class SummaryPayloadSchema(BaseSummarySchema):
-    url: AnyHttpUrl
+    url: Optional[AnyHttpUrl] = None
     text: str
 
 

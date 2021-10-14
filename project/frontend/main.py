@@ -4,6 +4,7 @@ import SessionState
 import base64
 import pandas as pd
 import requests
+import re
 import streamlit as st
 
 
@@ -182,6 +183,12 @@ def page_first():
             url_input = st.text_input(label='Enter a URL')
             if url_input != '':
                 placeholder.empty()
+            # print(text_input)
+            # print(url_input)
+            if text_input != '':
+                formatted_article_text = re.sub(r'\n|\r', ' ', text_input)
+                formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
+                formatted_article_text = formatted_article_text.strip()
 
             length = st.select_slider("Choose  length of the summary", options=length_options)
             submitted2 = st.form_submit_button('Summarize')
@@ -190,7 +197,7 @@ def page_first():
                 # if session_state.submitted2:
                 model = "facebook/bart-large-cnn"
                 payload = {"url": url_input,
-                           "text": text_input,
+                           "text": formatted_article_text,
                            "model_name": model,
                            "length": length}
                 st.write("Generating summary...")

@@ -36,7 +36,7 @@ async def get(id: int) -> Union[dict, None]:
 
 async def get_url_summary(id: int) -> Union[dict, None]:
     summary = await Summary.filter(id=id).first().values()
-    log.info(summary)
+    # log.info(summary)
     if summary:
         return summary
     return None
