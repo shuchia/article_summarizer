@@ -159,7 +159,7 @@ class SummarizerProcessor:
         """
         log.info(input_url)
         log.info(input_text)
-        if input_url != "":
+        if input_url is not None:
             self.text = preprocess(input_url)
         else:
             self.text = input_text
