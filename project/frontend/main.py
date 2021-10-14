@@ -185,7 +185,7 @@ def page_first():
                 placeholder.empty()
             # print(text_input)
             # print(url_input)
-            formatted_article_text= text_input
+            formatted_article_text = text_input
             if text_input != '':
                 formatted_article_text = re.sub(r'\n|\r', ' ', text_input)
                 formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
@@ -197,10 +197,17 @@ def page_first():
                 #     session_state.submitted2 = True
                 # if session_state.submitted2:
                 model = "facebook/bart-large-cnn"
-                payload = {"url": url_input,
-                           "text": formatted_article_text,
-                           "model_name": model,
-                           "length": length}
+                if url_input != '':
+                    payload = {"url": url_input,
+                               "text": formatted_article_text,
+                               "model_name": model,
+                               "length": length}
+                elif url_input == '':
+                    payload = {
+                        "text": formatted_article_text,
+                        "model_name": model,
+                        "length": length}
+
                 st.write("Generating summary...")
 
                 res = requests.post(f"http://web:8000/summaries/summary", json=payload)
