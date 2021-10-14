@@ -16,7 +16,7 @@ def __str__(self):
 
 
 class TextSummary(models.Model):
-    url = fields.TextField()
+    url = fields.TextField(null=True)
     summary = fields.TextField()
     timeFrame = fields.TextField()
     topic = fields.TextField()
