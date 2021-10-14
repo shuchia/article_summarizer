@@ -6,7 +6,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 
 
 class Summary(models.Model):
-    url = fields.TextField()
+    url = fields.TextField(null=True)
     summary = fields.TextField()
     text = fields.TextField()
 
@@ -16,7 +16,7 @@ def __str__(self):
 
 
 class TextSummary(models.Model):
-    url = fields.TextField(null=True)
+    url = fields.TextField()
     summary = fields.TextField()
     timeFrame = fields.TextField()
     topic = fields.TextField()
