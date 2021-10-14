@@ -185,6 +185,7 @@ def page_first():
                 placeholder.empty()
             # print(text_input)
             # print(url_input)
+            formatted_article_text= text_input
             if text_input != '':
                 formatted_article_text = re.sub(r'\n|\r', ' ', text_input)
                 formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
