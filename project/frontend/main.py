@@ -209,7 +209,9 @@ def page_first():
                     # st.text(raw_text) # Works
                     text_input = raw_text  # works
                 elif docx_file.type == "application/pdf":
+
                     raw_text = read_pdf(docx_file)
+                    print(raw_text)
                     text_input = raw_text
                 elif docx_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                     # Use the right file processor ( Docx,Docx2Text,etc)
