@@ -199,6 +199,9 @@ def page_first():
                 placeholder.empty()
                 text_input = ''
             elif docx_file is not None:
+                file_details = {"Filename": docx_file.name, "FileType": docx_file.type, "FileSize": docx_file.size}
+                print(file_details)
+                #print
                 if docx_file.type == "text/plain":
                     st.text(str(docx_file.read(), "utf-8"))  # empty
                     raw_text = str(docx_file.read(),
