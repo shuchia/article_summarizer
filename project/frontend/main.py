@@ -6,6 +6,19 @@ import pandas as pd
 import requests
 import re
 import streamlit as st
+from PyPDF2 import PdfFileReader
+import docx2txt
+
+
+def read_pdf(file):
+    pdfReader = PdfFileReader(file)
+    count = pdfReader.numPages
+    all_page_text = ""
+    for i in range(count):
+        page = pdfReader.getPage(i)
+        all_page_text += page.extractText()
+
+    return all_page_text
 
 
 def main():
@@ -179,10 +192,27 @@ def page_first():
     with col1:
         with st.form(key='summarize'):
             placeholder = st.empty()
-            text_input = placeholder.text_area('Enter text to summarize')
+            text_input = placeholder.text_area('Enter text')
+            docx_file = st.file_uploader("Upload File ", type=['txt', 'docx', 'pdf'])
             url_input = st.text_input(label='Enter a URL')
             if url_input != '':
                 placeholder.empty()
+                text_input = ''
+            elif docx_file is not None:
+                if docx_file.type == "text/plain":
+                    st.text(str(docx_file.read(), "utf-8"))  # empty
+                    raw_text = str(docx_file.read(),
+                                   "utf-8")  # works with st.text and st.write,used for futher processing
+                    # st.text(raw_text) # Works
+                    text_input = raw_text  # works
+                elif docx_file.type == "application/pdf":
+                    raw_text = read_pdf(docx_file)
+                    text_input = raw_text
+                elif docx_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                    # Use the right file processor ( Docx,Docx2Text,etc)
+                    raw_text = docx2txt.process(docx_file)  # Parse in the uploadFile Class directory
+                    text_input = raw_text
+
             # print(text_input)
             # print(url_input)
             formatted_article_text = text_input
