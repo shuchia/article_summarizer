@@ -7,7 +7,18 @@ import requests
 import re
 import streamlit as st
 from PyPDF2 import PdfFileReader
+import pdfplumber
 import docx2txt
+
+
+def read_pdf_with_pdfplumber(file):
+    with pdfplumber.open(file) as pdf:
+        count = pdf.pages
+        all_page_text = ""
+        for i in range(count):
+            page = pdf.pages[i]
+            all_page_text += page.extract_text()
+        return all_page_text
 
 
 def read_pdf(file):
@@ -201,7 +212,7 @@ def page_first():
             elif docx_file is not None:
                 file_details = {"Filename": docx_file.name, "FileType": docx_file.type, "FileSize": docx_file.size}
                 print(file_details)
-                #print
+                # print
                 if docx_file.type == "text/plain":
                     st.text(str(docx_file.read(), "utf-8"))  # empty
                     raw_text = str(docx_file.read(),
@@ -209,8 +220,7 @@ def page_first():
                     # st.text(raw_text) # Works
                     text_input = raw_text  # works
                 elif docx_file.type == "application/pdf":
-
-                    raw_text = read_pdf(docx_file)
+                    raw_text = read_pdf_with_pdfplumber(docx_file)
                     print(raw_text)
                     text_input = raw_text
                 elif docx_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
