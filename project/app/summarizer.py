@@ -76,7 +76,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
             try:
                 summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
-                summary = await summary_process.inference(input_url=url, length=length)
+                summary = await summary_process.inference(input_url=url, input_text='', length=length)
 
                 await asyncio.sleep(1)
 

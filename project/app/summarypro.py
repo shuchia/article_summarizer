@@ -157,8 +157,7 @@ class SummarizerProcessor:
 
         :return: correct category and confidence for that category
         """
-        log.info(input_url)
-        log.info(input_text)
+
         if input_url is not None:
             self.text = preprocess(input_url)
         else:
