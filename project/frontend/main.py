@@ -206,42 +206,42 @@ def page_first():
             text_input = placeholder.text_area('Enter text')
             docx_file = st.file_uploader("Upload File ", type=['txt', 'docx', 'pdf'])
             url_input = st.text_input(label='Enter a URL')
-            if url_input != '':
-                placeholder.empty()
-                text_input = ''
-            elif docx_file is not None:
-                st.write("File upload")
-                file_details = {"Filename": docx_file.name, "FileType": docx_file.type, "FileSize": docx_file.size}
-                print(file_details)
-                # print
-                if docx_file.type == "text/plain":
-                    st.text(str(docx_file.read(), "utf-8"))  # empty
-                    raw_text = str(docx_file.read(),
-                                   "utf-8")  # works with st.text and st.write,used for futher processing
-                    # st.text(raw_text) # Works
-                    text_input = raw_text  # works
-                elif docx_file.type == "application/pdf":
-                    raw_text = read_pdf_with_pdfplumber(docx_file)
-                    print(raw_text)
-                    text_input = raw_text
-                elif docx_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                    # Use the right file processor ( Docx,Docx2Text,etc)
-                    raw_text = docx2txt.process(docx_file)  # Parse in the uploadFile Class directory
-                    text_input = raw_text
-
-            # print(text_input)
-            # print(url_input)
-            formatted_article_text = text_input
-            if text_input != '':
-                formatted_article_text = re.sub(r'\n|\r', ' ', text_input)
-                formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
-                formatted_article_text = formatted_article_text.strip()
 
             length = st.select_slider("Choose  length of the summary", options=length_options)
             submitted2 = st.form_submit_button('Summarize')
             if submitted2:
                 #     session_state.submitted2 = True
                 # if session_state.submitted2:
+                if url_input != '':
+                    placeholder.empty()
+                    text_input = ''
+                elif docx_file is not None:
+                    st.write("File upload")
+                    file_details = {"Filename": docx_file.name, "FileType": docx_file.type, "FileSize": docx_file.size}
+                    print(file_details)
+                    # print
+                    if docx_file.type == "text/plain":
+                        st.text(str(docx_file.read(), "utf-8"))  # empty
+                        raw_text = str(docx_file.read(),
+                                       "utf-8")  # works with st.text and st.write,used for futher processing
+                        # st.text(raw_text) # Works
+                        text_input = raw_text  # works
+                    elif docx_file.type == "application/pdf":
+                        raw_text = read_pdf_with_pdfplumber(docx_file)
+                        print(raw_text)
+                        text_input = raw_text
+                    elif docx_file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                        # Use the right file processor ( Docx,Docx2Text,etc)
+                        raw_text = docx2txt.process(docx_file)  # Parse in the uploadFile Class directory
+                        text_input = raw_text
+
+                # print(text_input)
+                # print(url_input)
+                formatted_article_text = text_input
+                if text_input != '':
+                    formatted_article_text = re.sub(r'\n|\r', ' ', text_input)
+                    formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
+                    formatted_article_text = formatted_article_text.strip()
                 model = "facebook/bart-large-cnn"
                 if url_input != '':
                     payload = {"url": url_input,
