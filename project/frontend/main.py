@@ -210,6 +210,7 @@ def page_first():
                 placeholder.empty()
                 text_input = ''
             elif docx_file is not None:
+                st.write("File upload")
                 file_details = {"Filename": docx_file.name, "FileType": docx_file.type, "FileSize": docx_file.size}
                 print(file_details)
                 # print
