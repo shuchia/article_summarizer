@@ -13,7 +13,7 @@ import docx2txt
 
 def read_pdf_with_pdfplumber(file):
     with pdfplumber.open(file) as pdf:
-        count = len(pdf.pages)
+        count = pdf.pages
         all_page_text = ""
         for pdf_page in count:
             all_page_text += pdf_page.extract_text()
