@@ -20,7 +20,7 @@ async def create_usage_record(request: Request) -> int:
                    client_port=request.client.port, path_params=json_path_params, request_headers=json_header_params,
                    request_body=json_request_body)
 
-    await record.save()
+    record.save()
     return record.id
 
 
