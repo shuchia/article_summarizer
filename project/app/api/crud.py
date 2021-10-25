@@ -4,10 +4,25 @@
 from typing import Union, List
 import logging
 from app.models.pydantic import SummaryPayloadSchema
-from app.models.tortoise import TextSummary, Report, Summary
+from app.models.tortoise import TextSummary, Report, Summary, Usage
 from uuid import UUID
+from fastapi import Request
+import json
 
 log = logging.getLogger(__name__)
+
+
+async def create_usage_record(request: Request) -> int:
+    json_header_params = json.dumps(request.headers)
+    json_request_body = await request.json()
+    json_path_params = json.dumps(request.path_params)
+    record = Usage(method=request.method, URL=request.url, client_host=request.client.host,
+                   client_port=request.client.port, path_params=json_path_params, request_headers=json_header_params,
+                   request_body=json_request_body)
+
+    await record.save()
+    return record.id
+
 
 async def post(payload: SummaryPayloadSchema) -> int:
     summary = Summary(url=payload.url, summary="", text=payload.text)
