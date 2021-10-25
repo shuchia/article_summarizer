@@ -13,9 +13,9 @@ log = logging.getLogger(__name__)
 
 
 async def create_usage_record(request: Request) -> int:
-    json_header_params = json.dumps({k: v for k, v in request.headers.iteritems()})
+    json_header_params = json.dumps({k: v for k, v in request.headers.items()})
     json_request_body = await request.json()
-    json_path_params = json.dumps({k: v for k, v in request.path_params.iteritems()})
+    json_path_params = json.dumps({k: v for k, v in request.path_params.items()})
     record = Usage(method=request.method, URL=request.url, client_host=request.client.host,
                    client_port=request.client.port, path_params=json_path_params, request_headers=json_header_params,
                    request_body=json_request_body)
