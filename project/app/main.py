@@ -106,24 +106,24 @@ def authorize(credentials: HTTPBasicCredentials = Depends(security)):
 app = create_application()
 
 
-# @app.middleware("http")
-# async def log_requests(request: Request, call_next):
-#     log.debug(f"{request.method} {request.url}")
-#     routes = request.app.router.routes
-#     log.debug("Params:")
-#     for route in routes:
-#         match, scope = route.matches(request)
-#         if match == Match.FULL:
-#             for name, value in scope["path_params"].items():
-#                 log.debug(f"\t{name}: {value}")
-#
-#     log.debug("Headers:")
-#     for name, value in request.headers.items():
-#         log.debug(f"\t{name}: {value}")
-#     await crud.create_usage_record(request)
-#
-#     response = await call_next(request)
-#     return response
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    log.debug(f"{request.method} {request.url}")
+    routes = request.app.router.routes
+    log.debug("Params:")
+    for route in routes:
+        match, scope = route.matches(request)
+        if match == Match.FULL:
+            for name, value in scope["path_params"].items():
+                log.debug(f"\t{name}: {value}")
+
+    log.debug("Headers:")
+    for name, value in request.headers.items():
+        log.debug(f"\t{name}: {value}")
+    # await crud.create_usage_record(request)
+
+    response = await call_next(request)
+    return response
 
 
 def register_exception(app: FastAPI):
