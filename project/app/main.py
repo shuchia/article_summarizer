@@ -108,18 +108,18 @@ app = create_application()
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    log.debug(f"{request.method} {request.url}")
+    log.info(f"{request.method} {request.url}")
     routes = request.app.router.routes
-    log.debug("Params:")
+    log.info("Params:")
     for route in routes:
         match, scope = route.matches(request)
         if match == Match.FULL:
             for name, value in scope["path_params"].items():
-                log.debug(f"\t{name}: {value}")
+                log.info(f"\t{name}: {value}")
 
-    log.debug("Headers:")
+    log.info("Headers:")
     for name, value in request.headers.items():
-        log.debug(f"\t{name}: {value}")
+        log.info(f"\t{name}: {value}")
     # await crud.create_usage_record(request)
 
     response = await call_next(request)
