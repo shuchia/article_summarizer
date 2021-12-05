@@ -7,15 +7,16 @@ from typing import Dict
 import logging
 from app.summarypro import SummarizerProcessor
 from app.send_email import send_email
-from fastapi import File, UploadFile
+from fastapi import File, UploadFile, Request
 
 from app.models.tortoise import TextSummary, Summary
 from app.models.pydantic import Job
 import pandas as pd
-from app.api import crud
 
 from uuid import UUID
 from datetime import date, datetime
+from starlette.routing import Match
+from app.api import crud
 
 log = logging.getLogger(__name__)
 
@@ -144,3 +145,19 @@ async def get_reports_for_topic(topic: str) -> None:
         # with open(report_name + ".html", 'w+') as file1:
         # file1.write(report)
     return report_ids
+
+
+async def log_requests(request: Request):
+    log.info(f"{request.method} {request.url}")
+    routes = request.app.router.routes
+    log.info("Params:")
+    for route in routes:
+        match, scope = route.matches(request)
+        if match == Match.FULL:
+            for name, value in scope["path_params"].items():
+                log.info(f"\t{name}: {value}")
+
+    log.info("Headers:")
+    for name, value in request.headers.items():
+        log.info(f"\t{name}: {value}")
+    await crud.create_usage_record(request)
