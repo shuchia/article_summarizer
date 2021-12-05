@@ -38,9 +38,9 @@ class Usage(models.Model):
     URL = fields.TextField()
     client_host = fields.TextField()
     client_port = fields.BigIntField()
-    path_params = fields.JSONField()
-    request_headers = fields.JSONField()
-    request_body = fields.JSONField()
+    path_params = fields.TextField()
+    request_headers = fields.TextField()
+    request_body = fields.TextField()
     created_at = fields.DatetimeField(auto_now_add=True)
 
     def __str__(self):

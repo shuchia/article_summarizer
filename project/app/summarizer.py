@@ -151,7 +151,8 @@ async def get_reports_for_topic(topic: str) -> None:
 async def log_requests(request: Request):
     log.info(f"{request.method} {request.url}")
     routes = request.app.router.routes
-    log.info(json.dumps(dict(request.path_params)))
+    params = json.dumps(dict(request.path_params))
+    log.info(params)
     log.info("Params:")
     for route in routes:
         match, scope = route.matches(request)
@@ -162,10 +163,11 @@ async def log_requests(request: Request):
     log.info("Headers:")
     for name, value in request.headers.items():
         log.info(f"\t{name}: {value}")
-    log.info(json.dumps(dict(request.headers)))
+    headers = json.dumps(dict(request.headers))
+    log.info(headers)
     log.info("Body:")
     body = await request.json()
     log.info(body)
     log.info("client_host: " + request.client.host)
     log.info("client_port: " + str(request.client.port))
-    await crud.create_usage_record(request)
+    await crud.create_usage_record(params, headers, body, request.client.host, request.client.port, request.method, request.url)

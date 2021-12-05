@@ -12,13 +12,11 @@ import json
 log = logging.getLogger(__name__)
 
 
-async def create_usage_record(request: Request) -> int:
-    json_header_params = json.dumps(dict(request.headers))
-    json_request_body = request.json()
-    json_path_params = json.dumps(dict(request.path_params))
-    record = Usage(method=request.method, URL=request.url, client_host=request.client.host,
-                   client_port=request.client.port, path_params=json_path_params, request_headers=json_header_params,
-                   request_body=json_request_body)
+async def create_usage_record(params: str, headers: str, body: str, host: str, port: int, method: str, url: str) -> int:
+
+    record = Usage(method=method, URL=url, client_host=host,
+                   client_port=port, path_params=params, request_headers=headers,
+                   request_body=body)
 
     await record.save()
     return record.id
