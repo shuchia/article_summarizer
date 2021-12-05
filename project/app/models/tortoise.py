@@ -41,7 +41,7 @@ class Usage(models.Model):
     path_params = fields.TextField()
     request_headers = fields.TextField()
     request_body = fields.TextField()
-    created_at = fields.DatetimeField(auto_now_add=True)
+    # created_at = fields.DatetimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
