@@ -34,7 +34,7 @@ from app.models.pydantic import (
 
 from app.models.tortoise import SummarySchema, ReportSchema, URLSummarySchema
 from app.summarizer import generate_summary, generate_bulk_summary, generate_report, get_reports, get_reports_for_topic, log_requests
-from app.main import log_requests
+
 
 SECRET_KEY = "a9032cb3b87e7ad1d842e1a20fbf22901a2826d359a63ab6a6b6a8a7d1e9c019"
 ALGORITHM = "HS256"
