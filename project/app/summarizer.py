@@ -17,6 +17,7 @@ from uuid import UUID
 from datetime import date, datetime
 from starlette.routing import Match
 from app.api import crud
+import json
 
 log = logging.getLogger(__name__)
 
@@ -160,6 +161,7 @@ async def log_requests(request: Request):
     log.info("Headers:")
     for name, value in request.headers.items():
         log.info(f"\t{name}: {value}")
+    log.info(json.dumps(dict(request.headers)))
     log.info("Body:")
     body = await request.json()
     log.info(body)

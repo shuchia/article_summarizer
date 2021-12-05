@@ -37,10 +37,11 @@ class Usage(models.Model):
     method = fields.TextField()
     URL = fields.TextField()
     client_host = fields.TextField()
-    client_port = fields.TextField()
+    client_port = fields.BigIntField()
     path_params = fields.JSONField()
     request_headers = fields.JSONField()
     request_body = fields.JSONField()
+    created_at = fields.DatetimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
