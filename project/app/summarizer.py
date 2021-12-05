@@ -160,6 +160,6 @@ async def log_requests(request: Request):
     log.info("Headers:")
     for name, value in request.headers.items():
         log.info(f"\t{name}: {value}")
-        log.info("client_host: " + request.client.host)
-        log.info("client_port: " + str(request.client.port))
+    log.info("client_host: " + request.client.host)
+    log.info("client_port: " + str(request.client.port))
     await crud.create_usage_record(request)
