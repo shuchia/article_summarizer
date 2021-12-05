@@ -264,7 +264,9 @@ def page_first():
                 status = res.json().get("status")
                 # print(status)
                 taskId = res.json().get("task_id")
-                while status == "in_progress":
+                count = 0
+                max_attempts = 5
+                while status == "in_progress" or count < max_attempts:
                     time.sleep(2)
                     res = requests.get(f"http://web:8000/summaries/task/status?uid=" + str(taskId))
                     taskResponse = res.json()
@@ -275,6 +277,8 @@ def page_first():
                         # print(summaryResponse)
                         # st.write(summaryResponse.get("summary"))
                         break
+                    else:
+                        count += 1
     with col2:
         placeholder = st.empty()
         if summaryResponse != '':

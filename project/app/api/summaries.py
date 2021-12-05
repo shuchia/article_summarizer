@@ -6,7 +6,7 @@ import base64
 from app.oauth2 import fake_users_db, get_user
 from fastapi import FastAPI, APIRouter, HTTPException, Path, BackgroundTasks, status
 
-from fastapi import File, UploadFile, Depends, Form, Header
+from fastapi import File, UploadFile, Depends, Form, Header, Request
 from fastapi.responses import HTMLResponse
 from typing import List, Dict, Optional
 
@@ -34,6 +34,7 @@ from app.models.pydantic import (
 
 from app.models.tortoise import SummarySchema, ReportSchema, URLSummarySchema
 from app.summarizer import generate_summary, generate_bulk_summary, generate_report, get_reports, get_reports_for_topic
+from app.main import log_requests
 
 SECRET_KEY = "a9032cb3b87e7ad1d842e1a20fbf22901a2826d359a63ab6a6b6a8a7d1e9c019"
 ALGORITHM = "HS256"
@@ -107,14 +108,17 @@ def read_current_user(username: str = Depends(get_current_user_email)):
 
 @router.post("/bulk", response_model=Job, status_code=202, dependencies=[Depends(has_access)])
 async def create_summary(
+        request: Request,
         background_tasks: BackgroundTasks, model_name: str = Form(...), length: str = Form(...),
         file: UploadFile = File(...),
         authorization: Optional[str] = Header(None)
+
 ) -> SummaryResponseSchema:
     # logger.info("file " + file.filename)
     user = get_current_user(authorization)
     email = get_current_user_email(authorization)
     log.info("current user email " + email)
+    log_requests(request)
     new_task = Job()
     jobs[new_task.uid] = new_task
     payload = BulkSummaryPayloadSchema(modelName=model_name)
@@ -124,11 +128,13 @@ async def create_summary(
 
 @router.post("/summary", response_model=SummaryResponseSchema, status_code=201)
 async def create_summary(
+        request: Request,
         payload: SummaryPayloadSchema, background_tasks: BackgroundTasks
 ) -> SummaryResponseSchema:
     summary_id = await crud.post(payload)
     new_task = Job()
     jobs[new_task.uid] = new_task
+    log_requests(request)
     background_tasks.add_task(generate_summary, new_task, summary_id, payload.url, payload.text, payload.model_name,
                               payload.length)
 
