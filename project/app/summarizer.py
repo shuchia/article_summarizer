@@ -151,6 +151,7 @@ async def get_reports_for_topic(topic: str) -> None:
 async def log_requests(request: Request):
     log.info(f"{request.method} {request.url}")
     routes = request.app.router.routes
+    log.info(json.dumps(dict(request.path_params)))
     log.info("Params:")
     for route in routes:
         match, scope = route.matches(request)
