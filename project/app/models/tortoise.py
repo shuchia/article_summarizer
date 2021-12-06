@@ -50,3 +50,4 @@ class Usage(models.Model):
 SummarySchema = pydantic_model_creator(TextSummary)
 URLSummarySchema = pydantic_model_creator(Summary)
 ReportSchema = pydantic_model_creator(Report)
+UsageSchema = pydantic_model_creator(Usage)

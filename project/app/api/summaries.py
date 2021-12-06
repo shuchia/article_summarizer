@@ -32,9 +32,9 @@ from app.models.pydantic import (
     User
 )
 
-from app.models.tortoise import SummarySchema, ReportSchema, URLSummarySchema
-from app.summarizer import generate_summary, generate_bulk_summary, generate_report, get_reports, get_reports_for_topic, log_requests
-
+from app.models.tortoise import SummarySchema, ReportSchema, URLSummarySchema, UsageSchema
+from app.summarizer import generate_summary, generate_bulk_summary, generate_report, get_reports, get_reports_for_topic, \
+    log_requests
 
 SECRET_KEY = "a9032cb3b87e7ad1d842e1a20fbf22901a2826d359a63ab6a6b6a8a7d1e9c019"
 ALGORITHM = "HS256"
@@ -190,6 +190,11 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
 @router.get("/getReports", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
 async def get_reports_topic(topic: str) -> Dict[int, str]:
     return await get_reports_for_topic(topic)
+
+
+@router.get("/getUsage", response_model=List[UsageSchema])
+async def get_usage() -> List[UsageSchema]:
+    return await crud.get_all_usage()
 
 
 @router.get("/report/{id}/")

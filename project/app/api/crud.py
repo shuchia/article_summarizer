@@ -13,7 +13,6 @@ log = logging.getLogger(__name__)
 
 
 async def create_usage_record(params: str, headers: str, body: str, host: str, port: int, method: str, url: str) -> int:
-
     record = Usage(method=method, URL=url, client_host=host,
                    client_port=port, path_params=params, request_headers=headers,
                    request_body=body)
@@ -75,6 +74,11 @@ async def get_reports_for_topic(topic: str) -> Union[dict, None]:
 async def get_all() -> List:
     summaries = await TextSummary.all().values()
     return summaries
+
+
+async def get_all_usage() -> List:
+    usage = await Usage.all().values()
+    return usage
 
 
 async def delete(id: int) -> int:
