@@ -98,31 +98,62 @@ async def generate_report(uid: UUID) -> None:
     topics = await crud.get_group_of_topics(uid)
     for topic in topics:
         category_counter = 1
-        report = "<!DOCTYPE html><html><head><title></title></head><body><blockquote><p><strong> "
-        topic_name = topic["topic"]
-        report += topic_name + "</strong></p>"
-        categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
-        for category in categories:
-            category_name = category["category"]
-            counter = NUMBERS[str(category_counter)]
-            report += "<p><strong>" + counter + "&nbsp;</strong><strong>" + category_name + "</strong></p>"
-            category_counter += 1
-            summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
-            for summary in summaries:
-                if "summary" in summary:
-                    ts = summary["timeFrame"]
-                    dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
-                    month_name = dt_object2.strftime("%b")
-                    year = dt_object2.strftime("%Y")
-                    report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
-                    report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
-                        "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
-        report += "</body></html>"
-        report_name = topic_name + date.today().strftime('%Y%m%d')
-        report_id = await crud.createReport(report_name, report)
-        report_ids[report_id] = report_name + ".html"
-        # with open(report_name + ".html", 'w+') as file1:
-        # file1.write(report)
+        report = await crud.get_report_for_topic(topic)
+        if report:
+            categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
+            for category in categories:
+                category_name = category["category"]
+                position = report.find(category_name)
+                if position != -1:
+                    summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
+                    for summary in summaries:
+                        if "summary" in summary:
+                            ts = summary["timeFrame"]
+                            dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                            month_name = dt_object2.strftime("%b")
+                            year = dt_object2.strftime("%Y")
+                            new_text = report[:position + len(
+                                category_name)] + "<p><strong>" + month_name + "-" + year + "</strong></p>" \
+                                                                                            "<p><strong>" + summary[
+                                           "summary"] + "<br>" + "<a href=" + summary[
+                                           "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p>" + \
+                                       report[position + len(category_name):]
+                else:
+                    report += "<p>>&nbsp;<strong>" + category_name + "</strong></p>"
+                    summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
+                    for summary in summaries:
+                        if "summary" in summary:
+                            ts = summary["timeFrame"]
+                            dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                            month_name = dt_object2.strftime("%b")
+                            year = dt_object2.strftime("%Y")
+                            report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
+                            report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
+                                "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
+        else:
+            report = "<!DOCTYPE html><html><head><title></title></head><body><blockquote><p><strong> "
+            topic_name = topic["topic"]
+            report += topic_name + "</strong></p>"
+            categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
+            for category in categories:
+                category_name = category["category"]
+                report += "<p>>&nbsp;<strong>" + category_name + "</strong></p>"
+                summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
+                for summary in summaries:
+                    if "summary" in summary:
+                        ts = summary["timeFrame"]
+                        dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                        month_name = dt_object2.strftime("%b")
+                        year = dt_object2.strftime("%Y")
+                        report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
+                        report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
+                            "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
+            report += "</body></html>"
+            report_name = topic_name
+            report_id = await crud.createReport(report_name, report)
+            report_ids[report_id] = report_name + ".html"
+            # with open(report_name + ".html", 'w+') as file1:
+            # file1.write(report)
     return report_ids
 
 
@@ -170,4 +201,5 @@ async def log_requests(request: Request):
     log.info(body)
     log.info("client_host: " + request.client.host)
     log.info("client_port: " + str(request.client.port))
-    await crud.create_usage_record(params, headers, body, request.client.host, request.client.port, request.method, request.url)
+    await crud.create_usage_record(params, headers, body, request.client.host, request.client.port, request.method,
+                                   request.url)

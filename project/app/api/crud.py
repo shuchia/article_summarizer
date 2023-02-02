@@ -71,6 +71,13 @@ async def get_reports_for_topic(topic: str) -> Union[dict, None]:
     return reports
 
 
+async def get_report_for_topic(topic: str) -> Union[dict, None]:
+    report = await Report.filter(name__icontains=topic).first().values()
+    if report:
+        return report
+    return None
+
+
 async def get_all() -> List:
     summaries = await TextSummary.all().values()
     return summaries
