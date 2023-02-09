@@ -118,7 +118,7 @@ async def create_summary(
     user = get_current_user(authorization)
     email = get_current_user_email(authorization)
     log.info("current user email " + email)
-    await log_requests(request)
+    # await log_requests(request)
     new_task = Job()
     jobs[new_task.uid] = new_task
     payload = BulkSummaryPayloadSchema(modelName=model_name)
