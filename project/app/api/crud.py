@@ -76,7 +76,7 @@ async def delete_reports_for_topic(topic: str) -> Union[dict, None]:
     return reports
 
 
-async def delete_all_reports() -> Union[dict, None]:
+async def delete_all_reports() -> List:
     reports = await Report.all().delete()
     return reports
 

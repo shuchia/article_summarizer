@@ -224,7 +224,7 @@ async def delete_reports_topic(topic: str) -> Dict[int, str]:
 
 @router.delete("/deleteAllReports", response_model=List[ReportSchema], status_code=201,
                dependencies=[Depends(has_access)])
-async def delete_all_reports() -> Dict[int, str]:
+async def delete_all_reports() -> List[ReportSchema]:
     return await crud.delete_all_reports()
 
 
