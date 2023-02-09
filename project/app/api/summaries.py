@@ -217,6 +217,17 @@ async def delete_summary(id: int = Path(..., gt=0)) -> SummaryResponseSchema:
     return summary
 
 
+@router.delete("/deleteReports", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
+async def delete_reports_topic(topic: str) -> Dict[int, str]:
+    return await crud.delete_reports_for_topic(topic)
+
+
+@router.delete("/deleteAllReports", response_model=List[ReportSchema], status_code=201,
+               dependencies=[Depends(has_access)])
+async def delete_all_reports() -> Dict[int, str]:
+    return await crud.delete_all_reports()
+
+
 @router.put("/{id}/", response_model=SummarySchema)
 async def update_summary(
         payload: SummaryUpdatePayloadSchema, id: int = Path(..., gt=0)

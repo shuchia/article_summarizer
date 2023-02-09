@@ -105,21 +105,33 @@ async def generate_report(uid: UUID) -> None:
                 category_name = category["category"]
                 position = report.find(category_name)
                 if position != -1:
+                    start_index = position + len(category_name)
+                    remaining_report = report[start_index:]
                     summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
+                    month_year_added = False
                     for summary in summaries:
                         if "summary" in summary:
                             ts = summary["timeFrame"]
                             dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
                             month_name = dt_object2.strftime("%b")
                             year = dt_object2.strftime("%Y")
-                            new_text = report[:position + len(
-                                category_name)] + "<p><strong>" + month_name + "-" + year + "</strong></p>" \
-                                                                                            "<p><strong>" + summary[
-                                           "summary"] + "<br>" + "<a href=" + summary[
-                                           "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p>" + \
-                                       report[position + len(category_name):]
+                            month_year_found = remaining_report.find(month_name + "-" + year)
+                            if month_year_found or month_year_added:
+                                report = report[:month_year_found + len(month_name + "-" + year)] + "<p><strong>" + \
+                                           summary[
+                                               "summary"] + "<br>" + "<a href=" + summary[
+                                               "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p>" + \
+                                           report[month_year_found + len(month_name + "-" + year):]
+                            else:
+                                report = report[:position + len(
+                                    category_name)] + "<p><strong>" + month_name + "-" + year + "</strong></p>" \
+                                                                                                "<p><strong>" + summary[
+                                               "summary"] + "<br>" + "<a href=" + summary[
+                                               "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p>" + \
+                                           report[position + len(category_name):]
+                                month_year_added = True
                 else:
-                    report += "<p>>&nbsp;<strong>" + category_name + "</strong></p>"
+                    report += "<p>&nbsp;<strong>" + category_name + "</strong></p>"
                     summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
                     for summary in summaries:
                         if "summary" in summary:
@@ -137,7 +149,7 @@ async def generate_report(uid: UUID) -> None:
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             for category in categories:
                 category_name = category["category"]
-                report += "<p>>&nbsp;<strong>" + category_name + "</strong></p>"
+                report += "<p>&nbsp;<strong>" + category_name + "</strong></p>"
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
                 for summary in summaries:
                     if "summary" in summary:

@@ -71,6 +71,16 @@ async def get_reports_for_topic(topic: str) -> Union[dict, None]:
     return reports
 
 
+async def delete_reports_for_topic(topic: str) -> Union[dict, None]:
+    reports = await Report.filter(name__icontains=topic).all().delete()
+    return reports
+
+
+async def delete_all_reports() -> Union[dict, None]:
+    reports = await Report.all().delete()
+    return reports
+
+
 async def get_report_for_topic(topic: str) -> Union[dict, None]:
     report = await Report.filter(name__icontains=topic).first().values()
     if report:
