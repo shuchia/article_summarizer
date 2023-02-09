@@ -19,3 +19,4 @@ passlib
 starlette
 httpx
 boto3
+openai

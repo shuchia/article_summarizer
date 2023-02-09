@@ -1,6 +1,6 @@
 import time
 
-import SessionState
+#import SessionState
 import base64
 import pandas as pd
 import requests
@@ -126,11 +126,13 @@ def page_second():
         password = st.text_input("Enter password", type="password")
 
         submitted1 = st.form_submit_button('Generate Summaries')
-        session_state = SessionState.get(name="", submitted1=False)
+        #session_state = SessionState.get(name="", submitted1=False)
+
 
         if submitted1:
-            session_state.submitted1 = True
-        if session_state.submitted1:
+            if 'submitted1' not in st.session_state:
+                st.session_state.submitted1 = True
+        if st.session_state.submitted1:
             usrPass = username + ":" + password
             b64Val = base64.b64encode(usrPass.encode()).decode()
             if file is not None and contentType is not None:
