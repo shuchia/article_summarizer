@@ -72,13 +72,17 @@ async def get_reports_for_topic(topic: str) -> Union[dict, None]:
 
 
 async def delete_reports_for_topic(topic: str) -> Union[dict, None]:
-    reports = await Report.filter(name__icontains=topic).all().delete()
-    return reports
+    objects = await Report.filter(name__icontains=topic).all().values().delete()
+    deleted_objects = [obj['id'] for obj in objects]
+    await Report.all().delete()
+    return deleted_objects
 
 
 async def delete_all_reports() -> List:
-    reports = await Report.all().delete()
-    return reports
+    objects = await Report.all().prefetch_related().only('id').values('id')
+    deleted_objects = [obj['id'] for obj in objects]
+    await Report.all().delete()
+    return deleted_objects
 
 
 async def get_report_for_topic(topic: str) -> Union[dict, None]:

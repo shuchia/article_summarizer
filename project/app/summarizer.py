@@ -116,7 +116,7 @@ async def generate_report(uid: UUID) -> None:
                             month_name = dt_object2.strftime("%b")
                             year = dt_object2.strftime("%Y")
                             month_year_found = remaining_report.find(month_name + "-" + year)
-                            if month_year_found or month_year_added:
+                            if month_year_found != -1 or month_year_added:
                                 report = report[:month_year_found + len(month_name + "-" + year)] + "<p><strong>" + \
                                            summary[
                                                "summary"] + "<br>" + "<a href=" + summary[
