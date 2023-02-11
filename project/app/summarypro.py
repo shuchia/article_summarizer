@@ -16,7 +16,7 @@ import logging
 
 nltk.download('punkt')
 log = logging.getLogger(__name__)
-api_key = "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"
+api_key = "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"
 
 PERCENTAGE = {"short": 30,
               "medium": 60,
@@ -81,40 +81,41 @@ def preprocess(url):
         # scraped_data = urlopen(req, timeout=3)
         # article = scraped_data.read()
 
-        parsed_article = bs.BeautifulSoup(article, 'lxml')
-
-        paragraphs = parsed_article.find_all('p')
-
-        article_text = ""
-
-        for p in paragraphs:
-            article_text += ' ' + p.text
-        formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
-        formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
-        formatted_article_text = formatted_article_text.strip()
-        return formatted_article_text
+        # parsed_article = bs.BeautifulSoup(article, 'lxml')
+        #
+        # paragraphs = parsed_article.find_all('p')
+        #
+        # article_text = ""
+        #
+        # for p in paragraphs:
+        #     article_text += ' ' + p.text
+        # formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
+        # formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
+        # formatted_article_text = formatted_article_text.strip()
+        # return formatted_article_text
+        return article
 
     except requests.ConnectionError as e:
 
-        print("OOPS!! Connection Error. Make sure you are connected to Internet. Technical Details given below.\n")
+        log.info("OOPS!! Connection Error. Make sure you are connected to Internet. Technical Details given below.\n")
 
-        print(str(e))
+        log.info(str(e))
 
     except requests.Timeout as e:
 
-        print("OOPS!! Timeout Error")
+        log.info("OOPS!! Timeout Error")
 
-        print(str(e))
+        log.info(str(e))
 
     except requests.RequestException as e:
 
-        print("OOPS!! General Error")
+        log.info("OOPS!! General Error")
 
-        print(str(e))
+        log.info(str(e))
 
     except KeyboardInterrupt:
 
-        print("Someone closed the program")
+        log.info("Someone closed the program")
 
 
 class SummarizerProcessor:
@@ -200,45 +201,56 @@ class SummarizerProcessor:
 
         :return: correct category and confidence for that category
         """
+        try:
+            if input_url is not None:
+                self.text = preprocess(input_url)
+            else:
+                self.text = input_text
 
-        if input_url is not None:
-            self.text = preprocess(input_url)
-        else:
-            self.text = input_text
-        response = requests.post(
-            "https://api.openai.com/v1/engines/text-davinci-002/jobs",
-            headers={"Authorization": f"Bearer {api_key}"},
-            json={
-                "text": self.text,
-                "prompt": "Please summarize the following article:",
-                "max_tokens": 100,
-            },
-        )
-        summary = response.json()["choices"][0]["text"]
-        return summary
+            response = requests.post(
+                "https://api.openai.com/v1/engines/text-davinci-002/jobs",
+                headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
+                json={
+                    "text": self.text,
+                    "model": "text-davinci-002",
+                    "length": 50,  # The desired length of the summary, in characters
+                    "temperature": 0.5,  # Controls the randomness of the output
+                },
+            )
 
-        length_of_summary = PERCENTAGE[length]
-        max_length = 1000
-        if self.modelName == "google/pegasus-newsroom":
-            batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
-            translated = self.model.generate(**batch)
-            tgt_text = self.tokenizer.batch_decode(translated, skip_special_tokens=True)
-            # log.info(tgt_text)
-        elif self.modelName == "facebook/bart-large-cnn":
-            nested = nest_sentences(self.text)
-            summarized_text = self.generate_summary(nested, max_length)
-            list_length = len(summarized_text)
-            log.info(input_url)
-            log.info(list_length)
-            number_items = summary_length(list_length, length_of_summary)
-            if number_items == 0:
-                number_items = 1
-            # nested_summ = nest_sentences(' '.join(summarized_text))
-            # tgt_text_list = self.generate_summary(nested_summ,  max_length)
-            index = 0
-            tgt_text = ""
-            while index < number_items:
-                tgt_text += summarized_text[index]
-                index += 1
-            # tgt_text = self.generate_simple_summary(self.text)
-        return tgt_text
+            if response.status_code == 200:
+                summary = response.json()["choices"][0]["text"]
+                return summary
+            else:
+                return "error"
+
+        except requests.exceptions.RequestException as e:
+            # Handle exceptions that may occur while sending the GET request or the API request
+            print("Error: Failed to fetch article or generate summary:", e)
+            return "error"
+
+        # length_of_summary = PERCENTAGE[length]
+        # max_length = 1000
+        # if self.modelName == "google/pegasus-newsroom":
+        #     batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
+        #     translated = self.model.generate(**batch)
+        #     tgt_text = self.tokenizer.batch_decode(translated, skip_special_tokens=True)
+        #     # log.info(tgt_text)
+        # elif self.modelName == "facebook/bart-large-cnn":
+        #     nested = nest_sentences(self.text)
+        #     summarized_text = self.generate_summary(nested, max_length)
+        #     list_length = len(summarized_text)
+        #     log.info(input_url)
+        #     log.info(list_length)
+        #     number_items = summary_length(list_length, length_of_summary)
+        #     if number_items == 0:
+        #         number_items = 1
+        #     # nested_summ = nest_sentences(' '.join(summarized_text))
+        #     # tgt_text_list = self.generate_summary(nested_summ,  max_length)
+        #     index = 0
+        #     tgt_text = ""
+        #     while index < number_items:
+        #         tgt_text += summarized_text[index]
+        #         index += 1
+        #     # tgt_text = self.generate_simple_summary(self.text)
+        # return tgt_text
