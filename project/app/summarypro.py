@@ -14,7 +14,7 @@ from urllib.request import Request, urlopen
 import re
 import logging
 import os
-
+import openai
 
 nltk.download('punkt')
 log = logging.getLogger(__name__)
@@ -227,7 +227,9 @@ class SummarizerProcessor:
             else:
                 return "error"
 
-        except Exception as e:
+        #except Exception as e:
+        except openai.OpenAIError as e:
+            print("OpenAI API call failed with error:", e)
             # Handle exceptions that may occur while sending the GET request or the API request
             log.info("Error: Failed to fetch article or generate summary:", e)
             return "error"
