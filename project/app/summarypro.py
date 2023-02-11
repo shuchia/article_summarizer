@@ -13,10 +13,12 @@ import bs4 as bs  # beautifulsource4
 from urllib.request import Request, urlopen
 import re
 import logging
+import os
+
 
 nltk.download('punkt')
 log = logging.getLogger(__name__)
-api_key = "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"
+api_key = os.environ.get("OPENAI_API_KEY")
 
 PERCENTAGE = {"short": 30,
               "medium": 60,
