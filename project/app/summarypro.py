@@ -122,38 +122,38 @@ def preprocess(url):
 
 class SummarizerProcessor:
     def __init__(self, model: str = None):
-        log.info(model)
-        torch_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        log.info(torch_device)
-        if model is None:
-            model = "t5"
-        self.modelName = model
-        # path to all the files that will be used for inference
-        self.path = f"./app/api/{model}/"
-        self.model_path = self.path + "pytorch_model.bin"
-        self.config_path = self.path + "config.json"
-
-        # Selecting the correct model based on the passed madel input. Default t5
-        if model == "t5":
-            self.config = T5Config.from_json_file(self.config_path)
-            self.model = T5ForConditionalGeneration(self.config)
-            self.tokenizer = T5Tokenizer.from_pretrained(self.path)
-            self.model.eval()
-            self.model.load_state_dict(torch.load(self.model_path, map_location=torch_device))
-        elif model == "google/pegasus-newsroom":
-            self.config = PegasusConfig.from_json_file(self.config_path)
-            # self.model = PegasusForConditionalGeneration(self.config)
-            # self.tokenizer = PegasusTokenizer.from_pretrained(self.path)
-            self.model = PegasusForConditionalGeneration.from_pretrained(model).to(torch_device)
-            self.tokenizer = PegasusTokenizer.from_pretrained(model)
-        elif model == "facebook/bart-large-cnn":
-            self.config = BartConfig.from_json_file(self.config_path)
-            # self.model = PegasusForConditionalGeneration(self.config)
-            # self.tokenizer = PegasusTokenizer.from_pretrained(self.path)
-            self.model = BartForConditionalGeneration.from_pretrained(model).to(torch_device)
-            self.tokenizer = BartTokenizer.from_pretrained(model)
-        else:
-            raise Exception("This model is not supported")
+        # log.info(model)
+        # torch_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # log.info(torch_device)
+        # if model is None:
+        #     model = "t5"
+        # self.modelName = model
+        # # path to all the files that will be used for inference
+        # self.path = f"./app/api/{model}/"
+        # self.model_path = self.path + "pytorch_model.bin"
+        # self.config_path = self.path + "config.json"
+        #
+        # # Selecting the correct model based on the passed madel input. Default t5
+        # if model == "t5":
+        #     self.config = T5Config.from_json_file(self.config_path)
+        #     self.model = T5ForConditionalGeneration(self.config)
+        #     self.tokenizer = T5Tokenizer.from_pretrained(self.path)
+        #     self.model.eval()
+        #     self.model.load_state_dict(torch.load(self.model_path, map_location=torch_device))
+        # elif model == "google/pegasus-newsroom":
+        #     self.config = PegasusConfig.from_json_file(self.config_path)
+        #     # self.model = PegasusForConditionalGeneration(self.config)
+        #     # self.tokenizer = PegasusTokenizer.from_pretrained(self.path)
+        #     self.model = PegasusForConditionalGeneration.from_pretrained(model).to(torch_device)
+        #     self.tokenizer = PegasusTokenizer.from_pretrained(model)
+        # elif model == "facebook/bart-large-cnn":
+        #     self.config = BartConfig.from_json_file(self.config_path)
+        #     # self.model = PegasusForConditionalGeneration(self.config)
+        #     # self.tokenizer = PegasusTokenizer.from_pretrained(self.path)
+        #     self.model = BartForConditionalGeneration.from_pretrained(model).to(torch_device)
+        #     self.tokenizer = BartTokenizer.from_pretrained(model)
+        # else:
+        #     raise Exception("This model is not supported")
 
         self.text = str()
 
@@ -208,7 +208,7 @@ class SummarizerProcessor:
                 self.text = preprocess(input_url)
             else:
                 self.text = input_text
-
+            log.info(api_key)
             response = requests.post(
                 "https://api.openai.com/v1/engines/text-davinci-002/jobs",
                 headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
@@ -226,9 +226,9 @@ class SummarizerProcessor:
             else:
                 return "error"
 
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             # Handle exceptions that may occur while sending the GET request or the API request
-            print("Error: Failed to fetch article or generate summary:", e)
+            log.info("Error: Failed to fetch article or generate summary:", e)
             return "error"
 
         # length_of_summary = PERCENTAGE[length]
