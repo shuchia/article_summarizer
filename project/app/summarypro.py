@@ -205,29 +205,24 @@ class SummarizerProcessor:
         """
         try:
             if input_url is not None:
-                self.text = preprocess(input_url)
+                # self.text = preprocess(input_url)
+                self.text = input_url
             else:
                 self.text = input_text
             log.info(api_key)
             log.info(self.text)
-            response = requests.post(
-                "https://api.openai.com/v1/engines/text-davinci-002/jobs",
-                headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
-                json={
-                    "text": self.text,
-                    "model": "text-davinci-002",
-                    "length": 50,  # The desired length of the summary, in characters
-                    "temperature": 0.5,  # Controls the randomness of the output
-                },
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt="Please summarize the following article: " + self.text,
+                max_tokens=200,
+                n=1,
+                stop=None,
+                temperature=0.5,
             )
+            summary = response["choices"][0]["text"]
+            return summary
 
-            if response.status_code == 200:
-                summary = response.json()["choices"][0]["text"]
-                return summary
-            else:
-                return "error"
-
-        #except Exception as e:
+        # except Exception as e:
         except openai.OpenAIError as e:
             print("OpenAI API call failed with error:", e)
             # Handle exceptions that may occur while sending the GET request or the API request
