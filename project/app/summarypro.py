@@ -209,6 +209,7 @@ class SummarizerProcessor:
             else:
                 self.text = input_text
             log.info(api_key)
+            log.info(self.text)
             response = requests.post(
                 "https://api.openai.com/v1/engines/text-davinci-002/jobs",
                 headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
