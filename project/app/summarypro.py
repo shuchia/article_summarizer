@@ -3,6 +3,10 @@ from transformers import PegasusForConditionalGeneration, PegasusTokenizer, Pega
 from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
 from transformers import BartTokenizer, BartForConditionalGeneration, BartConfig
 import nltk
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
 import sys
 
 import bs4 as bs  # beautifulsource4
@@ -12,6 +16,7 @@ import logging
 
 nltk.download('punkt')
 log = logging.getLogger(__name__)
+api_key = "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"
 
 PERCENTAGE = {"short": 30,
               "medium": 60,
@@ -53,30 +58,63 @@ def nest_sentences(document):
 
 
 def preprocess(url):
-    req = Request(url, headers={'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
-                                          'image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                                'Accept-Encoding': 'gzip, deflate',
-                                'Accept-Language': 'en-US,en;q=0.9',
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
-                                              'like Gecko) Chrome/103.0.0.0 Safari/537.36'})
-    scraped_data = urlopen(req, timeout=200)
+    # req = Request(url, headers={'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
+    #                                       'image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    #                             'Accept-Encoding': 'gzip, deflate',
+    #                             'Accept-Language': 'en-US,en;q=0.9',
+    #                             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
+    #                                           'like Gecko) Chrome/103.0.0.0 Safari/537.36'})
+    header = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
+                        'image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+              'Accept-Encoding': 'gzip, deflate',
+              'Accept-Language': 'en-US,en;q=0.9',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
+                            'like Gecko) Chrome/103.0.0.0 Safari/537.36'}
+    try:
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
 
-    article = scraped_data.read()
+        article = session.get(url, headers=header).text
+        # scraped_data = urlopen(req, timeout=3)
+        # article = scraped_data.read()
 
-    parsed_article = bs.BeautifulSoup(article, 'lxml')
-    parsed_article = bs.BeautifulSoup(article, 'lxml')
+        parsed_article = bs.BeautifulSoup(article, 'lxml')
 
-    paragraphs = parsed_article.find_all('p')
+        paragraphs = parsed_article.find_all('p')
 
-    article_text = ""
+        article_text = ""
 
-    for p in paragraphs:
-        article_text += ' ' + p.text
-    formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
-    formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
-    formatted_article_text = formatted_article_text.strip()
+        for p in paragraphs:
+            article_text += ' ' + p.text
+        formatted_article_text = re.sub(r'\n|\r', ' ', article_text)
+        formatted_article_text = re.sub(r' +', ' ', formatted_article_text)
+        formatted_article_text = formatted_article_text.strip()
+        return formatted_article_text
 
-    return formatted_article_text
+    except requests.ConnectionError as e:
+
+        print("OOPS!! Connection Error. Make sure you are connected to Internet. Technical Details given below.\n")
+
+        print(str(e))
+
+    except requests.Timeout as e:
+
+        print("OOPS!! Timeout Error")
+
+        print(str(e))
+
+    except requests.RequestException as e:
+
+        print("OOPS!! General Error")
+
+        print(str(e))
+
+    except KeyboardInterrupt:
+
+        print("Someone closed the program")
 
 
 class SummarizerProcessor:
@@ -167,10 +205,19 @@ class SummarizerProcessor:
             self.text = preprocess(input_url)
         else:
             self.text = input_text
-        # log.info(self.text)
-        # word_count = number_of_words(self.text)
+        response = requests.post(
+            "https://api.openai.com/v1/engines/text-davinci-002/jobs",
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={
+                "text": self.text,
+                "prompt": "Please summarize the following article:",
+                "max_tokens": 100,
+            },
+        )
+        summary = response.json()["choices"][0]["text"]
+        return summary
+
         length_of_summary = PERCENTAGE[length]
-        # min_length = summary_length(word_count, min_length_percentage)
         max_length = 1000
         if self.modelName == "google/pegasus-newsroom":
             batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
