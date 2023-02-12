@@ -189,7 +189,7 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
 
 @router.get("/getReports", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
 async def get_reports_topic(topic: str) -> Dict[int, str]:
-    return await get_reports_for_topic(topic)
+    return await crud.get_report_for_topic(topic)
 
 
 @router.get("/getUsage", response_model=List[UsageSchema])
