@@ -81,10 +81,9 @@ async def delete_reports_for_topic(topic: str) -> Union[dict, None]:
 
 async def delete_all_reports() -> List:
     model_class = pydantic_model_creator(Report)
-    objects = await model_class.all().prefetch_related().only('name').values('name')
-    deleted_objects = [obj['name'] for obj in objects]
-    await model_class.all().delete()
-    return deleted_objects
+    objects = await Report.all().delete()
+    return [model_class(**item.__dict__) for item in objects]
+
 
 
 async def get_report_for_topic(topic: str) -> Union[dict, None]:
