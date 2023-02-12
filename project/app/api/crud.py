@@ -6,7 +6,7 @@ import logging
 from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary, Report, Summary, Usage
 from uuid import UUID
-from fastapi import Request
+from tortoise.contrib.pydantic import pydantic_model_creator
 import json
 
 log = logging.getLogger(__name__)
@@ -79,9 +79,10 @@ async def delete_reports_for_topic(topic: str) -> Union[dict, None]:
 
 
 async def delete_all_reports() -> List:
-    objects = await Report.all().prefetch_related().only('id').values('id')
+    model_class = pydantic_model_creator(Report)
+    objects = await model_class.all().prefetch_related().only('id').values('id')
     deleted_objects = [obj['id'] for obj in objects]
-    await Report.all().delete()
+    await model_class.all().delete()
     return deleted_objects
 
 
