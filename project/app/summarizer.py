@@ -274,6 +274,7 @@ async def generate_report(uid: UUID) -> None:
                         report += "<li>" + text + "</li>"
                     report += "</ul>"
             knowledge_graph = await generate_knowledge_graph(topic)
+            log.info(knowledge_graph)
             if knowledge_graph:
                 report += "<div class=\"rightcolumn\"><div class=\"card\">"
                 report += "<h2>" + knowledge_graph.name + "</h2><h5>" + knowledge_graph.description + "</h5>"
