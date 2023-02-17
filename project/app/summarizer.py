@@ -276,10 +276,12 @@ async def generate_report(uid: UUID) -> None:
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
                     report += "<h5>" + month_year + "</h5>" + "<ul style=\"list-style-type:disc\">"
-                    #if isinstance(text, list):
-                        #report += '<li>'.join(text) + "</li>"
-                    #else:
-                    report += "<li>" + text + "</li>"
+                    if isinstance(text, list):
+                        log.info(month_year + "is a list")
+                        report += '<li>'.join(text) + "</li>"
+                        log.info(report)
+                    else:
+                        report += "<li>" + text + "</li>"
                     report += "</ul>"
                 report += "</div>"
             report += "</div>"
