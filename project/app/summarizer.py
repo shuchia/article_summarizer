@@ -18,6 +18,8 @@ from datetime import date, datetime
 from starlette.routing import Match
 from app.api import crud
 import json
+import urllib.parse
+import requests
 
 log = logging.getLogger(__name__)
 
@@ -109,6 +111,16 @@ body {
 </style>
 </head>
 """
+
+
+class KnowledgeGraph:
+    def __init__(self, name, imageurl, description, url, detailed_description, wikipedia_url):
+        self.name = name
+        self.imageurl = imageurl
+        self.description = description
+        self.url = url
+        self.detailed_description = detailed_description
+        self.wikipedia_url = wikipedia_url
 
 
 def isNaN(string):
@@ -255,12 +267,21 @@ async def generate_report(uid: UUID) -> None:
                                                                        summary["url"] + " target=\"_blank>\">" +
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
-                    report += "<h5>" + month_year + "</h5>"+"<ul style=\"list-style-type:disc\">"
+                    report += "<h5>" + month_year + "</h5>" + "<ul style=\"list-style-type:disc\">"
                     if isinstance(text, list):
-                        report += "<p>" + '<br><li>'.join(text) + "</li></p>"
+                        report += '<li>'.join(text) + "</li>"
                     else:
-                        report += "<p><li>" + text + "</li></p>"
+                        report += "<li>" + text + "</li>"
                     report += "</ul>"
+            knowledge_graph = generate_knowledge_graph(topic)
+            if knowledge_graph:
+                report += "<div class=\"rightcolumn\"><div class=\"card\">"
+                report += "<h2>" + knowledge_graph[0].name + "</h2><h5>" + knowledge_graph[0].description + "</h5>"
+                report += "<a href=" + knowledge_graph[0].url + "target=\"_blank>\"><div class =\"fakeimg\" " \
+                                                                "style=\"height:100px;\" >" + knowledge_graph[
+                              0].imageurl + "</div></a> "
+                report += "<p>" + knowledge_graph[0].detailed_description + "&nbsp; <a href=" + knowledge_graph[
+                    0].wikipedia_url + "target=\"_blank>\">" + "Wikipedia" + "</a></div></div>"
             report += "</body></html>"
             report_name = topic_name
             report_id = await crud.createReport(report_name, report)
@@ -316,3 +337,29 @@ async def log_requests(request: Request):
     log.info("client_port: " + str(request.client.port))
     await crud.create_usage_record(params, headers, body, request.client.host, request.client.port, request.method,
                                    request.url)
+
+
+async def generate_knowledge_graph(topic: str):
+    google_api_key = "AIzaSyD-NabzmCJqMH6Tylu_amD452Mm_DJkTT0"
+    service_url = 'https://kgsearch.googleapis.com/v1/entities:search'
+    params = {
+        'query': str(topic),
+        'limit': 1,
+        'indent': True,
+        'key': google_api_key,
+    }
+    url = f'{service_url}?{urllib.parse.urlencode(params)}'
+    log.info(url)
+    response = requests.get(url, verify=None)
+    json_response = json.loads(response.text)
+    knowledge_graph = []
+    try:
+        for element in json_response['itemListElement']:
+            knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image.contentUrl'],
+                                             element['result']['description'],
+                                             element['result']['url'],
+                                             element['result']['detailedDescription.articleBody'],
+                                             element['result']['detailedDescription.url'])
+    except KeyError:
+        print('<Error: Name not found>')
+    return knowledge_graph
