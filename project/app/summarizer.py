@@ -282,7 +282,7 @@ async def generate_report(uid: UUID) -> None:
 
                     else:
                         report += "<li>" + text + "</li>"
-                report += "</ul>"
+                    report += "</ul>"
                 report += "</div>"
             report += "</div>"
             knowledge_graph = await generate_knowledge_graph(topic)
