@@ -244,12 +244,12 @@ async def generate_report(uid: UUID) -> None:
                         dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
                         month_name = dt_object2.strftime("%b")
                         year = dt_object2.strftime("%Y")
-                        if month_name + year in month_year_map:
+                        if month_name + "-" + year in month_year_map:
                             month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + summary["url"])
                         else:
                             month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + summary["url"]]
                 for month_year, text in month_year_map.items():
-                    report += "<h5>" + month_year + "<h5>"
+                    report += "<h5>" + month_year + "</h5>"
                     if isinstance(text, list):
                         report += "<p>" + '<br>'.join(text) + "</p>"
                     else:
