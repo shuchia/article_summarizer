@@ -272,14 +272,13 @@ async def generate_report(uid: UUID) -> None:
                         report += '<li>'.join(text) + "</li>"
                     else:
                         report += "<li>" + text + "</li>"
-                    report += "</ul>"
+                    report += "</ul></div></div>"
             knowledge_graph = await generate_knowledge_graph(topic)
             log.info(knowledge_graph.name + knowledge_graph.description)
             if knowledge_graph:
                 report += "<div class=\"rightcolumn\"><div class=\"card\">"
                 report += "<h2>" + knowledge_graph.name + "</h2><h5>" + knowledge_graph.description + "</h5>"
-                report += "<a href=" + knowledge_graph.url + "target=\"_blank>\"><div class =\"fakeimg\" " \
-                                                             "style=\"height:100px;\" >" + knowledge_graph.imageurl + "</div></a> "
+                report += "<a href=" + knowledge_graph.url + "target=\"_blank>\"><div class =\"fakeimg\" style=\"height:100px;\">" + knowledge_graph.imageurl + "</div></a>"
                 report += "<p>" + knowledge_graph.detailed_description + "&nbsp; <a href=" + knowledge_graph.wikipedia_url + 'target="_blank>">' + "Wikipedia" + "</a></div></div>"
             report += "</body></html>"
             report_name = topic_name
