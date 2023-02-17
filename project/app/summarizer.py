@@ -276,12 +276,10 @@ async def generate_report(uid: UUID) -> None:
             knowledge_graph = await generate_knowledge_graph(topic)
             if knowledge_graph:
                 report += "<div class=\"rightcolumn\"><div class=\"card\">"
-                report += "<h2>" + knowledge_graph[0].name + "</h2><h5>" + knowledge_graph[0].description + "</h5>"
-                report += "<a href=" + knowledge_graph[0].url + "target=\"_blank>\"><div class =\"fakeimg\" " \
-                                                                "style=\"height:100px;\" >" + knowledge_graph[
-                              0].imageurl + "</div></a> "
-                report += "<p>" + knowledge_graph[0].detailed_description + "&nbsp; <a href=" + knowledge_graph[
-                    0].wikipedia_url + "target=\"_blank>\">" + "Wikipedia" + "</a></div></div>"
+                report += "<h2>" + knowledge_graph.name + "</h2><h5>" + knowledge_graph.description + "</h5>"
+                report += "<a href=" + knowledge_graph.url + "target=\"_blank>\"><div class =\"fakeimg\" " \
+                                                             "style=\"height:100px;\" >" + knowledge_graph.imageurl + "</div></a> "
+                report += "<p>" + knowledge_graph.detailed_description + "&nbsp; <a href=" + knowledge_graph.wikipedia_url + 'target="_blank>">' + "Wikipedia" + "</a></div></div>"
             report += "</body></html>"
             report_name = topic_name
             report_id = await crud.createReport(report_name, report)
