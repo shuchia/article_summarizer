@@ -347,6 +347,7 @@ async def generate_knowledge_graph(topic: str):
         'limit': 1,
         'indent': True,
         'key': google_api_key,
+        'types': 'Organization'
     }
     url = f'{service_url}?{urllib.parse.urlencode(params)}'
     log.info(url)
