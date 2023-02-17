@@ -255,11 +255,12 @@ async def generate_report(uid: UUID) -> None:
                                                                        summary["url"] + " target=\"_blank>\">" +
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
-                    report += "<h5>" + month_year + "</h5>"
+                    report += "<h5>" + month_year + "</h5>"+"<ul style=\"list-style-type:disc\">"
                     if isinstance(text, list):
-                        report += "<p>" + '<br>'.join(text) + "</p>"
+                        report += "<p>" + '<br><li>'.join(text) + "</li></p>"
                     else:
-                        report += "<p>" + text + "</p>"
+                        report += "<p><li>" + text + "</li></p>"
+                    report += "</ul>"
             report += "</body></html>"
             report_name = topic_name
             report_id = await crud.createReport(report_name, report)
