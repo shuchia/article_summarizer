@@ -50,8 +50,8 @@ body {
 
 /* Header/Blog Title */
 .header {
-  padding: 30px;
-  font-size: 40px;
+  padding: 10px;
+  font-size: 20px;
   text-align: center;
   background: white;
 }
