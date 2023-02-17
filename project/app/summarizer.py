@@ -108,6 +108,21 @@ body {
     padding: 0;
   }
 }
+.div-with-image {
+  width: 500px;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.div-with-image img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+}
 </style>
 </head>
 """
@@ -280,8 +295,8 @@ async def generate_report(uid: UUID) -> None:
             if knowledge_graph:
                 report += "<div class=\"rightcolumn\"><div class=\"card\">"
                 report += "<h2>" + knowledge_graph.name + "</h2><h5>" + knowledge_graph.description + "</h5>"
-                report += "<a href=" + knowledge_graph.url + "target=\"_blank>\"><div class =\"fakeimg\" style=\"height:100px;\">" + knowledge_graph.imageurl + "</div></a>"
-                report += "<p>" + knowledge_graph.detailed_description + "&nbsp; <a href=" + knowledge_graph.wikipedia_url + 'target="_blank>">' + "Wikipedia" + "</a></div></div>"
+                report += "<div class=\"div-with-image\"><a href=" + knowledge_graph.url + "target=\"_blank\">" + "<img src=" + knowledge_graph.imageurl + "></a></div> "
+                report += "<p>" + knowledge_graph.detailed_description + "&nbsp; <a href=" + knowledge_graph.wikipedia_url + "target=\"_blank>" + "Wikipedia" + "</a></div></div>"
             report += "</body></html>"
             report_name = topic_name
             report_id = await crud.createReport(report_name, report)
