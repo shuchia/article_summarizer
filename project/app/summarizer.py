@@ -227,7 +227,8 @@ async def generate_report(uid: UUID) -> None:
         else:
             report = STATIC_HTML
             topic_name = topic["topic"]
-            report += "<div class=\"header\"><h2>" + topic_name + "</h2><div class=\"row\"><div class=\"leftcolumn\">"
+            report += "<div class=\"header\"><h2>" + topic_name + "</h2></div><div class=\"row\"><div " \
+                                                                  "class=\"leftcolumn\"> "
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             for category in categories:
                 category_name = category["category"]
@@ -245,9 +246,13 @@ async def generate_report(uid: UUID) -> None:
                         month_name = dt_object2.strftime("%b")
                         year = dt_object2.strftime("%Y")
                         if month_name + "-" + year in month_year_map:
-                            month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + summary["url"])
+                            month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + "<a href=" +
+                                                                           summary["url"] + " target=\"_blank>\">" +
+                                                                           summary["url"] + "</a>")
                         else:
-                            month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + summary["url"]]
+                            month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + "<a href=" +
+                                                                       summary["url"] + " target=\"_blank>\">" +
+                                                                       summary["url"] + "</a>"]
                 for month_year, text in month_year_map.items():
                     report += "<h5>" + month_year + "</h5>"
                     if isinstance(text, list):
