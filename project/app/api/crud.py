@@ -33,7 +33,7 @@ async def post(payload: SummaryPayloadSchema) -> int:
 
 
 async def create(url: str, timeframe: str, topic: str, category: str, uid: UUID) -> int:
-    summary = TextSummary(url=url, timeFrame=timeframe, topic=topic, category=category, uid=uid, summary="")
+    summary = TextSummary(url=url, title="", timeFrame=timeframe, topic=topic, category=category, uid=uid, summary="")
     await summary.save()
     return summary.id
 
