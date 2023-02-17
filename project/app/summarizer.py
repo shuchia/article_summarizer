@@ -32,6 +32,83 @@ NUMBERS = {"1": "&#x2776;",
            "9": '&#x277E;',
            "10": '&#x277F;'
            }
+STATIC_HTML = """
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+/* Add a gray background color with some padding */
+body {
+  font-family: Arial;
+  padding: 20px;
+  background: #f1f1f1;
+}
+
+/* Header/Blog Title */
+.header {
+  padding: 30px;
+  font-size: 40px;
+  text-align: center;
+  background: white;
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {   
+  float: left;
+  width: 75%;
+}
+
+/* Right column */
+.rightcolumn {
+  float: left;
+  width: 25%;
+  padding-left: 20px;
+}
+
+/* Fake image */
+.fakeimg {
+  background-color: #aaa;
+  width: 100%;
+  padding: 20px;
+}
+
+/* Add a card effect for articles */
+.card {
+   background-color: white;
+   padding: 20px;
+   margin-top: 20px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Footer */
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+  margin-top: 20px;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {   
+    width: 100%;
+    padding: 0;
+  }
+}
+</style>
+</head>
+"""
 
 
 def isNaN(string):
@@ -148,23 +225,35 @@ async def generate_report(uid: UUID) -> None:
                             report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
                                 "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
         else:
-            report = "<!DOCTYPE html><html><head><title></title></head><body><blockquote><p><strong> "
+            report = STATIC_HTML
             topic_name = topic["topic"]
-            report += topic_name + "</strong></p>"
+            report += "<div class=\"header\"><h2>" + topic_name + "</h2><div class=\"row\"><div class=\"leftcolumn\">"
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             for category in categories:
                 category_name = category["category"]
-                report += "<p>&nbsp;<strong>" + category_name + "</strong></p>"
+                counter = NUMBERS[str(category_counter)]
+                report += "<div class =\"card\"><h2>"
+                report += counter + category_name + "</h2>"
+                # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
+                category_counter += 1
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
+                month_year_map = {}
                 for summary in summaries:
                     if "summary" in summary:
                         ts = summary["timeFrame"]
                         dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
                         month_name = dt_object2.strftime("%b")
                         year = dt_object2.strftime("%Y")
-                        report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
-                        report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
-                            "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
+                        if month_name + year in month_year_map:
+                            month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + summary["url"])
+                        else:
+                            month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + summary["url"]]
+                for month_year, text in month_year_map.items():
+                    report += "<h5>" + month_year + "<h5>"
+                    if isinstance(text, list):
+                        report += "<p>" + '<br>'.join(text) + "</p>"
+                    else:
+                        report += "<p>" + text + "</p>"
             report += "</body></html>"
             report_name = topic_name
             report_id = await crud.createReport(report_name, report)
