@@ -109,19 +109,12 @@ body {
   }
 }
 .div-with-image {
-  width: 500px;
-  height: 300px;
-  position: relative;
-  overflow: hidden;
+  width: 100%;
 }
 
 .div-with-image img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
+  max-width: 100%;
+  height: auto;
 }
 </style>
 </head>
