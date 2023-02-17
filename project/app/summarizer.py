@@ -277,12 +277,14 @@ async def generate_report(uid: UUID) -> None:
                 for month_year, text in month_year_map.items():
                     report += "<h5>" + month_year + "</h5>" + "<ul style=\"list-style-type:disc\">"
                     if isinstance(text, list):
-                        log.info(month_year + "is a list")
-                        report += '<li>'.join(text) + "</li>"
-                        log.info(report)
+                        value_html = "<ul>"
+                        for item in text:
+                            value_html += f"<li>{item}</li>"
+                        value_html += "</ul>"
+                        report += value_html
                     else:
                         report += "<li>" + text + "</li>"
-                    report += "</ul>"
+                report += "</ul>"
                 report += "</div>"
             report += "</div>"
             knowledge_graph = await generate_knowledge_graph(topic)
