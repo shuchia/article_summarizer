@@ -248,8 +248,8 @@ async def generate_report(uid: UUID) -> None:
         else:
             report = STATIC_HTML
             topic_name = topic["topic"]
-            report += "<div class=\"header\"><h2>" + topic_name + "</h2></div><div class=\"row\"><div " \
-                                                                  "class=\"leftcolumn\"> "
+            report += "<div class=\"row\"><div " \
+                      "class=\"leftcolumn\"> "
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             for category in categories:
                 category_name = category["category"]
@@ -268,11 +268,11 @@ async def generate_report(uid: UUID) -> None:
                         year = dt_object2.strftime("%Y")
                         if month_name + "-" + year in month_year_map:
                             month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + "<a href=" +
-                                                                           summary["url"] + " target=\"_blank>\">" +
+                                                                           summary["url"] + " target=\"_blank\">" +
                                                                            summary["title"] + "</a>")
                         else:
                             month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + "<a href=" +
-                                                                       summary["url"] + " target=\"_blank>\">" +
+                                                                       summary["url"] + " target=\"_blank\">" +
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
                     report += "<h5>" + month_year + "</h5>" + "<ul style=\"list-style-type:disc\">"
@@ -280,7 +280,7 @@ async def generate_report(uid: UUID) -> None:
                         report += '<li>'.join(text) + "</li>"
                     else:
                         report += "<li>" + text + "</li>"
-                    report += "</ul>"
+                report += "</ul>"
                 report += "</div>"
             report += "</div>"
             knowledge_graph = await generate_knowledge_graph(topic)
@@ -289,7 +289,7 @@ async def generate_report(uid: UUID) -> None:
                 report += "<div class=\"rightcolumn\"><div class=\"card\">"
                 report += "<h2>" + knowledge_graph.name + "</h2><h5>" + knowledge_graph.description + "</h5>"
                 report += "<div class=\"div-with-image\"><a href=" + knowledge_graph.url + "target=\"_blank\">" + "<img src=" + knowledge_graph.imageurl + "></a></div> "
-                report += "<p>" + knowledge_graph.detailed_description + "&nbsp; <a href=" + knowledge_graph.wikipedia_url + "target=\"_blank>" + "Wikipedia" + "</a></div></div>"
+                report += "<p>" + knowledge_graph.detailed_description + "&nbsp; <a href=" + knowledge_graph.wikipedia_url + "target=\"_blank\">" + "Wikipedia" + "</a></div></div>"
             report += "</body></html>"
             report_name = topic_name
             report_id = await crud.createReport(report_name, report)
