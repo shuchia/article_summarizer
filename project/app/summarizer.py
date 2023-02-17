@@ -362,5 +362,5 @@ async def generate_knowledge_graph(topic: str):
                                              element['result']['detailedDescription.articleBody'],
                                              element['result']['detailedDescription.url'])
     except KeyError as e:
-        log.info('<Error: Name not found>' + e)
+        log.info('<Error: Name not found>' , e)
     return knowledge_graph
