@@ -1,7 +1,4 @@
 import torch
-from transformers import PegasusForConditionalGeneration, PegasusTokenizer, PegasusConfig
-from transformers import T5Tokenizer, T5ForConditionalGeneration, T5Config
-from transformers import BartTokenizer, BartForConditionalGeneration, BartConfig
 import nltk
 import requests
 from requests.adapters import HTTPAdapter
@@ -10,7 +7,6 @@ from urllib3.util.retry import Retry
 import sys
 
 import bs4 as bs  # beautifulsource4
-from urllib.request import Request, urlopen
 import re
 import logging
 import os
@@ -209,8 +205,8 @@ class SummarizerProcessor:
                 self.text = input_url
             else:
                 self.text = input_text
-            log.info(api_key)
-            log.info(self.text)
+            # log.info(api_key)
+            # log.info(self.text)
             response = openai.Completion.create(
                 engine="text-davinci-002",
                 prompt="Please summarize the following article: " + self.text,
@@ -224,33 +220,77 @@ class SummarizerProcessor:
 
         # except Exception as e:
         except openai.OpenAIError as e:
-            print("OpenAI API call failed with error:", e)
+            log.info("OpenAI API call failed with error:", e)
             # Handle exceptions that may occur while sending the GET request or the API request
             log.info("Error: Failed to fetch article or generate summary:", e)
             return "error"
 
-        # length_of_summary = PERCENTAGE[length]
-        # max_length = 1000
-        # if self.modelName == "google/pegasus-newsroom":
-        #     batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
-        #     translated = self.model.generate(**batch)
-        #     tgt_text = self.tokenizer.batch_decode(translated, skip_special_tokens=True)
-        #     # log.info(tgt_text)
-        # elif self.modelName == "facebook/bart-large-cnn":
-        #     nested = nest_sentences(self.text)
-        #     summarized_text = self.generate_summary(nested, max_length)
-        #     list_length = len(summarized_text)
-        #     log.info(input_url)
-        #     log.info(list_length)
-        #     number_items = summary_length(list_length, length_of_summary)
-        #     if number_items == 0:
-        #         number_items = 1
-        #     # nested_summ = nest_sentences(' '.join(summarized_text))
-        #     # tgt_text_list = self.generate_summary(nested_summ,  max_length)
-        #     index = 0
-        #     tgt_text = ""
-        #     while index < number_items:
-        #         tgt_text += summarized_text[index]
-        #         index += 1
-        #     # tgt_text = self.generate_simple_summary(self.text)
-        # return tgt_text
+    async def get_title(self, input_url: str, input_text: str, length: str):
+        """
+            Method to perform the inference
+            :param input_text:
+            :param text:
+            :param length:
+            :param input_url: Input url for the inference
+
+            :return: correct category and confidence for that category
+            """
+        try:
+            if input_url is not None:
+                # self.text = preprocess(input_url)
+                self.text = input_url
+            else:
+                self.text = input_text
+            # log.info(api_key)
+            # log.info(self.text)
+            # Set up the prompt for the OpenAI API
+            prompt = f"Please provide the title of the webpage at the following URL: {self.text}"
+
+            # Send a request to the OpenAI API to generate a completion
+            response = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                max_tokens=100,
+                n=1,
+                stop=None,
+                temperature=0.5,
+            )
+
+            # Extract the title from the OpenAI API response
+            title = response.choices[0].text.strip()
+
+            # Remove any newline or carriage return characters from the title
+            title = re.sub('[\n\r]+', '', title)
+            return title
+
+        # except Exception as e:
+        except openai.OpenAIError as e:
+            log.info("OpenAI API call failed with error:", e)
+            # Handle exceptions that may occur while sending the GET request or the API request
+            log.info("Error: Failed to fetch article or generate summary:", e)
+            return "error"
+    # length_of_summary = PERCENTAGE[length]
+    # max_length = 1000
+    # if self.modelName == "google/pegasus-newsroom":
+    #     batch = self.tokenizer(self.text, truncation=True, padding='longest', return_tensors="pt").to(torch_device)
+    #     translated = self.model.generate(**batch)
+    #     tgt_text = self.tokenizer.batch_decode(translated, skip_special_tokens=True)
+    #     # log.info(tgt_text)
+    # elif self.modelName == "facebook/bart-large-cnn":
+    #     nested = nest_sentences(self.text)
+    #     summarized_text = self.generate_summary(nested, max_length)
+    #     list_length = len(summarized_text)
+    #     log.info(input_url)
+    #     log.info(list_length)
+    #     number_items = summary_length(list_length, length_of_summary)
+    #     if number_items == 0:
+    #         number_items = 1
+    #     # nested_summ = nest_sentences(' '.join(summarized_text))
+    #     # tgt_text_list = self.generate_summary(nested_summ,  max_length)
+    #     index = 0
+    #     tgt_text = ""
+    #     while index < number_items:
+    #         tgt_text += summarized_text[index]
+    #         index += 1
+    #     # tgt_text = self.generate_simple_summary(self.text)
+    # return tgt_text

@@ -156,10 +156,11 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
                 summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
                 summary = await summary_process.inference(input_url=url, input_text='', length=length)
+                title = await summary_process.get_title(input_url=url, input_text='', length=length)
 
                 await asyncio.sleep(1)
 
-                await TextSummary.filter(id=summary_id).update(summary=summary)
+                await TextSummary.filter(id=summary_id).update(summary=summary, title=title)
                 task.processed_ids[summary_id] = url
             except:
                 log.exception("url errored " + url)
@@ -199,14 +200,14 @@ async def generate_report(uid: UUID) -> None:
                                 report = report[:month_year_found + len(month_name + "-" + year)] + "<p><strong>" + \
                                          summary[
                                              "summary"] + "<br>" + "<a href=" + summary[
-                                             "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p>" + \
+                                             "url"] + " target=\"_blank>\">" + summary["title"] + "</a></strong></p>" + \
                                          report[month_year_found + len(month_name + "-" + year):]
                             else:
                                 report = report[:position + len(
                                     category_name)] + "<p><strong>" + month_name + "-" + year + "</strong></p>" \
                                                                                                 "<p><strong>" + summary[
                                              "summary"] + "<br>" + "<a href=" + summary[
-                                             "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p>" + \
+                                             "url"] + " target=\"_blank>\">" + summary["title"] + "</a></strong></p>" + \
                                          report[position + len(category_name):]
                                 month_year_added = True
                 else:
@@ -248,11 +249,11 @@ async def generate_report(uid: UUID) -> None:
                         if month_name + "-" + year in month_year_map:
                             month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + "<a href=" +
                                                                            summary["url"] + " target=\"_blank>\">" +
-                                                                           summary["url"] + "</a>")
+                                                                           summary["title"] + "</a>")
                         else:
                             month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + "<a href=" +
                                                                        summary["url"] + " target=\"_blank>\">" +
-                                                                       summary["url"] + "</a>"]
+                                                                       summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
                     report += "<h5>" + month_year + "</h5>"
                     if isinstance(text, list):
