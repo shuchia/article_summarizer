@@ -30,4 +30,5 @@ email = \"\"\n\
 RUN bash -c 'echo -e "\
 [server]\n\
 enableCORS = false\n\
+enableXsrfProtection=false\n\
 " > /root/.streamlit/config.toml'
