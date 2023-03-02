@@ -33,7 +33,5 @@ enableCORS = false\n\
 enableXsrfProtection=false\n\
 headless=true\n\
 port=443\n\
-certfile =/home/ubuntu/cert.pem\n\
-keyfile =/home/ubuntu/private-key.pem\n\
 \n\
 " > /root/.streamlit/config.toml'
