@@ -21,6 +21,7 @@ services:
     environment:
       - ENVIRONMENT=dev
       - TESTING=0
+      - DOMAIN=ml.fipointer.com
       - CERT_PATH=/app/cert.pem
       - KEY_PATH=/app/key.pem
       - DATABASE_URL=postgres://shuchiagarwal:nakul300@web-db:5432/shuchiagarwal
