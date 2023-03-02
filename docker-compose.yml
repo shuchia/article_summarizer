@@ -13,11 +13,16 @@ services:
               capabilities: [gpu]
     volumes:
       - ./project:/usr/src/app
+      - /home/ubuntu/cert.pem:/app/cert.pem
+      - /home/ubuntu/private_key.pem:/app/key.pem
     ports:
-      - 8002:8000
+      #- 8002:8000
+      - 443:8080
     environment:
       - ENVIRONMENT=dev
       - TESTING=0
+      - CERT_PATH=/app/cert.pem
+      - KEY_PATH=/app/key.pem
       - DATABASE_URL=postgres://shuchiagarwal:nakul300@web-db:5432/shuchiagarwal
       - DATABASE_TEST_URL=postgres://postgres:postgres@web-db:5432/web_test
     depends_on:
