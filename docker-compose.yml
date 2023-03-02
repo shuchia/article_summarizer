@@ -16,8 +16,8 @@ services:
       - /home/ubuntu/cert.pem:/app/cert.pem
       - /home/ubuntu/private_key.pem:/app/key.pem
     ports:
-      #- 8002:8000
-      - 443:8080
+      - 8002:8000
+      #- 443:8000
     environment:
       - ENVIRONMENT=dev
       - TESTING=0
