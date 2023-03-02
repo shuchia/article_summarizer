@@ -32,6 +32,5 @@ RUN bash -c 'echo -e "\
 enableCORS = false\n\
 enableXsrfProtection=false\n\
 headless=true\n\
-port=443\n\
 \n\
 " > /root/.streamlit/config.toml'
