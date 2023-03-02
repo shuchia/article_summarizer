@@ -5,6 +5,7 @@ import logging
 from fastapi import FastAPI, Depends, HTTPException, status, Header
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse
 
 from app.api import ping, summaries
 from app.db import init_db
@@ -15,7 +16,6 @@ import base64
 from app.oauth2 import fake_users_db, get_user
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-
 
 log = logging.getLogger(__name__)
 
@@ -124,6 +124,14 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     log.info("Shutting down...")
+
+
+favicon_path = 'favicon.ico'
+
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse(favicon_path)
 
 
 @app.get('/api/access/auth', dependencies=[Depends(authorize)])
