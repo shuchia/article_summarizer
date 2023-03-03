@@ -139,7 +139,7 @@ async def hello_world():
 async def favicon():
     favicon_path = 'static/favicon.ico'
     file_path = os.path.join(app.root_path, "static")
-    return FileResponse(path=file_path, headers={"Content-Disposition": "attachment; filename=" + file_name})
+    return FileResponse(path=file_path, headers={"Content-Disposition": "attachment; filename=" + favicon_path})
 
 
 @app.get('/api/access/auth', dependencies=[Depends(authorize)])
