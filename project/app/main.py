@@ -129,9 +129,6 @@ async def shutdown_event():
     log.info("Shutting down...")
 
 
-
-
-
 @app.get('/')
 async def hello_world():
     return {'FiPointer': 'Summary'}
