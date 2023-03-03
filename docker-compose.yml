@@ -3,7 +3,7 @@ version: '3.3'
 services:
   web:
     build: ./project
-    command: uvicorn app.main:app --reload --workers 1 --host 54.152.94.32 --port 8000
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     deploy:
       resources:
         reservations:
