@@ -137,7 +137,7 @@ async def hello_world():
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
-    favicon_path = 'favicon.ico'
+    favicon_path = 'static/favicon.ico'
     file_path = os.path.join(app.root_path, "static")
     return FileResponse(path=file_path, headers={"Content-Disposition": "attachment; filename=" + file_name})
 
