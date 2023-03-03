@@ -6,6 +6,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, Header
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api import ping, summaries
 from app.db import init_db
@@ -104,6 +105,8 @@ def authorize(credentials: HTTPBasicCredentials = Depends(security)):
 
 app = create_application()
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 def register_exception(app: FastAPI):
     @app.exception_handler(RequestValidationError)
@@ -126,12 +129,19 @@ async def shutdown_event():
     log.info("Shutting down...")
 
 
-favicon_path = 'favicon.ico'
+
+
+
+@app.get('/')
+async def hello_world():
+    return {'FiPointer': 'Summary'}
 
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
-    return FileResponse(favicon_path)
+    favicon_path = 'favicon.ico'
+    file_path = os.path.join(app.root_path, "static")
+    return FileResponse(path=file_path, headers={"Content-Disposition": "attachment; filename=" + file_name})
 
 
 @app.get('/api/access/auth', dependencies=[Depends(authorize)])
