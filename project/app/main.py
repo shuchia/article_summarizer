@@ -6,7 +6,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, Header
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
+
 import os
 
 from app.api import ping, summaries
@@ -22,6 +22,7 @@ from starlette.responses import JSONResponse
 log = logging.getLogger(__name__)
 
 security = HTTPBasic()
+parent_dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
 def create_application() -> FastAPI:
@@ -106,8 +107,6 @@ def authorize(credentials: HTTPBasicCredentials = Depends(security)):
 
 app = create_application()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 
 def register_exception(app: FastAPI):
     @app.exception_handler(RequestValidationError)
@@ -132,13 +131,13 @@ async def shutdown_event():
 
 @app.get('/')
 async def hello_world():
-    return {'FiPointer': 'Summary'}
+    return FileResponse(parent_dir_path + '/static/test.html')
 
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
-    favicon_path = 'static/favicon.ico'
-    file_path = os.path.join(app.root_path, "static")
+    favicon_path = '/favicon.ico'
+    file_path = os.path.join(parent_dir_path, "static")
     return FileResponse(path=file_path, headers={"Content-Disposition": "attachment; filename=" + favicon_path})
 
 
