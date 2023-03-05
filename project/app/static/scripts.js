@@ -208,7 +208,7 @@ App = function() {
 			e && (a = e), this.initLocalStorage(), this.initSidebar(), this.initTopMenu(), this.initComponent(), this.initThemePanel(), this.initPageLoad(), $(window).trigger("load"), a && a.ajaxMode && this.initAjax()
 		},
 		initSidebar: function() {
-			handleSidebarMenu(), handleMobileSidebarToggle(), handleSidebarMinify(), handleSidebarMinifyFloatMenu(),  handleToggleNavbarSearch(), (!a || a && !a.disableSidebarScrollMemory) && handleSidebarScrollMemory()
+			handleSidebarMenu(), handleMobileSidebarToggle(), handleSidebarMinify(), handleSidebarMinifyFloatMenu(), (!a || a && !a.disableSidebarScrollMemory) && handleSidebarScrollMemory()
 		},
 		initSidebarSelection: function() {
 			handleClearSidebarSelection()
