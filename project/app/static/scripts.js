@@ -1,7 +1,7 @@
 var floatSubMenuTimeout, targetFloatMenu, handleSlimScroll = function() {
 	"use strict";
 	$.when($("[data-scrollbar=true]").each(function() {
-		generateSlimScroll($(this))
+
 	})).done(function() {
 		$('[data-scrollbar="true"]').mouseover()
 	})
