@@ -205,7 +205,7 @@ App = function() {
 	var a;
 	return {
 		init: function(e) {
-			e && (a = e), this.initLocalStorage(), this.initSidebar(), this.initTopMenu(), this.initComponent(), this.initThemePanel(), this.initPageLoad(), $(window).trigger("load"), a && a.ajaxMode && this.initAjax()
+			e && (a = e), this.initLocalStorage(), this.initSidebar(), this.initComponent(), this.initThemePanel(), this.initPageLoad(), $(window).trigger("load"), a && a.ajaxMode && this.initAjax()
 		},
 		initSidebar: function() {
 			handleSidebarMenu(), handleMobileSidebarToggle(), handleSidebarMinify(), handleSidebarMinifyFloatMenu()
