@@ -131,7 +131,7 @@ async def shutdown_event():
 
 @app.get('/')
 async def hello_world():
-    return FileResponse(parent_dir_path + '/static/test.html')
+    return FileResponse(parent_dir_path + '../static/report.html')
 
 
 @app.get('/favicon.ico', include_in_schema=False)
