@@ -246,20 +246,53 @@ async def generate_report(uid: UUID) -> None:
                             report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
                                 "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
         else:
-            report = STATIC_HTML
+            with open('static/report.html', mode='r') as myfile:
+                for i in range(46):
+                    report = myfile.readline()
+                    if not report:  # If end of file is reached before the desired line number
+                        break
+            # report = STATIC_HTML
+            knowledge_graph = await generate_knowledge_graph(topic)
+            log.info(knowledge_graph.name + knowledge_graph.description)
+            report += "<aside id=\"menu\"><div id=\"navigation\">"
+            if knowledge_graph:
+                report += "<div class =\"profile-picture\">< a href = " + knowledge_graph.url + ">< img src = " + knowledge_graph.imageurl
+                + "class =\"img-circle m-b\" alt=\"logo\" ></a>"
+                report += "<div class=\"stats-label text-color\"> <span class=\"font-extra-bold font-uppercase\">" + \
+                          knowledge_graph.name + "</span>"
+                report += "<small class=\"text-muted\">" + knowledge_graph.description + "</small>"
+                report += "< div >< h4 class =\"font-extra-bold m-b-xs\" > " + knowledge_graph.detailed_description + \
+                          "<a href=" + knowledge_graph.wikipedia_url + "target=\"_blank\">" + "Wikipedia" + \
+                          "</a>< / div > "
+                report += "</div></div>"
+
             topic_name = topic["topic"]
-            report += "<div class=\"row\"><div " \
-                      "class=\"leftcolumn\"> "
+            report += "<ul class=\"nav\" id=\"side-menu\"></ul>"
+
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
+            category_list = []
             for category in categories:
                 category_name = category["category"]
                 counter = NUMBERS[str(category_counter)]
-                report += "<div class =\"card\"><h2>"
-                report += counter + category_name + "</h2>"
-                # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
+                category_list.append(category_name)
+
+                report += "<li><a href=\"#\" class=\"toggle-button\" data-target=" + category_name + "><span " \
+                                                                                                     "class=\"nav" \
+                                                                                                     "-label\">" + \
+                          counter + category_name + "</span></a>"
                 category_counter += 1
+            report += "</div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-md-4\"><div " \
+                      "id=\"nestable-menu\"><button " \
+                      "type=\"button\" data-action=\"expand-all\" class=\"btn btn-default btn-sm\">Expand " \
+                      "All</button><button type=\"button\" data-action=\"collapse-all\" class=\"btn btn-default " \
+                      "btn-sm\">Collapse All</button</div></div></div><div class=\"row\"><div class=\"col-lg-6\"><div " \
+                      "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
+                      "role=\"tablist\" aria-multiselectable=\"true\"> "
+            for category_name in category_list:
+                # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
                 month_year_map = {}
+
                 for summary in summaries:
                     if "summary" in summary:
                         ts = summary["timeFrame"]
@@ -275,7 +308,13 @@ async def generate_report(uid: UUID) -> None:
                                                                        summary["url"] + " target=\"_blank\">" +
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
-                    report += "<h5>" + month_year + "</h5>" + "<ul style=\"list-style-type:disc\">"
+                    report += "<div id=" + category_name + "style=\"display:none\" class=\"panel panel-default " \
+                            "toggle-content\"><div class=\"panel-heading\" role=\"tab\" " \
+                            "id=\"headingOne\"><h4 class=\"panel-title\"><a " \
+                            "data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\" " \
+                            "aria-expanded=\"true\" aria-controls=\"collapseOne\">" + month_year + "</a></h4""></div> "\
+                            "<div id=\"collapseOne\" class=\"panel-collapse collapse\" role=\"tabpanel\" " \
+                            "aria-labelledby=\"headingOne\"><div class=\"panel-body\">" + "<ul>"
                     if isinstance(text, list):
                         for item in text:
                             report += f"<li>{item}</li>"
@@ -283,16 +322,12 @@ async def generate_report(uid: UUID) -> None:
                     else:
                         report += "<li>" + text + "</li>"
                     report += "</ul>"
-                report += "</div>"
-            report += "</div>"
-            knowledge_graph = await generate_knowledge_graph(topic)
-            log.info(knowledge_graph.name + knowledge_graph.description)
-            if knowledge_graph:
-                report += "<div class=\"rightcolumn\"><div class=\"card\">"
-                report += "<h2>" + knowledge_graph.name + "</h2><h5>" + knowledge_graph.description + "</h5>"
-                report += "<div class=\"div-with-image\"><a href=" + knowledge_graph.url + "target=\"_blank\">" + "<img src=" + knowledge_graph.imageurl + "></a></div> "
-                report += "<p>" + knowledge_graph.detailed_description + "&nbsp; <a href=" + knowledge_graph.wikipedia_url + "target=\"_blank\">" + "Wikipedia" + "</a></div></div>"
-            report += "</body></html>"
+                    report += "</div>"
+                    report += "</div>"
+
+            with open('static/report.html', mode='r') as myfile:
+                report = myfile.readlines()[201:]  # Read all lines starting from line 3
+
             report_name = topic_name
             report_id = await crud.createReport(report_name, report)
             report_ids[report_id] = report_name + ".html"
