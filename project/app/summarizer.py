@@ -166,10 +166,13 @@ async def generate_report(uid: UUID) -> None:
         else:
             with open(st_abs_file_path + 'report.html', mode='r') as myfile:
                 for i in range(46):
-                    report = myfile.readline()
-                    if not report:  # If end of file is reached before the desired line number
+                    reportheader = myfile.readlines()
+                    if not reportheader:  # If end of file is reached before the desired line number
                         break
+                    myreportheader = ''.join(reportheader)
+
             # report = STATIC_HTML
+            report += myreportheader
             knowledge_graph = await generate_knowledge_graph(topic)
             log.info(knowledge_graph.name + knowledge_graph.description)
             report += "<aside id=\"menu\"><div id=\"navigation\">"
