@@ -20,6 +20,7 @@ from app.api import crud
 import json
 import urllib.parse
 import requests
+import os
 
 log = logging.getLogger(__name__)
 
@@ -34,91 +35,6 @@ NUMBERS = {"1": "&#x2776;",
            "9": '&#x277E;',
            "10": '&#x277F;'
            }
-STATIC_HTML = """
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-* {
-  box-sizing: border-box;
-}
-
-/* Add a gray background color with some padding */
-body {
-  font-family: Arial;
-  padding: 20px;
-  background: #f1f1f1;
-}
-
-/* Header/Blog Title */
-.header {
-  padding: 10px;
-  font-size: 20px;
-  text-align: center;
-  background: white;
-}
-
-/* Create two unequal columns that floats next to each other */
-/* Left column */
-.leftcolumn {   
-  float: left;
-  width: 75%;
-}
-
-/* Right column */
-.rightcolumn {
-  float: left;
-  width: 25%;
-  padding-left: 20px;
-}
-
-/* Fake image */
-.fakeimg {
-  background-color: #aaa;
-  width: 100%;
-  padding: 20px;
-}
-
-/* Add a card effect for articles */
-.card {
-   background-color: white;
-   padding: 20px;
-   margin-top: 20px;
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* Footer */
-.footer {
-  padding: 20px;
-  text-align: center;
-  background: #ddd;
-  margin-top: 20px;
-}
-
-/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 800px) {
-  .leftcolumn, .rightcolumn {   
-    width: 100%;
-    padding: 0;
-  }
-}
-.div-with-image {
-  width: 100%;
-}
-
-.div-with-image img {
-  max-width: 100%;
-  height: auto;
-}
-</style>
-</head>
-"""
 
 
 class KnowledgeGraph:
@@ -192,6 +108,8 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
 
 
 async def generate_report(uid: UUID) -> None:
+    script_dir = os.path.dirname(__file__)
+    st_abs_file_path = os.path.join(script_dir, "static/")
     report_ids: Dict[int, str] = {}
     topics = await crud.get_group_of_topics(uid)
     for topic in topics:
@@ -246,7 +164,7 @@ async def generate_report(uid: UUID) -> None:
                             report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
                                 "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
         else:
-            with open('static/report.html', mode='r') as myfile:
+            with open(st_abs_file_path + 'report.html', mode='r') as myfile:
                 for i in range(46):
                     report = myfile.readline()
                     if not report:  # If end of file is reached before the desired line number
@@ -309,12 +227,12 @@ async def generate_report(uid: UUID) -> None:
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
                     report += "<div id=" + category_name + "style=\"display:none\" class=\"panel panel-default " \
-                            "toggle-content\"><div class=\"panel-heading\" role=\"tab\" " \
-                            "id=\"headingOne\"><h4 class=\"panel-title\"><a " \
-                            "data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\" " \
-                            "aria-expanded=\"true\" aria-controls=\"collapseOne\">" + month_year + "</a></h4""></div> "\
-                            "<div id=\"collapseOne\" class=\"panel-collapse collapse\" role=\"tabpanel\" " \
-                            "aria-labelledby=\"headingOne\"><div class=\"panel-body\">" + "<ul>"
+                                                           "toggle-content\"><div class=\"panel-heading\" role=\"tab\" " \
+                                                           "id=\"headingOne\"><h4 class=\"panel-title\"><a " \
+                                                           "data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\" " \
+                                                           "aria-expanded=\"true\" aria-controls=\"collapseOne\">" + month_year + "</a></h4""></div> " \
+                                                                                                                                  "<div id=\"collapseOne\" class=\"panel-collapse collapse\" role=\"tabpanel\" " \
+                                                                                                                                  "aria-labelledby=\"headingOne\"><div class=\"panel-body\">" + "<ul>"
                     if isinstance(text, list):
                         for item in text:
                             report += f"<li>{item}</li>"
@@ -325,7 +243,7 @@ async def generate_report(uid: UUID) -> None:
                     report += "</div>"
                     report += "</div>"
 
-            with open('static/report.html', mode='r') as myfile:
+            with open(st_abs_file_path + 'report.html', mode='r') as myfile:
                 report = myfile.readlines()[201:]  # Read all lines starting from line 3
 
             report_name = topic_name
