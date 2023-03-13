@@ -172,7 +172,7 @@ async def generate_report(uid: UUID) -> None:
                     myreportheader = ''.join(reportheader)
 
             # report = STATIC_HTML
-            report += myreportheader
+            report = myreportheader
             knowledge_graph = await generate_knowledge_graph(topic)
             log.info(knowledge_graph.name + knowledge_graph.description)
             report += "<aside id=\"menu\"><div id=\"navigation\">"
