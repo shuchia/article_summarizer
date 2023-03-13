@@ -243,8 +243,8 @@ async def generate_report(uid: UUID) -> None:
                     report += "</div>"
 
             with open(st_abs_file_path + 'report.html', mode='r') as myfile:
-                report = myfile.readlines()[201:]  # Read all lines starting from line 3
-
+                myreport = myfile.readlines()[201:]  # Read all lines starting from line 3
+            report += myreport
             report_name = topic_name
             report_id = await crud.createReport(report_name, report)
             report_ids[report_id] = report_name + ".html"
