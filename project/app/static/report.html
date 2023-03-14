@@ -225,7 +225,7 @@
 
 
 <script>
-
+const toggleButtons = document.querySelectorAll(".toggle-button");
     $(function () {
 
         var updateOutput = function (e) {
@@ -263,7 +263,6 @@
         });
 
     });
-const toggleButtons = document.querySelectorAll(".toggle-button");
 
 toggleButtons.forEach((button) => {
   button.addEventListener("click", () => {
