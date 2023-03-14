@@ -165,6 +165,7 @@ async def generate_report(uid: UUID) -> None:
                                 "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
         else:
             lines_to_read = 46
+            report=""
             line_count = 0
             with open(st_abs_file_path + 'report.html', "r") as myfile:
                 for line in myfile:
