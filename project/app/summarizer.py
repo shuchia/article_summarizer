@@ -164,14 +164,14 @@ async def generate_report(uid: UUID) -> None:
                             report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
                                 "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
         else:
-            with open(st_abs_file_path + 'report.html', mode='r') as myfile:
-                for i in range(46):
-                    reportheader = myfile.readlines()
-                    if not reportheader:  # If end of file is reached before the desired line number
+            lines_to_read = 46
+            line_count = 0
+            with open(st_abs_file_path + 'report.html', "r") as myfile:
+                for line in myfile:
+                    if line_count == lines_to_read:
                         break
-                    report = ''.join(reportheader)
-
-            # report = STATIC_HTML
+                    report = ''.join(line)
+                    line_count += 1
 
             knowledge_graph = await generate_knowledge_graph(topic)
             log.info(knowledge_graph.name + knowledge_graph.description)
