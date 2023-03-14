@@ -170,7 +170,7 @@ async def generate_report(uid: UUID) -> None:
                 for line in myfile:
                     if line_count == lines_to_read:
                         break
-                    report = ''.join(line)
+                    report += line
                     line_count += 1
 
             knowledge_graph = await generate_knowledge_graph(topic)
