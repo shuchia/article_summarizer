@@ -226,6 +226,18 @@
 
 <script>
 const toggleButtons = document.querySelectorAll(".toggle-button");
+toggleButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const targetId = button.getAttribute("data-target");
+    const targetDiv = document.getElementById(targetId);
+
+    if (targetDiv.style.display === "none") {
+      targetDiv.style.display = "block";
+    } else {
+      targetDiv.style.display = "none";
+    }
+  });
+});
     $(function () {
 
         var updateOutput = function (e) {
@@ -264,18 +276,7 @@ const toggleButtons = document.querySelectorAll(".toggle-button");
 
     });
 
-toggleButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const targetId = button.getAttribute("data-target");
-    const targetDiv = document.getElementById(targetId);
 
-    if (targetDiv.style.display === "none") {
-      targetDiv.style.display = "block";
-    } else {
-      targetDiv.style.display = "none";
-    }
-  });
-});
 
 </script>
 
