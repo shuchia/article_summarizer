@@ -165,7 +165,7 @@ async def generate_report(uid: UUID) -> None:
                                 "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
         else:
             lines_to_read = 46
-            report=""
+            report = ""
             line_count = 0
             with open(st_abs_file_path + 'report.html', "r") as myfile:
                 for line in myfile:
@@ -178,7 +178,7 @@ async def generate_report(uid: UUID) -> None:
             log.info(knowledge_graph.name + knowledge_graph.description)
             report += "<aside id=\"menu\"><div id=\"navigation\">"
             if knowledge_graph:
-                report += "<div class =\"profile-picture\">< a href = " + knowledge_graph.url + ">< img src = " + knowledge_graph.imageurl + "class =\"img-circle m-b\" alt=\"logo\" ></a>"
+                report += "<div class =\"profile-picture\"><a href = " + knowledge_graph.url + ">< img src = " + knowledge_graph.imageurl + "class =\"img-circle m-b\" alt=\"logo\" ></a>"
                 report += "<div class=\"stats-label text-color\"> <span class=\"font-extra-bold font-uppercase\">" + \
                           knowledge_graph.name + "</span>"
                 report += "<small class=\"text-muted\">" + knowledge_graph.description + "</small>"
