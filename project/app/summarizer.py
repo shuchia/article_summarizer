@@ -232,7 +232,7 @@ async def generate_report(uid: UUID) -> None:
                     report += "<div id=" + "\"" + category_title + "\" style=\"display:none\" class=\"panel panel-default "\
                                                            "toggle-content\"><div class=\"panel-heading\" role=\"tab\" "\
                                                            "id=\"headingOne\"><h4 class=\"panel-title\"><a" \
-                                                           "data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\" " \
+                                                           "data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\" "\
                                                            "aria-expanded=\"true\" aria-controls=\"collapseOne\">" + month_year + "</a></h4""></div> " \ 
                                                             "<div id=\"collapseOne\" class=\"panel-collapse collapse\" role=\"tabpanel\" " \ 
                                                             "aria-labelledby=\"headingOne\"><div class=\"panel-body\"><ul>"
