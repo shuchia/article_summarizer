@@ -214,7 +214,7 @@ async def generate_report(uid: UUID) -> None:
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
                 month_year_map = {}
                 counter = NUMBERS[str(category_counter)]
-                if counter ==1:
+                if counter == 1:
                     report += "<div id=" + "\"" + category_title + "\" class=\"panel " \
                                                                "panel-default " \
                                                                "toggle-content\">"
