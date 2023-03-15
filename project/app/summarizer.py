@@ -215,6 +215,7 @@ async def generate_report(uid: UUID) -> None:
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
                 month_year_map = {}
                 count = NUMBERS[str(category_counter)]
+                log.info(count)
                 if count == 1:
                     report += "<div id=" + "\"" + category_title + "\" class=\"panel " \
                                                                "panel-default " \
@@ -240,14 +241,14 @@ async def generate_report(uid: UUID) -> None:
                 for month_year, text in month_year_map.items():
                     report += "<div class=\"panel-heading\" " \
                               "role=\"tab\" " \
-                              "id=\"headingOne\"><h4 class=\"panel-title\"><a " \
+                              "id=" "\"" + "heading"+category_title+month_year + "\" <h4 class=\"panel-title\"><a " \
                               "data-toggle=\"collapse\" " \
-                              "data-parent=\"#accordion\" href=\"#collapseOne\" " \
+                              "data-parent=\"#accordion\" href=\"" + "#collapse"+category_title+month_year + "\" " \
                               "aria-expanded=\"true\" " \
-                              "aria-controls=\"collapseOne\">" + month_year + \
-                              "</a></h4></div><div id=\"collapseOne\" class=\"panel-collapse collapse\" " \
+                              "aria-controls=\"" + "#collapse"+category_title+month_year + "\">" + month_year + \
+                              "</a></h4></div><div id=\"collapse"+category_title+month_year + "\" class=\"panel-collapse collapse\" " \
                               "role=\"tabpanel\" " \
-                              "aria-labelledby=\"headingOne\"><div " \
+                              "aria-labelledby=\"" + "heading"+category_title+month_year + "\"><div " \
                               "class=\"panel-body\"><ul> "
                     if isinstance(text, list):
                         for item in text:
