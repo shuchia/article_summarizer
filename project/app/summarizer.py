@@ -178,7 +178,7 @@ async def generate_report(uid: UUID) -> None:
             log.info(knowledge_graph.name + knowledge_graph.description)
             report += "<aside id=\"menu\"><div id=\"navigation\">"
             if knowledge_graph:
-                report += "<div class =\"profile-picture\"><a href=" + knowledge_graph.url + "><img src =" + knowledge_graph.imageurl + "class =\"img-circle m-b\" alt=\"logo\" ></a>"
+                report += "<div class =\"profile-picture\"><a href=" + knowledge_graph.url + "><img src =" + knowledge_graph.imageurl + " class =\"img-circle m-b\" alt=\"logo\" ></a>"
                 report += "<div class=\"stats-label text-color\"> <span class=\"font-extra-bold font-uppercase\">" + \
                           knowledge_graph.name + "</span>"
                 report += "<small class=\"text-muted\">" + knowledge_graph.description + "</small>"
