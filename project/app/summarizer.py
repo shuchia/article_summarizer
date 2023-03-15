@@ -213,9 +213,15 @@ async def generate_report(uid: UUID) -> None:
                 # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
                 month_year_map = {}
-                report += "<div id=" + "\"" + category_title + "\" style=\"display:none\" class=\"panel " \
+                counter = NUMBERS[str(category_counter)]
+                if counter ==1:
+                    report += "<div id=" + "\"" + category_title + "\" class=\"panel " \
                                                                "panel-default " \
                                                                "toggle-content\">"
+                else:
+                    report += "<div id=" + "\"" + category_title + "\" style=\"display:none\" class=\"panel " \
+                                                                   "panel-default " \
+                                                                   "toggle-content\">"
                 for summary in summaries:
                     if "summary" in summary:
                         ts = summary["timeFrame"]
