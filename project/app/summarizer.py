@@ -229,13 +229,19 @@ async def generate_report(uid: UUID) -> None:
                                                                        summary["url"] + " target=\"_blank\">" +
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
-                    report += "<div id=" + "\"" + category_title + "\" style=\"display:none\" class=\"panel panel-default "\
-                                                           "toggle-content\"><div class=\"panel-heading\" role=\"tab\" "\
-                                                           "id=\"headingOne\"><h4 class=\"panel-title\"><a" \
-                                                           "data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\" "\
-                                                           "aria-expanded=\"true\" aria-controls=\"collapseOne\">" + month_year + "</a></h4></div> " \ 
-                                                            "<div id=\"collapseOne\" class=\"panel-collapse collapse\" role=\"tabpanel\" " \ 
-                                                            "aria-labelledby=\"headingOne\"><div class=\"panel-body\"><ul>"
+                    report += "<div id=" + "\"" + category_title + "\" style=\"display:none\" class=\"panel " \
+                                                                   "panel-default " \
+                                                                   "toggle-content\"><div class=\"panel-heading\" " \
+                                                                   "role=\"tab\" " \
+                                                                   "id=\"headingOne\"><h4 class=\"panel-title\"><a" \
+                                                                   "data-toggle=\"collapse\" " \
+                                                                   "data-parent=\"#accordion\" href=\"#collapseOne\" " \
+                                                                   "aria-expanded=\"true\" " \
+                                                                   "aria-controls=\"collapseOne\">" + month_year + \
+                              "</a></h4></div><div id=\"collapseOne\" class=\"panel-collapse collapse\" " \
+                              "role=\"tabpanel\" " \
+                              "aria-labelledby=\"headingOne\"><div " \
+                              "class=\"panel-body\"><ul> "
                     if isinstance(text, list):
                         for item in text:
                             report += f"<li>{item}</li>"
