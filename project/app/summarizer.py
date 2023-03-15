@@ -233,7 +233,7 @@ async def generate_report(uid: UUID) -> None:
                                                                    "panel-default " \
                                                                    "toggle-content\"><div class=\"panel-heading\" " \
                                                                    "role=\"tab\" " \
-                                                                   "id=\"headingOne\"><h4 class=\"panel-title\"><a" \
+                                                                   "id=\"headingOne\"><h4 class=\"panel-title\"><a " \
                                                                    "data-toggle=\"collapse\" " \
                                                                    "data-parent=\"#accordion\" href=\"#collapseOne\" " \
                                                                    "aria-expanded=\"true\" " \
