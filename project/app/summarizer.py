@@ -255,7 +255,7 @@ async def generate_report(uid: UUID) -> None:
                     else:
                         report += "<li>" + text + "</li>"
                     report += "</ul>"
-                    report += "</div>"
+                    report += "</div></div>"
             report += "</div>"
 
             with open(st_abs_file_path + 'report.html', mode='r') as myfile:
