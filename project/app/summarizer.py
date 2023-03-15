@@ -213,7 +213,9 @@ async def generate_report(uid: UUID) -> None:
                 # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
                 month_year_map = {}
-
+                report += "<div id=" + "\"" + category_title + "\" style=\"display:none\" class=\"panel " \
+                                                               "panel-default " \
+                                                               "toggle-content\">"
                 for summary in summaries:
                     if "summary" in summary:
                         ts = summary["timeFrame"]
@@ -229,15 +231,13 @@ async def generate_report(uid: UUID) -> None:
                                                                        summary["url"] + " target=\"_blank\">" +
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
-                    report += "<div id=" + "\"" + category_title + "\" style=\"display:none\" class=\"panel " \
-                                                                   "panel-default " \
-                                                                   "toggle-content\"><div class=\"panel-heading\" " \
-                                                                   "role=\"tab\" " \
-                                                                   "id=\"headingOne\"><h4 class=\"panel-title\"><a " \
-                                                                   "data-toggle=\"collapse\" " \
-                                                                   "data-parent=\"#accordion\" href=\"#collapseOne\" " \
-                                                                   "aria-expanded=\"true\" " \
-                                                                   "aria-controls=\"collapseOne\">" + month_year + \
+                    report += "<div class=\"panel-heading\" " \
+                              "role=\"tab\" " \
+                              "id=\"headingOne\"><h4 class=\"panel-title\"><a " \
+                              "data-toggle=\"collapse\" " \
+                              "data-parent=\"#accordion\" href=\"#collapseOne\" " \
+                              "aria-expanded=\"true\" " \
+                              "aria-controls=\"collapseOne\">" + month_year + \
                               "</a></h4></div><div id=\"collapseOne\" class=\"panel-collapse collapse\" " \
                               "role=\"tabpanel\" " \
                               "aria-labelledby=\"headingOne\"><div " \
@@ -250,7 +250,7 @@ async def generate_report(uid: UUID) -> None:
                         report += "<li>" + text + "</li>"
                     report += "</ul>"
                     report += "</div>"
-                    report += "</div>"
+            report += "</div>"
 
             with open(st_abs_file_path + 'report.html', mode='r') as myfile:
                 myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 3
