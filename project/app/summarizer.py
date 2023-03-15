@@ -209,12 +209,13 @@ async def generate_report(uid: UUID) -> None:
                       "btn-sm\">Collapse All</button</div></div></div><div class=\"row\"><div class=\"col-lg-6\"><div " \
                       "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
                       "role=\"tablist\" aria-multiselectable=\"true\"> "
+            category_counter = 1
             for category_title in category_list:
                 # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
                 month_year_map = {}
-                counter = NUMBERS[str(category_counter)]
-                if counter == 1:
+                count = NUMBERS[str(category_counter)]
+                if count == 1:
                     report += "<div id=" + "\"" + category_title + "\" class=\"panel " \
                                                                "panel-default " \
                                                                "toggle-content\">"
