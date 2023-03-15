@@ -209,9 +209,9 @@ async def generate_report(uid: UUID) -> None:
                       "btn-sm\">Collapse All</button</div></div></div><div class=\"row\"><div class=\"col-lg-6\"><div " \
                       "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
                       "role=\"tablist\" aria-multiselectable=\"true\"> "
-            for category_name in category_list:
+            for category_title in category_list:
                 # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
-                summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
+                summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
                 month_year_map = {}
 
                 for summary in summaries:
@@ -229,7 +229,7 @@ async def generate_report(uid: UUID) -> None:
                                                                        summary["url"] + " target=\"_blank\">" +
                                                                        summary["title"] + "</a>"]
                 for month_year, text in month_year_map.items():
-                    report += "<div id=" + "\"" + category_name + "\" style=\"display:none\" class=\"panel panel-default "\
+                    report += "<div id=" + "\"" + category_title + "\" style=\"display:none\" class=\"panel panel-default "\
                                                            "toggle-content\"><div class=\"panel-heading\" role=\"tab\" "\
                                                            "id=\"headingOne\"><h4 class=\"panel-title\"><a" \
                                                            "data-toggle=\"collapse\" data-parent=\"#accordion\" href=\"#collapseOne\" " \
