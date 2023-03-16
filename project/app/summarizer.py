@@ -216,7 +216,7 @@ async def generate_report(uid: UUID) -> None:
                 month_year_map = {}
                 count = NUMBERS[str(counter_category)]
                 log.info(count)
-                if count == 1:
+                if count == "&#x2776;":
                     report += "<div id=" + "\"" + category_name_ref + "\" class=\"panel " \
                                                                "panel-default " \
                                                                "toggle-content\">"
