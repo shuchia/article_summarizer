@@ -191,7 +191,7 @@ async def generate_report(uid: UUID) -> None:
                 report += "<li><a href=\"#\" class=\"toggle-button\" data-target=" + category_name_ref + "><span " \
                                                                                                          "class=\"nav" \
                                                                                                          "-label\">" + \
-                          counter + category_name + "</span></a>"
+                          counter + "&nbsp;" + category_name + "</span></a>"
                 category_counter += 1
             report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-6\"><div " \
                       "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
