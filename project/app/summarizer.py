@@ -211,6 +211,7 @@ async def generate_report(uid: UUID) -> None:
                       "role=\"tablist\" aria-multiselectable=\"true\"> "
             counter_category = 1
             for category_title in category_list:
+                category_name_ref = category_title.replace(" ", "")
                 # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
                 month_year_map = {}
