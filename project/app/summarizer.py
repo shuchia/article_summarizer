@@ -196,7 +196,7 @@ async def generate_report(uid: UUID) -> None:
                 category_name = category["category"]
                 counter = NUMBERS[str(category_counter)]
                 category_list.append(category_name)
-                category_name_ref = ''.join(category_name.split())
+                category_name_ref = category_name.replace(" ", "")
                 report += "<li><a href=\"#\" class=\"toggle-button\" data-target=" + category_name_ref + "><span " \
                                                                                                      "class=\"nav" \
                                                                                                      "-label\">" + \
