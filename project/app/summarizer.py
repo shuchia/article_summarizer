@@ -198,8 +198,8 @@ async def generate_report(uid: UUID) -> None:
                 category_list.append(category_name)
                 category_name_ref = category_name.replace(" ", "")
                 report += "<li><a href=\"#\" class=\"toggle-button\" data-target=" + category_name_ref + "><span " \
-                                                                                                     "class=\"nav" \
-                                                                                                     "-label\">" + \
+                                                                                                         "class=\"nav" \
+                                                                                                         "-label\">" + \
                           counter + category_name + "</span></a>"
                 category_counter += 1
             report += "</div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-md-4\"><div " \
@@ -216,15 +216,17 @@ async def generate_report(uid: UUID) -> None:
                 summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
                 month_year_map = {}
                 count = NUMBERS[str(counter_category)]
+
                 log.info(count)
                 if count == "&#x2776;":
                     report += "<div id=" + "\"" + category_name_ref + "\" class=\"panel " \
-                                                               "panel-default " \
-                                                               "toggle-content\">"
+                                                                      "panel-default " \
+                                                                      "toggle-content\">"
                 else:
                     report += "<div id=" + "\"" + category_name_ref + "\" style=\"display:none\" class=\"panel " \
-                                                                   "panel-default " \
-                                                                   "toggle-content\">"
+                                                                      "panel-default " \
+                                                                      "toggle-content\">"
+                counter_category += 1
                 for summary in summaries:
                     if "summary" in summary:
                         ts = summary["timeFrame"]
@@ -242,15 +244,15 @@ async def generate_report(uid: UUID) -> None:
                 for month_year, text in month_year_map.items():
                     report += "<div class=\"panel-heading\" " \
                               "role=\"tab\" " \
-                              "id=" "\"" + "heading"+category_name_ref+month_year + "\" <h4 class=\"panel-title\"><a " \
-                              "data-toggle=\"collapse\" " \
-                              "data-parent=\"#accordion\" href=\"" + "#collapse"+category_name_ref+month_year + "\" " \
-                              "aria-expanded=\"true\" " \
-                              "aria-controls=\"" + "#collapse"+category_name_ref+month_year + "\">" + month_year + \
-                              "</a></h4></div><div id=\"collapse"+category_name_ref+month_year + "\" class=\"panel-collapse collapse\" " \
-                              "role=\"tabpanel\" " \
-                              "aria-labelledby=\"" + "heading"+category_name_ref+month_year + "\"><div " \
-                              "class=\"panel-body\"><ul> "
+                              "id=" "\"" + "heading" + category_name_ref + month_year + "\" <h4 class=\"panel-title\"><a " \
+                                                                                        "data-toggle=\"collapse\" " \
+                                                                                        "data-parent=\"#accordion\" href=\"" + "#collapse" + category_name_ref + month_year + "\" " \
+                                                                                                                                                                              "aria-expanded=\"true\" " \
+                                                                                                                                                                              "aria-controls=\"" + "#collapse" + category_name_ref + month_year + "\">" + month_year + \
+                              "</a></h4></div><div id=\"collapse" + category_name_ref + month_year + "\" class=\"panel-collapse collapse\" " \
+                                                                                                     "role=\"tabpanel\" " \
+                                                                                                     "aria-labelledby=\"" + "heading" + category_name_ref + month_year + "\"><div " \
+                                                                                                                                                                         "class=\"panel-body\"><ul> "
                     if isinstance(text, list):
                         for item in text:
                             report += f"<li>{item}</li>"
