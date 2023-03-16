@@ -247,8 +247,8 @@ async def generate_report(uid: UUID) -> None:
                               "id=" "\"" + "heading" + category_name_ref + month_year + "\" <h4 class=\"panel-title\"><a " \
                                                                                         "data-toggle=\"collapse\" " \
                                                                                         "data-parent=\"#accordion\" href=\"" + "#collapse" + category_name_ref + month_year + "\" " \
-                                                                                                                                                                              "aria-expanded=\"true\" " \
-                                                                                                                                                                              "aria-controls=\"" + "#collapse" + category_name_ref + month_year + "\">" + month_year + \
+                                                                                        "aria-expanded=\"true\" " \
+                                                                                        "aria-controls=\"" + "#collapse" + category_name_ref + month_year + "\">" + month_year + \
                               "</a></h4></div><div id=\"collapse" + category_name_ref + month_year + "\" class=\"panel-collapse collapse\" " \
                                                                                                      "role=\"tabpanel\" " \
                                                                                                      "aria-labelledby=\"" + "heading" + category_name_ref + month_year + "\"><div " \
@@ -261,7 +261,7 @@ async def generate_report(uid: UUID) -> None:
                         report += "<li>" + text + "</li>"
                     report += "</ul>"
                     report += "</div></div>"
-            report += "</div>"
+                report += "</div>"
 
             with open(st_abs_file_path + 'report.html', mode='r') as myfile:
                 myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 3
