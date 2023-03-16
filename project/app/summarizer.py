@@ -253,7 +253,7 @@ async def generate_report(uid: UUID) -> None:
                     report += "</ul>"
                     report += "</div></div>"
                 report += "</div>"
-            report += "</div></div></div></div></div></div>"
+            report += "</div></div></div></div></div></div></div>"
             with open(st_abs_file_path + 'report.html', mode='r') as myfile:
                 myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 3
                 myreport = ''.join(myreportfooter)
