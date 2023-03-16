@@ -177,15 +177,6 @@ async def generate_report(uid: UUID) -> None:
             knowledge_graph = await generate_knowledge_graph(topic)
             log.info(knowledge_graph.name + knowledge_graph.description)
             report += "<aside id=\"menu\"><div id=\"navigation\">"
-            if knowledge_graph:
-                report += "<div class =\"profile-picture\"><a href=" + knowledge_graph.url + "><img src =" + knowledge_graph.imageurl + " class =\"img-circle m-b\" alt=\"logo\" ></a>"
-                report += "<div class=\"stats-label text-color\"> <span class=\"font-extra-bold font-uppercase\">" + \
-                          knowledge_graph.name + "</span>"
-                report += "<small class=\"text-muted\">" + knowledge_graph.description + "</small>"
-                report += "<div><h4 class =\"font-extra-bold m-b-xs\"> " + knowledge_graph.detailed_description + \
-                          "<a href=" + knowledge_graph.wikipedia_url + "target=\"_blank\">" + "Wikipedia" + \
-                          "</a></div> "
-                report += "</div></div>"
 
             topic_name = topic["topic"]
             report += "<ul class=\"nav\" id=\"side-menu\"></ul>"
@@ -247,8 +238,8 @@ async def generate_report(uid: UUID) -> None:
                               "id=" "\"" + "heading" + category_name_ref + month_year + "\" <h4 class=\"panel-title\"><a " \
                                                                                         "data-toggle=\"collapse\" " \
                                                                                         "data-parent=\"#accordion\" href=\"" + "#collapse" + category_name_ref + month_year + "\" " \
-                                                                                        "aria-expanded=\"true\" " \
-                                                                                        "aria-controls=\"" + "#collapse" + category_name_ref + month_year + "\">" + month_year + \
+                                                                                                                                                                              "aria-expanded=\"true\" " \
+                                                                                                                                                                              "aria-controls=\"" + "#collapse" + category_name_ref + month_year + "\">" + month_year + \
                               "</a></h4></div><div id=\"collapse" + category_name_ref + month_year + "\" class=\"panel-collapse collapse\" " \
                                                                                                      "role=\"tabpanel\" " \
                                                                                                      "aria-labelledby=\"" + "heading" + category_name_ref + month_year + "\"><div " \
