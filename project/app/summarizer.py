@@ -193,11 +193,7 @@ async def generate_report(uid: UUID) -> None:
                                                                                                          "-label\">" + \
                           counter + category_name + "</span></a>"
                 category_counter += 1
-            report += "</div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-md-4\"><div " \
-                      "id=\"nestable-menu\"><button " \
-                      "type=\"button\" data-action=\"expand-all\" class=\"btn btn-default btn-sm\">Expand " \
-                      "All</button><button type=\"button\" data-action=\"collapse-all\" class=\"btn btn-default " \
-                      "btn-sm\">Collapse All</button</div></div></div><div class=\"row\"><div class=\"col-lg-6\"><div " \
+            report += "</div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-6\"><div " \
                       "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
                       "role=\"tablist\" aria-multiselectable=\"true\"> "
             counter_category = 1
@@ -253,7 +249,7 @@ async def generate_report(uid: UUID) -> None:
                     report += "</ul>"
                     report += "</div></div>"
                 report += "</div>"
-            report += "</div></div></div></div></div></div></div>"
+            report += "</div></div></div></div></div></div>"
             with open(st_abs_file_path + 'report.html', mode='r') as myfile:
                 myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 3
                 myreport = ''.join(myreportfooter)
