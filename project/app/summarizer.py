@@ -179,7 +179,7 @@ async def generate_report(uid: UUID) -> None:
             report += "<aside id=\"menu\"><div id=\"navigation\">"
 
             topic_name = topic["topic"]
-            report += "<ul class=\"nav\" id=\"side-menu\"></ul>"
+            report += "<ul class=\"nav\" id=\"side-menu\">"
 
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             category_list = []
@@ -193,7 +193,7 @@ async def generate_report(uid: UUID) -> None:
                                                                                                          "-label\">" + \
                           counter + category_name + "</span></a>"
                 category_counter += 1
-            report += "</div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-6\"><div " \
+            report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-6\"><div " \
                       "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
                       "role=\"tablist\" aria-multiselectable=\"true\"> "
             counter_category = 1
