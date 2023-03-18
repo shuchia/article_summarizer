@@ -144,6 +144,7 @@ async def generate_report(uid: UUID) -> None:
         category_list = []
         for category in categories:
             category_name = category["category"]
+            log.info(category_name)
             counter = NUMBERS[str(category_counter)]
             category_list.append(category_name)
             category_name_ref = category_name.replace(" ", "")
