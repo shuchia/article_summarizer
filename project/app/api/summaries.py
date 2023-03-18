@@ -201,9 +201,12 @@ async def get_usage() -> List[UsageSchema]:
 async def get_report(id: int = Path(..., gt=0)) -> HTMLResponse:
     report = await crud.getReport(id)
     # name = report["name"]
-    report_content = report["report"]
+    if report:
+        report_content = report["report"]
     # file_path = os.getcwd() + "/" + name + ".html"
-    return HTMLResponse(content=report_content, status_code=200)
+        return HTMLResponse(content=report_content, status_code=200)
+    else:
+        return HTMLResponse(content="Report Doesnt' exist", status_code=200)
 
 
 @router.delete("/{id}/", response_model=SummaryResponseSchema)
