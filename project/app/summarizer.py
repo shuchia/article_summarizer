@@ -122,6 +122,7 @@ async def generate_report(uid: UUID) -> None:
             new_categories = await crud.get_group_of_categories_for_topic(uid, topic)
             merged_categories = existing_categories + new_categories
             categories = list(set(merged_categories))
+            log.info(categories)
         else:
             categories = await crud.get_group_of_categories_for_topic(uid, topic)
         lines_to_read = 47
