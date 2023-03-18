@@ -187,8 +187,8 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
     return await generate_report(uid)
 
 
-@router.get("/getReports", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
-async def get_reports_topic(topic: str) -> Dict[int, str]:
+@router.get("/getReport", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
+async def get_report_topic(topic: str) -> Dict[int, str]:
     return await crud.get_report_for_topic(topic)
 
 

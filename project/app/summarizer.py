@@ -114,122 +114,79 @@ async def generate_report(uid: UUID) -> None:
     topics = await crud.get_group_of_topics(uid)
     for topic in topics:
         category_counter = 1
+        report_exists = False
         report = await crud.get_report_for_topic(topic)
         if report:
-            categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
-            category_added = False
-            for category in categories:
-                category_name = category["category"]
-                position = report.find(category_name)
-                if position != -1 or category_added:
-                    category_added = True
-                    start_index = position + len(category_name)
-                    remaining_report = report[start_index:]
-                    summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
-                    month_year_added = False
-                    for summary in summaries:
-                        if "summary" in summary:
-                            ts = summary["timeFrame"]
-                            dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
-                            month_name = dt_object2.strftime("%b")
-                            year = dt_object2.strftime("%Y")
-                            month_year_found = remaining_report.find(month_name + "-" + year)
-                            if month_year_found != -1 or month_year_added:
-                                report = report[:month_year_found + len(month_name + "-" + year)] + "<p><strong>" + \
-                                         summary[
-                                             "summary"] + "<br>" + "<a href=" + summary[
-                                             "url"] + " target=\"_blank>\">" + summary["title"] + "</a></strong></p>" + \
-                                         report[month_year_found + len(month_name + "-" + year):]
-                            else:
-                                report = report[:position + len(
-                                    category_name)] + "<p><strong>" + month_name + "-" + year + "</strong></p>" \
-                                                                                                "<p><strong>" + summary[
-                                             "summary"] + "<br>" + "<a href=" + summary[
-                                             "url"] + " target=\"_blank>\">" + summary["title"] + "</a></strong></p>" + \
-                                         report[position + len(category_name):]
-                                month_year_added = True
-                else:
-                    counter = NUMBERS[str(category_counter)]
-                    report += "<p><strong>" + counter + "&nbsp;</strong>"
-                    report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
-                    category_counter += 1
-                    summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_name)
-                    for summary in summaries:
-                        if "summary" in summary:
-                            ts = summary["timeFrame"]
-                            dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
-                            month_name = dt_object2.strftime("%b")
-                            year = dt_object2.strftime("%Y")
-                            report += "<p><strong>" + month_name + "-" + year + "</strong></p>"
-                            report += "<p><strong>" + summary["summary"] + "<br>" + "<a href=" + summary[
-                                "url"] + " target=\"_blank>\">" + summary["url"] + "</a></strong></p> "
+            report_exists = True
+            existing_categories = await crud.get_categories_for_topic(topic)
+            new_categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
+            merged_categories = existing_categories + new_categories
+            categories = list(set(merged_categories))
         else:
-            lines_to_read = 47
-            report = ""
-            line_count = 0
-            with open(st_abs_file_path + 'report.html', "r") as myfile:
-                for line in myfile:
-                    if line_count == lines_to_read:
-                        break
-                    report += line
-                    line_count += 1
-
-            knowledge_graph = await generate_knowledge_graph(topic)
-            log.info(knowledge_graph.name + knowledge_graph.description)
-            report += "<aside id=\"menu\"><div id=\"navigation\">"
-
-            topic_name = topic["topic"]
-            report += "<ul class=\"nav\" id=\"side-menu\">"
-
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
-            category_list = []
-            for category in categories:
-                category_name = category["category"]
-                counter = NUMBERS[str(category_counter)]
-                category_list.append(category_name)
-                category_name_ref = category_name.replace(" ", "")
-                report += "<li><a href=\"#\" class=\"toggle-button\" data-target=" + category_name_ref + "><span " \
+        lines_to_read = 47
+        report = ""
+        line_count = 0
+        with open(st_abs_file_path + 'report.html', "r") as myfile:
+            for line in myfile:
+                if line_count == lines_to_read:
+                    break
+                report += line
+                line_count += 1
+
+        knowledge_graph = await generate_knowledge_graph(topic)
+        log.info(knowledge_graph.name + knowledge_graph.description)
+        report += "<aside id=\"menu\"><div id=\"navigation\">"
+
+        topic_name = topic["topic"]
+        report += "<ul class=\"nav\" id=\"side-menu\">"
+        category_list = []
+        for category in categories:
+            category_name = category["category"]
+            counter = NUMBERS[str(category_counter)]
+            category_list.append(category_name)
+            category_name_ref = category_name.replace(" ", "")
+            report += "<li><a href=\"#\" class=\"toggle-button\" data-target=" + category_name_ref + "><span " \
                                                                                                          "class=\"nav" \
                                                                                                          "-label\">" + \
-                          counter + "&nbsp;" + category_name + "</span></a>"
-                category_counter += 1
-            report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-6\"><div " \
+                        counter + "&nbsp;" + category_name + "</span></a>"
+            category_counter += 1
+        report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-6\"><div " \
                       "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
                       "role=\"tablist\" aria-multiselectable=\"true\"> "
-            counter_category = 1
-            for category_title in category_list:
-                category_name_ref = category_title.replace(" ", "")
-                # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
-                summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
-                month_year_map = {}
-                count = NUMBERS[str(counter_category)]
+        counter_category = 1
+        for category_title in category_list:
+            category_name_ref = category_title.replace(" ", "")
+            # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
+            summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
+            month_year_map = {}
+            count = NUMBERS[str(counter_category)]
 
-                log.info(count)
-                if count == "&#x2776;":
-                    report += "<div id=" + "\"" + category_name_ref + "\" class=\"panel " \
+            if count == "&#x2776;":
+                report += "<div id=" + "\"" + category_name_ref + "\" class=\"panel " \
                                                                       "panel-default " \
                                                                       "toggle-content\">"
-                else:
-                    report += "<div id=" + "\"" + category_name_ref + "\" style=\"display:none\" class=\"panel " \
+            else:
+                report += "<div id=" + "\"" + category_name_ref + "\" style=\"display:none\" class=\"panel " \
                                                                       "panel-default " \
                                                                       "toggle-content\">"
-                counter_category += 1
-                for summary in summaries:
-                    if "summary" in summary:
-                        ts = summary["timeFrame"]
-                        dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
-                        month_name = dt_object2.strftime("%b")
-                        year = dt_object2.strftime("%Y")
-                        if month_name + "-" + year in month_year_map:
-                            month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + "<a href=" +
+            counter_category += 1
+            for summary in summaries:
+                if "summary" in summary:
+                    ts = summary["timeFrame"]
+                    dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                    month_name = dt_object2.strftime("%b")
+                    year = dt_object2.strftime("%Y")
+                    if month_name + "-" + year in month_year_map:
+                        month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + "<a href=" +
                                                                            summary["url"] + " target=\"_blank\">" +
                                                                            summary["title"] + "</a>")
-                        else:
-                            month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + "<a href=" +
+                    else:
+                        month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + "<a href=" +
                                                                        summary["url"] + " target=\"_blank\">" +
                                                                        summary["title"] + "</a>"]
-                for month_year, text in month_year_map.items():
-                    report += "<div class=\"panel-heading\" " \
+            for month_year, text in month_year_map.items():
+                report += "<div class=\"panel-heading\" " \
                               "role=\"tab\" " \
                               "id=" "\"" + "heading" + category_name_ref + month_year + "\" <h4 class=\"panel-title\"><a " \
                                                                                         "data-toggle=\"collapse\" " \
@@ -240,23 +197,26 @@ async def generate_report(uid: UUID) -> None:
                                                                                                      "role=\"tabpanel\" " \
                                                                                                      "aria-labelledby=\"" + "heading" + category_name_ref + month_year + "\"><div " \
                                                                                                                                                                          "class=\"panel-body\"><ul> "
-                    if isinstance(text, list):
-                        for item in text:
-                            report += f"<li>{item}</li>"
+                if isinstance(text, list):
+                    for item in text:
+                        report += f"<li>{item}</li>"
 
-                    else:
-                        report += "<li>" + text + "</li>"
-                    report += "</ul>"
-                    report += "</div></div>"
-                report += "</div>"
-            report += "</div></div></div></div></div></div>"
-            with open(st_abs_file_path + 'report.html', mode='r') as myfile:
-                myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 3
-                myreport = ''.join(myreportfooter)
-            report += myreport
-            report_name = topic_name
+                else:
+                    report += "<li>" + text + "</li>"
+                report += "</ul>"
+                report += "</div></div>"
+            report += "</div>"
+        report += "</div></div></div></div></div></div>"
+        with open(st_abs_file_path + 'report.html', mode='r') as myfile:
+            myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 3
+            myreport = ''.join(myreportfooter)
+        report += myreport
+        report_name = topic_name
+        if report_exists:
+            report_id = await crud.updateReport(report_name, report)
+        else:
             report_id = await crud.createReport(report_name, report)
-            report_ids[report_id] = report_name + ".html"
+        report_ids[report_id] = report_name + ".html"
             # with open(report_name + ".html", 'w+') as file1:
             # file1.write(report)
     return report_ids

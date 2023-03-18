@@ -44,6 +44,15 @@ async def createReport(name: str, content: str) -> int:
     return report.id
 
 
+async def updateReport(name: str, content: str) -> int:
+    report = get_report_for_topic(name)
+
+    if report:
+        updated_report = report.update(content)
+        return updated_report
+    return None
+
+
 async def get(id: int) -> Union[dict, None]:
     summary = await TextSummary.filter(id=id).first().values()
     if summary:
@@ -64,11 +73,6 @@ async def getReport(id: int) -> Union[dict, None]:
     if report:
         return report
     return None
-
-
-async def get_reports_for_topic(topic: str) -> Union[dict, None]:
-    reports = await Report.filter(name__icontains=topic).all().values()
-    return reports
 
 
 async def delete_reports_for_topic(topic: str) -> Union[dict, None]:
@@ -130,6 +134,12 @@ async def get_group_of_topics(uid: UUID) -> List:
 
 async def get_group_of_categories_for_topic(uid: UUID, topic: str) -> List:
     categories = await TextSummary.filter(uid=uid).all().filter(topic=topic).all().group_by("category"). \
+        values("category")
+    return categories
+
+
+async def get_categories_for_topic(topic: str) -> List:
+    categories = await TextSummary.filter(topic=topic).all().group_by("category"). \
         values("category")
     return categories
 
