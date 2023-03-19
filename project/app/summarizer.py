@@ -125,7 +125,7 @@ async def generate_report(uid: UUID) -> None:
             categories = list(set(merged_categories))
             log.info(categories)
         else:
-            log.info("Inside reports doesnt exist")
+            log.info("Inside reports doesnt exist" + uid)
             categories = await crud.get_group_of_categories_for_topic(uid, topic)
             log.info(categories)
         lines_to_read = 47
