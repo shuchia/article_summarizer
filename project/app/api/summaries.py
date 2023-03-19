@@ -187,6 +187,11 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
     return await generate_report(uid)
 
 
+@router.get("/getCategoriesForTopic", response_model=List[str])
+async def get_categories_topic(topic: str) -> List[str]:
+    return await crud.get_categories_for_topic(topic)
+
+
 @router.get("/getReport")
 async def get_report_topic(topic: str) -> HTMLResponse:
     report = await crud.get_report_for_topic(topic)
