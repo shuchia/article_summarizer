@@ -116,7 +116,7 @@ async def generate_report(uid: UUID) -> None:
         category_counter = 1
         report_exists = False
         report = await crud.get_report_for_topic(topic)
-        if bool(report):
+        if report is not None:
             report_exists = True
             log.info("Inside report exists")
             existing_categories = await crud.get_categories_for_topic(topic)
