@@ -7,7 +7,7 @@ from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary, Report, Summary, Usage
 from uuid import UUID
 
-from tortoise.contrib.pydantic import pydantic.error_wrappers.ValidationError
+from pydantic import ValidationError
 from tortoise.contrib.pydantic import pydantic_model_creator
 import json
 
