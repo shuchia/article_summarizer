@@ -187,9 +187,15 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
     return await generate_report(uid)
 
 
-@router.get("/getReport", response_model=Dict[int, str], status_code=201, dependencies=[Depends(has_access)])
-async def get_report_topic(topic: str) -> Dict[int, str]:
-    return await crud.get_report_for_topic(topic)
+@router.get("/getReport")
+async def get_report_topic(topic: str) -> HTMLResponse:
+    report = crud.get_report_for_topic(topic)
+    if report:
+        report_content = report["report"]
+    # file_path = os.getcwd() + "/" + name + ".html"
+        return HTMLResponse(content=report_content, status_code=200)
+    else:
+        return HTMLResponse(content="Report Doesnt' exist", status_code=200)
 
 
 @router.get("/getUsage", response_model=List[UsageSchema])
