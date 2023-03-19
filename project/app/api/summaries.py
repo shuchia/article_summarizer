@@ -194,6 +194,7 @@ async def get_categories_topic(topic: str) -> List[str]:
         return await crud.get_categories_for_topic(topic)
     except ValidationError as e:
         # Handle the validation error
+        log.info(e.errors())
         return {"success": False, "error": str(e)}
 
 

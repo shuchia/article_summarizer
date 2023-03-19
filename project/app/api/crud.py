@@ -151,7 +151,7 @@ async def get_categories_for_topic(topic: str) -> List:
         categories = await TextSummary.filter(topic=topic).all().group_by("category"). \
             values("category")
         return categories
-    except pydantic.error_wrappers.ValidationError as e:
+    except ValidationError as e:
         log.info(e.errors())
 
 
