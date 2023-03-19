@@ -150,10 +150,10 @@ async def get_categories_for_topic(topic: str) -> List:
     try:
         categories = await TextSummary.filter(topic=topic).all().group_by("category"). \
             values("category")
-        return categories
+
     except ValidationError as e:
         log.info(e.errors())
-
+    return categories
 
 
 async def get_summaries_for_topic_categories(uid: UUID, topic: str, category: str) -> List:
