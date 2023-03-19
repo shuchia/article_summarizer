@@ -6,6 +6,8 @@ import logging
 from app.models.pydantic import SummaryPayloadSchema
 from app.models.tortoise import TextSummary, Report, Summary, Usage
 from uuid import UUID
+
+from botocore.exceptions import ValidationError
 from tortoise.contrib.pydantic import pydantic_model_creator
 import json
 
@@ -145,9 +147,13 @@ async def get_group_of_categories_for_topic(uid: UUID, topic: str) -> List:
 
 
 async def get_categories_for_topic(topic: str) -> List:
-    categories = await TextSummary.filter(topic=topic).all().group_by("category"). \
-        values("category")
-    return categories
+    try:
+        categories = await TextSummary.filter(topic=topic).all().group_by("category"). \
+            values("category")
+        return categories
+    except ValidationError as e:
+        log.info(e.errors())
+
 
 
 async def get_summaries_for_topic_categories(uid: UUID, topic: str, category: str) -> List:
