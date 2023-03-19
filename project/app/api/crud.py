@@ -89,6 +89,12 @@ async def delete_all_reports() -> List:
     return [model_class(**item.__dict__) for item in range(objects)]
 
 
+async def delete_all_summaries() -> List:
+    model_class = pydantic_model_creator(TextSummary)
+    objects = await TextSummary.all().delete()
+    return [model_class(**item.__dict__) for item in range(objects)]
+
+
 async def get_report_for_topic(topic: str) -> Union[dict, None]:
     report = await Report.filter(name__icontains=topic).first().values()
     if report:
