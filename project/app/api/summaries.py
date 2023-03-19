@@ -189,7 +189,7 @@ async def generate_reports(uid: UUID) -> Dict[int, str]:
 
 @router.get("/getReport")
 async def get_report_topic(topic: str) -> HTMLResponse:
-    report = crud.get_report_for_topic(topic)
+    report = await crud.get_report_for_topic(topic)
     if report:
         report_content = report["report"]
         # file_path = os.getcwd() + "/" + name + ".html"

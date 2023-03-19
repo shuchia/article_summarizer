@@ -125,6 +125,7 @@ async def generate_report(uid: UUID) -> None:
             log.info(categories)
         else:
             categories = await crud.get_group_of_categories_for_topic(uid, topic)
+            log.info(categories)
         lines_to_read = 47
         report = ""
         line_count = 0
