@@ -115,18 +115,19 @@ async def generate_report(uid: UUID) -> None:
     for topic in topics:
         category_counter = 1
         report_exists = False
-        report = await crud.get_report_for_topic(topic)
+        topic_name = topic["topic"]
+        report = await crud.get_report_for_topic(topic_name)
         if report is not None:
             report_exists = True
             log.info("Inside report exists")
-            existing_categories = await crud.get_categories_for_topic(topic)
-            new_categories = await crud.get_group_of_categories_for_topic(uid, topic)
+            existing_categories = await crud.get_categories_for_topic(topic_name)
+            new_categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             merged_categories = existing_categories + new_categories
             categories = list(set(merged_categories))
             log.info(categories)
         else:
             log.info("Inside reports doesnt exist" + str(uid))
-            categories = await crud.get_group_of_categories_for_topic(uid, topic)
+            categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             log.info(categories)
         lines_to_read = 47
         report = ""
@@ -142,7 +143,7 @@ async def generate_report(uid: UUID) -> None:
         log.info(knowledge_graph.name + knowledge_graph.description)
         report += "<aside id=\"menu\"><div id=\"navigation\">"
 
-        topic_name = topic["topic"]
+
         report += "<ul class=\"nav\" id=\"side-menu\">"
         log.info(topic_name)
         category_list = []
