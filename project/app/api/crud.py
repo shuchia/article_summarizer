@@ -47,11 +47,11 @@ async def createReport(name: str, content: str) -> int:
 
 
 async def updateReport(name: str, content: str) -> int:
-    report = get_report_for_topic(name)
+    report = await get_report_for_topic(name)
 
     if report:
-        updated_report = report.update(name=name, report=content)
-        return updated_report
+        updated_report = await report.update(name=name, report=content)
+        return updated_report.id
     return None
 
 
