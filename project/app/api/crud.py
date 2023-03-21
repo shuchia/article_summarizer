@@ -47,7 +47,7 @@ async def createReport(name: str, content: str) -> int:
 
 
 async def updateReport(name: str, content: str) -> int:
-    updated_report = await Report.filter(name__icontains=name).first().values().update(name=name, report=content)
+    updated_report = await Report.filter(name__icontains=name).update(name=name, report=content)
     return updated_report.id
 
 
