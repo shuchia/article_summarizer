@@ -50,7 +50,7 @@ async def updateReport(name: str, content: str) -> int:
     report = get_report_for_topic(name)
 
     if report:
-        updated_report = report.update(content)
+        updated_report = report.update(name=name, report=content)
         return updated_report
     return None
 
