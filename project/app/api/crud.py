@@ -47,12 +47,8 @@ async def createReport(name: str, content: str) -> int:
 
 
 async def updateReport(name: str, content: str) -> int:
-    report = await get_report_for_topic(name)
-
-    if report:
-        updated_report = await report.update(name=name, report=content)
-        return updated_report.id
-    return None
+    updated_report = await Report.filter(name__icontains=name).first().values().update(name=name, report=content)
+    return updated_report.id
 
 
 async def get(id: int) -> Union[dict, None]:
