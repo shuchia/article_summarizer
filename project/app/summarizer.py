@@ -89,15 +89,18 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
         if isNaN(url) is False:
             log.info(url)
             try:
-                summary_id = await crud.create(url, timeframe, topic, category, task.uid)
+                summary = await crud.get_summary_url(url)
+                if bool(summary) is False:
+                    summary_id = await crud.create(url, timeframe, topic, category, task.uid)
 
-                summary = await summary_process.inference(input_url=url, input_text='', length=length)
-                title = await summary_process.get_title(input_url=url, input_text='', length=length)
+                    summary = await summary_process.inference(input_url=url, input_text='', length=length)
+                    title = await summary_process.get_title(input_url=url, input_text='', length=length)
 
-                await asyncio.sleep(1)
+                    await asyncio.sleep(1)
 
-                await TextSummary.filter(id=summary_id).update(summary=summary, title=title)
-                task.processed_ids[summary_id] = url
+                    await TextSummary.filter(id=summary_id).update(summary=summary, title=title)
+                    task.processed_ids[summary_id] = url
+
             except:
                 log.exception("url errored " + url)
                 pass
@@ -143,7 +146,6 @@ async def generate_report(uid: UUID) -> None:
         knowledge_graph = await generate_knowledge_graph(topic)
         log.info(knowledge_graph.name + knowledge_graph.description)
         report += "<aside id=\"menu\"><div id=\"navigation\">"
-
 
         report += "<ul class=\"nav\" id=\"side-menu\">"
         log.info(topic_name)

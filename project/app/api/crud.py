@@ -62,6 +62,14 @@ async def get(id: int) -> Union[dict, None]:
     return None
 
 
+async def get_summary_url(url: str) -> Union[dict, None]:
+    summary = await TextSummary.filter(url__icontains=url).first().values()
+    # log.info(summary)
+    if summary:
+        return summary
+    return None
+
+
 async def get_url_summary(id: int) -> Union[dict, None]:
     summary = await Summary.filter(id=id).first().values()
     # log.info(summary)
