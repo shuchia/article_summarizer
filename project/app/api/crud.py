@@ -160,6 +160,6 @@ async def get_categories_for_topic(topic: str) -> List:
     return categories
 
 
-async def get_summaries_for_topic_categories(uid: UUID, topic: str, category: str) -> List:
-    summaries = await TextSummary.filter(uid=uid).all().filter(topic=topic).filter(category=category).all().values()
+async def get_summaries_for_topic_categories(topic: str, category: str) -> List:
+    summaries = await TextSummary.filter(topic=topic).filter(category=category).all().values()
     return summaries
