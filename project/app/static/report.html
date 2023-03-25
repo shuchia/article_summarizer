@@ -228,12 +228,22 @@
 
 <script>
 const toggleButtons = document.querySelectorAll(".toggle-button");
+// Get all content sections
+const sections = document.querySelectorAll('panel-default');
+
 toggleButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const targetId = button.getAttribute("data-target");
     const targetDiv = document.getElementById(targetId);
 
     if (targetDiv.style.display === "none") {
+      // Hide any previously shown content sections
+      sections.forEach(section => {
+        if (section.style.display !== 'none' && section.id !== targetId) {
+          section.style.display = 'none';
+        }
+      });
+
       targetDiv.style.display = "block";
     } else {
       targetDiv.style.display = "none";
