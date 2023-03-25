@@ -115,6 +115,7 @@ async def generate_report(uid: UUID) -> None:
     st_abs_file_path = os.path.join(script_dir, "static/")
     report_ids: Dict[int, str] = {}
     topics = await crud.get_group_of_topics(uid)
+    log.info(topics)
     for topic in topics:
         category_counter = 1
         report_exists = False
