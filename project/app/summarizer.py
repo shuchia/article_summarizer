@@ -169,7 +169,7 @@ async def generate_report(uid: UUID) -> None:
         for category_title in category_list:
             category_name_ref = category_title.replace(" ", "")
             # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
-            summaries = await crud.get_summaries_for_topic_categories(uid, topic_name, category_title)
+            summaries = await crud.get_summaries_for_topic_categories( topic_name, category_title)
             month_year_map = {}
             count = NUMBERS[str(counter_category)]
 
