@@ -249,6 +249,12 @@ toggleButtons.forEach((button) => {
       targetDiv.style.display = "none";
     }
   });
+  });
+  window.addEventListener('DOMContentLoaded', () => {
+  let activeTabs = document.querySelector('div[style="display:block;"].panel-default');
+  if (activeTabs.length === 0) {
+    activeTabs[0].style.display = 'block';
+  }
 });
       $(function () {
         // initialize with defaults
