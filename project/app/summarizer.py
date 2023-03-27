@@ -185,7 +185,10 @@ async def generate_report(uid: UUID) -> None:
             for summary in summaries:
                 if "summary" in summary:
                     ts = summary["timeFrame"]
-                    dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                    try:
+                        dt_object2 = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                    except ValueError:
+                        dt_object2 = datetime.strptime(ts, '%b-%y')
                     month_name = dt_object2.strftime("%b")
                     year = dt_object2.strftime("%Y")
                     if month_name + "-" + year in month_year_map:
