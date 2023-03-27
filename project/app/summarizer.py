@@ -192,13 +192,13 @@ async def generate_report(uid: UUID) -> None:
                     month_name = dt_object2.strftime("%b")
                     year = dt_object2.strftime("%Y")
                     if month_name + "-" + year in month_year_map:
-                        month_year_map[month_name + "-" + year].append(summary["summary"] + "<br>" + "<a href=" +
+                        month_year_map[month_name + "-" + year].append("<p>" + summary["summary"] + "<br><strong>" + "<a href=" +
                                                                        summary["url"] + " target=\"_blank\">" +
-                                                                       summary["title"] + "</a>")
+                                                                       summary["title"] + "</a></strong></p>")
                     else:
-                        month_year_map[month_name + "-" + year] = [summary["summary"] + "<br>" + "<a href=" +
+                        month_year_map[month_name + "-" + year] = ["<p>" + summary["summary"] + "<br><strong>" + "<a href=" +
                                                                    summary["url"] + " target=\"_blank\">" +
-                                                                   summary["title"] + "</a>"]
+                                                                   summary["title"] + "</a></strong></p>"]
             for month_year, text in month_year_map.items():
                 report += "<div class=\"panel-heading\" " \
                           "role=\"tab\" " \
