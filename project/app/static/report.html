@@ -251,7 +251,7 @@ toggleButtons.forEach((button) => {
   });
   });
   window.addEventListener('DOMContentLoaded', () => {
-  let activeTabs = document.querySelector('div[style="display:block;"].panel-default');
+  let activeTabs = document.querySelectorAll('div[style="display:block;"].panel-default');
   if (activeTabs.length === 0) {
     activeTabs[0].style.display = 'block';
   }
