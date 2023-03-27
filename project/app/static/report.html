@@ -241,7 +241,7 @@ toggleButtons.forEach((button) => {
       sections.forEach(section => {
         if (section.style.display !== 'none' && section.id !== targetId) {
           section.style.display = 'none';
-        else
+        else if (section.style.display !== 'none' && section.id === targetId) {
            section.style.display = 'block';
         }
       });
