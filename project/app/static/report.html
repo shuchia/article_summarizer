@@ -241,6 +241,8 @@ toggleButtons.forEach((button) => {
       sections.forEach(section => {
         if (section.style.display !== 'none' && section.id !== targetId) {
           section.style.display = 'none';
+        else
+           section.style.display = 'block';
         }
       });
 
@@ -249,10 +251,7 @@ toggleButtons.forEach((button) => {
     } else {
       targetDiv.style.display = "none";
     }
-     let activeTabs = document.querySelectorAll('div[style="display:block;"].panel-default');
-      if (activeTabs.length === 0) {
-        sections[0].style.display = 'block';
-        }
+
   });
   });
   window.addEventListener('DOMContentLoaded', () => {
