@@ -309,10 +309,11 @@ async def generate_knowledge_graph(topic: str):
     log.info(url)
     response = requests.get(url, verify=None)
     json_response = json.loads(response.text)
+    log.info(json.dumps(json_response['itemListElement'][0]['result'], indent=4))
     knowledge_graph = []
     try:
         for element in json_response['itemListElement']:
-            knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['thumbnail']['contentUrl'],
+            knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['contentUrl'],
                                              element['result']['description'],
                                              element['result']['url'],
                                              element['result']['detailedDescription']['articleBody'],
