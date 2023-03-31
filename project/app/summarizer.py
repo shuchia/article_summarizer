@@ -303,8 +303,7 @@ async def generate_knowledge_graph(topic: str):
         'limit': 1,
         'indent': True,
         'key': google_api_key,
-        'types': 'Organization',
-        'imgSize': 'small'
+        'types': 'Organization'
     }
     url = f'{service_url}?{urllib.parse.urlencode(params)}'
     log.info(url)
@@ -313,7 +312,7 @@ async def generate_knowledge_graph(topic: str):
     knowledge_graph = []
     try:
         for element in json_response['itemListElement']:
-            knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['contentUrl'],
+            knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['thumbnailUrl'],
                                              element['result']['description'],
                                              element['result']['url'],
                                              element['result']['detailedDescription']['articleBody'],
