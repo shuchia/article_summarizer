@@ -162,14 +162,14 @@ async def generate_report(uid: UUID) -> None:
                                                                                                      "-label\">" + \
                       counter + "&nbsp;" + category_name + "</span></a>"
             category_counter += 1
-        report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-6\"><div " \
+        report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-8\"><div " \
                   "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
                   "role=\"tablist\" aria-multiselectable=\"true\"> "
         counter_category = 1
         for category_title in category_list:
             category_name_ref = category_title.replace(" ", "")
             # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
-            summaries = await crud.get_summaries_for_topic_categories( topic_name, category_title)
+            summaries = await crud.get_summaries_for_topic_categories(topic_name, category_title)
             month_year_map = {}
             count = NUMBERS[str(counter_category)]
 
@@ -192,13 +192,15 @@ async def generate_report(uid: UUID) -> None:
                     month_name = dt_object2.strftime("%b")
                     year = dt_object2.strftime("%Y")
                     if month_name + "-" + year in month_year_map:
-                        month_year_map[month_name + "-" + year].append("<p>" + summary["summary"] + "<br><strong>" + "<a href=" +
-                                                                       summary["url"] + " target=\"_blank\">" +
-                                                                       summary["title"] + "</a></strong></p>")
+                        month_year_map[month_name + "-" + year].append(
+                            "<p>" + summary["summary"] + "<br><strong>" + "<a href=" +
+                            summary["url"] + " target=\"_blank\">" +
+                            summary["title"] + "</a></strong></p>")
                     else:
-                        month_year_map[month_name + "-" + year] = ["<p>" + summary["summary"] + "<br><strong>" + "<a href=" +
-                                                                   summary["url"] + " target=\"_blank\">" +
-                                                                   summary["title"] + "</a></strong></p>"]
+                        month_year_map[month_name + "-" + year] = [
+                            "<p>" + summary["summary"] + "<br><strong>" + "<a href=" +
+                            summary["url"] + " target=\"_blank\">" +
+                            summary["title"] + "</a></strong></p>"]
             for month_year, text in month_year_map.items():
                 report += "<div class=\"panel-heading\" " \
                           "role=\"tab\" " \
@@ -220,7 +222,16 @@ async def generate_report(uid: UUID) -> None:
                 report += "</ul>"
                 report += "</div></div>"
             report += "</div>"
-        report += "</div></div></div></div></div></div>"
+        report += "</div></div></div></div>"
+        report += "<div class=\"col-lg=4\"><div class=\"hpanel-hgreen\"><div class=\"panel-body\">"
+        report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\">"
+        report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + knowledge_graph.imageurl + ">"
+        report += "<h3><a href=" + knowledge_graph.url + ">" + knowledge_graph.name + "</a>"
+        report += "<div class=\"text-muted font-bold m-b-xs\"" + knowledge_graph.description + "</div>"
+        report += "<p>" + knowledge_graph.detailed_description + "<a href=" + knowledge_graph.wikipedia_url + "target" \
+                                                                                                              "=\"_blank\">" + "Wikipedia" + "</p> "
+        report += "</div></div></div>"
+        report += "</div></div>"
         with open(st_abs_file_path + 'report.html', mode='r') as myfile:
             myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 3
             myreport = ''.join(myreportfooter)
