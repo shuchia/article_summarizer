@@ -310,9 +310,17 @@ async def generate_knowledge_graph(topic: str):
     response = requests.get(url, verify=None)
     json_response = json.loads(response.text)
     log.info(json.dumps(json_response['itemListElement'][0]['result'], indent=4))
+    # get the Knowledge Graph ID of the top result
+    kg_id = json_response['itemListElement'][0]['result']['@id']
+
+    # use the Knowledge Graph ID to retrieve more information
+    query_url = f'https://kgsearch.googleapis.com/v1/entities:search?ids={kg_id}&key={google_api_key}&limit=1&indent=True'
+    response = requests.get(query_url)
+    kg_result = json.loads(response.text)
+    log.info(json.dumps(kg_result, indent=4))
     knowledge_graph = []
     try:
-        for element in json_response['itemListElement']:
+        for element in kg_result['itemListElement']:
             knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['contentUrl'],
                                              element['result']['description'],
                                              element['result']['url'],
