@@ -315,6 +315,7 @@ async def generate_knowledge_graph(topic: str):
 
     # use the Knowledge Graph ID to retrieve more information
     query_url = f'https://kgsearch.googleapis.com/v1/entities:search?ids={kg_id}&key={google_api_key}&limit=1&indent=True'
+    log.info(query_url)
     response = requests.get(query_url)
     kg_result = json.loads(response.text)
     log.info(json.dumps(kg_result, indent=4))
