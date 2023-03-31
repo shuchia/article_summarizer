@@ -208,7 +208,7 @@ class SummarizerProcessor:
             # log.info(api_key)
             # log.info(self.text)
             response = openai.Completion.create(
-                engine="text-davinci-002",
+                engine="text-davinci-003",
                 prompt="Please summarize the following article: " + self.text,
                 max_tokens=200,
                 n=1,
@@ -248,7 +248,7 @@ class SummarizerProcessor:
 
             # Send a request to the OpenAI API to generate a completion
             response = openai.Completion.create(
-                engine="text-davinci-002",
+                engine="text-davinci-003",
                 prompt=prompt,
                 max_tokens=100,
                 n=1,
