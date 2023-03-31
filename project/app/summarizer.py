@@ -224,7 +224,7 @@ async def generate_report(uid: UUID) -> None:
             report += "</div>"
         report += "</div></div></div></div>"
         report += "<div class=\"col-lg-4\"><div class=\"hpanel-hgreen\"><div class=\"panel-body\">"
-        report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\">"
+        report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\"></i>"
         report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + knowledge_graph.imageurl + ">"
         report += "<h3><a href=" + knowledge_graph.url + ">" + knowledge_graph.name + "</a>"
         report += "<div class=\"text-muted font-bold m-b-xs\"" + knowledge_graph.description + "</div>"
