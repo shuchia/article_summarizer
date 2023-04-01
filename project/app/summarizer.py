@@ -233,7 +233,7 @@ async def generate_report(uid: UUID) -> None:
         log.info(thumbnail_file)
         with urllib.request.urlopen(knowledge_graph.imageurl) as url:
             image_bytes = url.read()
-            with Image.open(io.BytesIO(image_bytes).convert("P")) as image:
+            with Image.open(io.BytesIO(image_bytes)) as image:
                 # Generate a thumbnail image
                 thumbnail_size = (76, 76)
                 image.thumbnail(thumbnail_size)
