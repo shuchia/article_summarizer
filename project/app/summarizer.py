@@ -22,6 +22,7 @@ import urllib.parse
 import requests
 import os
 from PIL import Image
+import io
 from io import BytesIO
 
 log = logging.getLogger(__name__)
@@ -230,11 +231,13 @@ async def generate_report(uid: UUID) -> None:
         thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.jpg'
         # Download the image from the URL
         log.info(thumbnail_file)
-        with Image.open(knowledge_graph.imageurl) as image:
-            # Generate a thumbnail image
-            thumbnail_size = (76, 76)
-            image.thumbnail(thumbnail_size)
-            image.save(thumbnail_file)
+        with urllib.request.urlopen(knowledge_graph.imageurl) as url:
+            image_bytes = url.read()
+            with Image.open(io.BytesIO(image_bytes)) as image:
+                # Generate a thumbnail image
+                thumbnail_size = (76, 76)
+                image.thumbnail(thumbnail_size)
+                image.save(thumbnail_file)
 
         report += "<div class=\"col-lg-4\"><div class=\"hpanel-hgreen\"><div class=\"panel-body\">"
         report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\"></i>"
