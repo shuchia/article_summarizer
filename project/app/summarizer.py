@@ -237,7 +237,7 @@ async def generate_report(uid: UUID) -> None:
                 # Generate a thumbnail image
                 thumbnail_size = (76, 76)
                 image.thumbnail(thumbnail_size)
-                image.convert("RGB")
+                image.convert("P")
                 image.save(thumbnail_file)
 
         report += "<div class=\"col-lg-4\"><div class=\"hpanel-hgreen\"><div class=\"panel-body\">"
