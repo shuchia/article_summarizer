@@ -229,7 +229,7 @@ async def generate_report(uid: UUID) -> None:
 
         thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.jpg'
         # Download the image from the URL
-
+        log.info(thumbnail_file)
         with Image.open(knowledge_graph.imageurl) as image:
             # Generate a thumbnail image
             thumbnail_size = (76, 76)
