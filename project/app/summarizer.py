@@ -233,7 +233,7 @@ async def generate_report(uid: UUID) -> None:
         image.thumbnail(thumbnail_size)
         dir_name = os.path.dirname(os.path.abspath(__file__))
         log.info(dir_name)
-        thumbnail_file = os.path.join( dir_name, "/static/thumbnails/thumbnail" + topic_name + '.jpg')
+        thumbnail_file = os.path.join(dir_name, "/static/thumbnails/thumbnail" + topic_name + '.jpg')
         # thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.jpg'
         image.save(thumbnail_file)
         report += "<div class=\"col-lg-4\"><div class=\"hpanel-hgreen\"><div class=\"panel-body\">"
