@@ -226,17 +226,16 @@ async def generate_report(uid: UUID) -> None:
                 report += "</div></div>"
             report += "</div>"
         report += "</div></div></div></div>"
+
+        thumbnail_file = st_abs_file_path + "/static/thumbnails/thumbnail" + topic_name + '.jpg'
         # Download the image from the URL
-        response = requests.get(knowledge_graph.imageurl)
-        image = Image.open(BytesIO(response.content))
-        # Generate a thumbnail image
-        thumbnail_size = (76, 76)
-        image.thumbnail(thumbnail_size)
-        dir_name = os.path.dirname(os.path.abspath(__file__))
-        log.info(dir_name)
-        thumbnail_file = os.path.join(dir_name, "/static/thumbnails/thumbnail" + topic_name + '.jpg')
-        # thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.jpg'
-        image.save(thumbnail_file)
+
+        with Image.open(knowledge_graph.imageurl) as image:
+            # Generate a thumbnail image
+            thumbnail_size = (76, 76)
+            image.thumbnail(thumbnail_size)
+            image.save(thumbnail_file)
+
         report += "<div class=\"col-lg-4\"><div class=\"hpanel-hgreen\"><div class=\"panel-body\">"
         report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\"></i>"
         report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + "/static/thumbnails/thumbnail" + topic_name + ".jpg" + ">"
