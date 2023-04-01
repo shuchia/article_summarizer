@@ -240,7 +240,7 @@ async def generate_report(uid: UUID) -> None:
                 image.convert("RGB")
                 image.save(thumbnail_file, "PNG")
 
-        report += "<div class=\"col-lg-4\"><div class=\"hpanel-hgreen\"><div class=\"panel-body\">"
+        report += "<div class=\"col-lg-4\"><div class=\"hpanel hgreen\"><div class=\"panel-body\">"
         report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\"></i>"
         report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + "/static/thumbnails/thumbnail" + topic_name + ".png" + ">"
         report += "<h3><a href=" + knowledge_graph.url + ">" + knowledge_graph.name + "</a></h3>"
