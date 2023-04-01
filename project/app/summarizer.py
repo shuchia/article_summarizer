@@ -231,7 +231,8 @@ async def generate_report(uid: UUID) -> None:
         # Generate a thumbnail image
         thumbnail_size = (76, 76)
         image.thumbnail(thumbnail_size)
-        thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.jpg'
+        thumbnail_file = os.path.join(script_dir, "thumbnails/thumbnail" + topic_name + '.jpg')
+        # thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.jpg'
         image.save(thumbnail_file)
         report += "<div class=\"col-lg-4\"><div class=\"hpanel-hgreen\"><div class=\"panel-body\">"
         report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\"></i>"
