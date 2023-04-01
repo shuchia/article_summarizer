@@ -227,7 +227,7 @@ async def generate_report(uid: UUID) -> None:
             report += "</div>"
         report += "</div></div></div></div>"
 
-        thumbnail_file = st_abs_file_path + "/static/thumbnails/thumbnail" + topic_name + '.jpg'
+        thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.jpg'
         # Download the image from the URL
 
         with Image.open(knowledge_graph.imageurl) as image:
