@@ -233,8 +233,10 @@ async def generate_report(uid: UUID) -> None:
         image.thumbnail(thumbnail_size)
         head, tail = os.path.split(st_abs_file_path)
         log.info(head)
-        file_path = os.path.split(head)
-        log.info(file_path)
+
+        head, tail = os.path.split(head)
+        head, tail = os.path.split(head)
+        log.info(head)
         thumbnail_file = head + "thumbnails/thumbnail" + topic_name + '.jpg'
         # thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.jpg'
         image.save(thumbnail_file)
