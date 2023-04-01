@@ -235,7 +235,7 @@ async def generate_report(uid: UUID) -> None:
             image_bytes = url.read()
             with Image.open(io.BytesIO(image_bytes)) as image:
                 # Generate a thumbnail image
-                thumbnail_size = (76, 76)
+                thumbnail_size = (100, 100)
                 image.thumbnail(thumbnail_size)
                 image.convert("RGB")
                 image.save(thumbnail_file, "PNG")
