@@ -20,4 +20,4 @@ starlette
 httpx
 boto3
 openai
-PIL
+pillow
