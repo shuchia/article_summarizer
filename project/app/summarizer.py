@@ -115,6 +115,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
 async def generate_report(uid: UUID) -> None:
     script_dir = os.path.dirname(__file__)
     st_abs_file_path = os.path.join(script_dir, "static/")
+    log.info(st_abs_file_path)
     report_ids: Dict[int, str] = {}
     topics = await crud.get_group_of_topics(uid)
     log.info(topics)
