@@ -149,7 +149,7 @@ async def generate_report(uid: UUID) -> None:
                 line_count += 1
 
         try:
-            knowledge_graph = await generate_knowledge_graph(topic)
+            knowledge_graph = await generate_knowledge_graph(topic_name)
             log.info(knowledge_graph.name + knowledge_graph.description)
         # Catch any exceptions that may arise
         except Exception as e:
