@@ -338,11 +338,19 @@ async def generate_knowledge_graph(topic: str):
     knowledge_graph = []
     try:
         for element in json_response['itemListElement']:
-            knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['contentUrl'],
+            if element['result']['image']:
+
+                knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['contentUrl'],
                                              element['result']['description'],
                                              element['result']['url'],
                                              element['result']['detailedDescription']['articleBody'],
                                              element['result']['detailedDescription']['url'])
+            else:
+                knowledge_graph = KnowledgeGraph(element['result']['name'], "",
+                                                 element['result']['description'],
+                                                 element['result']['url'],
+                                                 element['result']['detailedDescription']['articleBody'],
+                                                 element['result']['detailedDescription']['url'])
     except KeyError as e:
         log.info('<Error: Key not found>', e)
     return knowledge_graph
