@@ -235,25 +235,26 @@ async def generate_report(uid: UUID) -> None:
         report += "</div></div></div></div>"
 
         if knowledge_graph is not None:
-            thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name.replace(" ", "") + '.png'
-            # Download the image from the URL
-            log.info(thumbnail_file)
-            with urllib.request.urlopen(knowledge_graph.imageurl) as url:
-                image_bytes = url.read()
-                with Image.open(io.BytesIO(image_bytes)) as image:
-                    # Generate a thumbnail image
-                    thumbnail_size = (100, 100)
-                    image.thumbnail(thumbnail_size)
-                    image.convert("RGB")
-                    image.save(thumbnail_file, "PNG")
+            if knowledge_graph.imageurl is not "":
+                thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name.replace(" ", "") + '.png'
+                # Download the image from the URL
+                log.info(thumbnail_file)
+                with urllib.request.urlopen(knowledge_graph.imageurl) as url:
+                    image_bytes = url.read()
+                    with Image.open(io.BytesIO(image_bytes)) as image:
+                        # Generate a thumbnail image
+                        thumbnail_size = (100, 100)
+                        image.thumbnail(thumbnail_size)
+                        image.convert("RGB")
+                        image.save(thumbnail_file, "PNG")
 
             report += "<div class=\"col-lg-4\"><div class=\"hpanel hgreen\"><div class=\"panel-body\"><div class=\"panel-group\">"
             report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\"></i>"
-            report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + "/static/thumbnails/thumbnail" + topic_name + ".png" + ">"
+            report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + "/static/thumbnails/thumbnail" + topic_name.replace(" ", "") + ".png" + ">"
             report += "<h3><a href=" + knowledge_graph.url + ">" + knowledge_graph.name + "</a></h3>"
             report += "<div class=\"text-muted font-bold m-b-xs\">" + knowledge_graph.description + "</div>"
             report += "<p>" + knowledge_graph.detailed_description + "<a href=" + knowledge_graph.wikipedia_url + "target" \
-                                                                                                              "=\"_blank\">" + "Wikipedia" + "</p> "
+                                                                                                                  "=\"_blank\">" + "Wikipedia" + "</p> "
             report += "</div></div></div></div>"
         report += "</div></div>"
         with open(st_abs_file_path + 'report.html', mode='r') as myfile:
@@ -338,13 +339,14 @@ async def generate_knowledge_graph(topic: str):
     knowledge_graph = []
     try:
         for element in json_response['itemListElement']:
-            if element['result']['image']:
+            # check if the "description" property exists for the top search result
+            if 'image' in element['result']:
 
                 knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['contentUrl'],
-                                             element['result']['description'],
-                                             element['result']['url'],
-                                             element['result']['detailedDescription']['articleBody'],
-                                             element['result']['detailedDescription']['url'])
+                                                 element['result']['description'],
+                                                 element['result']['url'],
+                                                 element['result']['detailedDescription']['articleBody'],
+                                                 element['result']['detailedDescription']['url'])
             else:
                 knowledge_graph = KnowledgeGraph(element['result']['name'], "",
                                                  element['result']['description'],
