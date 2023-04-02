@@ -154,6 +154,7 @@ async def generate_report(uid: UUID) -> None:
         # Catch any exceptions that may arise
         except Exception as e:
             log.info("An error occurred:", e)
+            knowledge_graph = None
 
         report += "<aside id=\"menu\"><div id=\"navigation\">"
 
@@ -233,7 +234,7 @@ async def generate_report(uid: UUID) -> None:
             report += "</div>"
         report += "</div></div></div></div>"
 
-        if(knowledge_graph):
+        if knowledge_graph is not None:
             thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name + '.png'
             # Download the image from the URL
             log.info(thumbnail_file)
