@@ -235,7 +235,7 @@ async def generate_report(uid: UUID) -> None:
         report += "</div></div></div></div>"
 
         if knowledge_graph is not None:
-            thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name(" ", "") + '.png'
+            thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name.replace(" ", "") + '.png'
             # Download the image from the URL
             log.info(thumbnail_file)
             with urllib.request.urlopen(knowledge_graph.imageurl) as url:
