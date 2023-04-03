@@ -252,7 +252,8 @@ async def generate_report(uid: UUID) -> None:
 
             report += "<div class=\"col-lg-4\"><div class=\"hpanel hgreen\"><div class=\"panel-body\"><div class=\"panel-group\">"
             report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\"></i>"
-            report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + "/static/thumbnails/thumbnail" + topic_name.replace(" ", "") + ".png" + ">"
+            report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + "/static/thumbnails/thumbnail" + topic_name.replace(
+                " ", "") + ".png" + ">"
             report += "<h3><a href=" + knowledge_graph.url + ">" + knowledge_graph.name + "</a></h3>"
             report += "<div class=\"text-muted font-bold m-b-xs\">" + knowledge_graph.description + "</div>"
             report += "<p>" + knowledge_graph.detailed_description + "<a href=" + knowledge_graph.wikipedia_url + "target" \
@@ -340,20 +341,26 @@ async def generate_knowledge_graph(topic: str):
 
     knowledge_graph = []
     try:
+        imageurl = ""
+        name = ""
+        detailed_description = ""
+        url = ""
+        description = ""
+        wikipedia_url = ""
         for element in json_response['itemListElement']:
             # check if the "description" property exists for the top search result
             if 'image' in element['result']:
-                knowledge_graph.imageurl = element['result']['image']['contentUrl']
+                imageurl = element['result']['image']['contentUrl']
             if 'name' in element['result']:
-                knowledge_graph.name = element['result']['name']
+                name = element['result']['name']
             if 'description' in element['result']:
-                knowledge_graph.description = element['result']['description']
+                description = element['result']['description']
             if 'url' in element['result']:
-                knowledge_graph.url = element['result']['url']
+                url = element['result']['url']
             if 'detailedDescription' in element['result']:
-                knowledge_graph.detailed_description = element['result']['detailedDescription']['articleBody']
-                knowledge_graph.wikipedia_url = element['result']['detailedDescription']['url']
-
+                detailed_description = element['result']['detailedDescription']['articleBody']
+                wikipedia_url = element['result']['detailedDescription']['url']
+            knowledge_graph = KnowledgeGraph(name, imageurl, description, url, detailed_description, wikipedia_url)
 
     except KeyError as e:
         log.info('<Error: Key not found>', e)
