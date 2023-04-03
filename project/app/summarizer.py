@@ -343,18 +343,18 @@ async def generate_knowledge_graph(topic: str):
         for element in json_response['itemListElement']:
             # check if the "description" property exists for the top search result
             if 'image' in element['result']:
+                knowledge_graph.imageurl = element['result']['image']['contentUrl']
+            if 'name' in element['result']:
+                knowledge_graph.name = element['result']['name']
+            if 'description' in element['result']:
+                knowledge_graph.description = element['result']['description']
+            if 'url' in element['result']:
+                knowledge_graph.url = element['result']['url']
+            if 'detailedDescription' in element['result']:
+                knowledge_graph.detailed_description = element['result']['detailedDescription']['articleBody']
+                knowledge_graph.wikipedia_url = element['result']['detailedDescription']['url']
 
-                knowledge_graph = KnowledgeGraph(element['result']['name'], element['result']['image']['contentUrl'],
-                                                 element['result']['description'],
-                                                 element['result']['url'],
-                                                 element['result']['detailedDescription']['articleBody'],
-                                                 element['result']['detailedDescription']['url'])
-            else:
-                knowledge_graph = KnowledgeGraph(element['result']['name'], "",
-                                                 element['result']['description'],
-                                                 element['result']['url'],
-                                                 element['result']['detailedDescription']['articleBody'],
-                                                 element['result']['detailedDescription']['url'])
+
     except KeyError as e:
         log.info('<Error: Key not found>', e)
     return knowledge_graph
