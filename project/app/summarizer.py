@@ -203,15 +203,18 @@ async def generate_report(uid: UUID) -> None:
                         dt_object2 = datetime.strptime(ts, '%b-%y')
                     month_name = dt_object2.strftime("%b")
                     year = dt_object2.strftime("%Y")
+                    http_index = summary["url"] .find("http")
+                    if http_index != -1:
+                        url_string = summary["url"][http_index:]
                     if month_name + "-" + year in month_year_map:
                         month_year_map[month_name + "-" + year].append(
                             "<p>" + summary["summary"] + "<br><strong>" + "<a href=" +
-                            summary["url"] + " target=\"_blank\">" +
+                            url_string + " target=\"_blank\">" +
                             summary["title"] + "</a></strong></p>")
                     else:
                         month_year_map[month_name + "-" + year] = [
                             "<p>" + summary["summary"] + "<br><strong>" + "<a href=" +
-                            summary["url"] + " target=\"_blank\">" +
+                            url_string + " target=\"_blank\">" +
                             summary["title"] + "</a></strong></p>"]
             for month_year, text in month_year_map.items():
                 report += "<div class=\"panel-heading\" " \
@@ -254,10 +257,10 @@ async def generate_report(uid: UUID) -> None:
             report += "<div class=\"pull-right text-right\"><div class=\"btn-group\"><i class=\"fa fa-linkedin btn btn-default btn-xs\"></i>"
             report += "</div></div><img alt=\"logo\" class=\"img-circle m-b m-t-md\" src=" + "/static/thumbnails/thumbnail" + topic_name.replace(
                 " ", "") + ".png" + ">"
-            report += "<h3><a href=" + knowledge_graph.url + ">" + knowledge_graph.name + "</a></h3>"
+            report += "<h3><a href=" + knowledge_graph.url + " target=_blank\">" + knowledge_graph.name + "</a></h3>"
             report += "<div class=\"text-muted font-bold m-b-xs\">" + knowledge_graph.description + "</div>"
-            report += "<p>" + knowledge_graph.detailed_description + "<a href=" + knowledge_graph.wikipedia_url + "target" \
-                                                                                                                  "=\"_blank\">" + "Wikipedia" + "</p> "
+            report += "<p>" + knowledge_graph.detailed_description + "<a href=" + knowledge_graph.wikipedia_url + " target" \
+                                                                                                                  "=\"_blank\">" + "Wikipedia" + "</a></p> "
             report += "</div></div></div></div>"
         report += "</div></div>"
         with open(st_abs_file_path + 'report.html', mode='r') as myfile:
