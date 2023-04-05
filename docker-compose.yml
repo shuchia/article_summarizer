@@ -35,6 +35,12 @@ services:
       dockerfile: Dockerfile
     expose:
       - 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  volumes:
+      db_data:
+
     environment:
       - POSTGRES_USER=shuchiagarwal
       - POSTGRES_PASSWORD=nakul300
