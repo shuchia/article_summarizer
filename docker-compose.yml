@@ -40,8 +40,6 @@ services:
     environment:
       - POSTGRES_USER=shuchiagarwal
       - POSTGRES_PASSWORD=nakul300
-  volumes:
-      db_data:
 
   frontend:
     build:
@@ -55,3 +53,5 @@ services:
         - ./project:/usr/src/app
     environment:
       PYTHONUNBUFFERED: '1'        
+volumes:
+      db_data:
