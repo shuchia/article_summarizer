@@ -243,7 +243,7 @@ async def generate_report(uid: UUID) -> None:
         report += "</div></div></div></div>"
 
         if knowledge_graph is not None:
-            if knowledge_graph.imageurl is not "":
+            if knowledge_graph.imageurl != "":
                 thumbnail_file = st_abs_file_path + "thumbnails/thumbnail" + topic_name.replace(" ", "") + '.png'
                 # Download the image from the URL
                 log.info(thumbnail_file)
