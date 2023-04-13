@@ -270,12 +270,12 @@ async def generate_report(uid: UUID) -> None:
             myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 201
             myreport = ''.join(myreportfooter)
             myreport += "window.addEventListener(\'DOMContentLoaded\', function()  {" \
-                        "document.title =" + topic_name + "Report;" \
-                        "var meta = document.createElement(\"meta\");" \
-                        "meta.setAttribute(\"name\",\"description\");" \
-                        "meta.setAttribute(\"content\"," + topic_name+ " " + category_meta+");"\
-                        "document.head.appendChild(meta);" \
-                                                          "}); </script></body></html>"
+                        "document.title = \"" + topic_name + "\" Report;" \
+                                                             "var meta = document.createElement(\"meta\");" \
+                                                             "meta.setAttribute(\"name\",\"description\");" \
+                                                             "meta.setAttribute(\"content\",\"" + topic_name + " " + category_meta + "\" );" \
+                                                                                                                                     "document.head.appendChild(meta);" \
+                                                                                                                                     "}); </script></body></html>"
         report += myreport
         report_name = topic_name
         if report_exists:
