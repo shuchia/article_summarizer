@@ -175,10 +175,11 @@ async def generate_report(uid: UUID) -> None:
                                                                                                      "-label\">" + \
                       counter + "&nbsp;" + category_name + "</span></a>"
             category_counter += 1
+            category_meta += category_name + " "
         report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-8\"><div " \
                   "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
                   "role=\"tablist\" aria-multiselectable=\"true\"> "
-        category_meta += category_name + " "
+
         counter_category = 1
         for category_title in category_list:
             category_name_replaced = category_title.replace(" ", "")
