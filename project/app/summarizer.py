@@ -161,6 +161,7 @@ async def generate_report(uid: UUID) -> None:
         report += "<ul class=\"nav\" id=\"side-menu\">"
         log.info(topic_name)
         category_list = []
+        category_meta = ""
         for category in categories:
             category_name = category["category"]
             log.info(category_name)
@@ -177,9 +178,11 @@ async def generate_report(uid: UUID) -> None:
         report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-8\"><div " \
                   "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
                   "role=\"tablist\" aria-multiselectable=\"true\"> "
+        category_meta += category_name + " "
         counter_category = 1
         for category_title in category_list:
-            category_name_ref = category_title.replace(" ", "")
+            category_name_replaced = category_title.replace(" ", "")
+            category_name_ref = category_name_replaced.replace("&", "\\&").replace("-", "\\-")
             # report += "<p>&nbsp;&nbsp;<strong>" + category_name + "</strong></p>"
             summaries = await crud.get_summaries_for_topic_categories(topic_name, category_title)
             month_year_map = {}
@@ -203,7 +206,7 @@ async def generate_report(uid: UUID) -> None:
                         dt_object2 = datetime.strptime(ts, '%b-%y')
                     month_name = dt_object2.strftime("%b")
                     year = dt_object2.strftime("%Y")
-                    http_index = summary["url"] .find("http")
+                    http_index = summary["url"].find("http")
                     if http_index != -1:
                         url_string = summary["url"][http_index:]
                     if month_name + "-" + year in month_year_map:
@@ -264,8 +267,15 @@ async def generate_report(uid: UUID) -> None:
             report += "</div></div></div></div>"
         report += "</div></div>"
         with open(st_abs_file_path + 'report.html', mode='r') as myfile:
-            myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 3
+            myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 201
             myreport = ''.join(myreportfooter)
+            myreport += "window.addEventListener(\'DOMContentLoaded\', function()  {" \
+                        "document.title =" + topic_name + "Report;" \
+                        "var meta = document.createElement(\"meta\");" \
+                        "meta.setAttribute(\"name\",\"description\");" \
+                        "meta.setAttribute(\"content\"," + topic_name+ " " + category_meta+");"\
+                        "document.head.appendChild(meta);" \
+                                                          "}); </script></body></html>"
         report += myreport
         report_name = topic_name
         if report_exists:
