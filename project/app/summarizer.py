@@ -336,9 +336,12 @@ async def generate_report(uid: UUID) -> None:
                                                              "var meta = document.createElement(\"meta\");" \
                                                              "meta.setAttribute(\"name\",\"description\");" \
                                                              "meta.setAttribute(\"content\",\"" + topic_name + " " + category_meta + "\" );" \
-                                                                                                                                     "document.head.appendChild(meta);" \
-                                                                                                                                     "}); </script></body></html>"
-        await Topic.create(name=topic_name, description=knowledge_graph.description, subject=subject)
+                                                             "document.head.appendChild(meta);" \
+                                                             "}); </script></body></html>"
+        if knowledge_graph is not None:
+            await Topic.create(name=topic_name, description=knowledge_graph.description, subject=subject)
+        else:
+            await Topic.create(name=topic_name, description="", subject=subject)
         report += myreport
         report_name = topic_name
         if report_exists:
