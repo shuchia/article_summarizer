@@ -29,6 +29,16 @@ class TextSummary(models.Model):
         return self.url
 
 
+class Subject(models.Model):
+    name = fields.TextField()
+
+
+class Topic(models.Model):
+    name = fields.TextField()
+    description = fields.TextField()
+    subject = fields.ForeignKeyField('models.Subject', related_name='topics')
+
+
 class Report(models.Model):
     name = fields.TextField()
     report = fields.TextField()

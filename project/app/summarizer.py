@@ -9,7 +9,7 @@ from app.summarypro import SummarizerProcessor
 from app.send_email import send_email
 from fastapi import File, UploadFile, Request
 
-from app.models.tortoise import TextSummary, Summary
+from app.models.tortoise import TextSummary, Summary, Topic, Subject
 from app.models.pydantic import Job
 import pandas as pd
 
@@ -23,7 +23,7 @@ import requests
 import os
 from PIL import Image
 import io
-from io import BytesIO
+import more_itertools
 
 log = logging.getLogger(__name__)
 
@@ -113,6 +113,66 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
     task.status = "Completed"
 
 
+async def get_report_landing() -> None:
+    script_dir = os.path.dirname(__file__)
+    st_abs_file_path = os.path.join(script_dir, "static/")
+    topics = await crud.get_unique_list_of_topics()
+    groups = {}
+    for subject in topics:
+        first_letter = subject[0].upper()
+        if first_letter in groups:
+            groups[first_letter].append(subject)
+        else:
+            groups[first_letter] = [subject]
+
+    collated_groups = {}
+    for first_letter, group in groups.items():
+        group_key = len(group)
+        if group_key in collated_groups:
+            if first_letter in collated_groups[group_key]:
+                collated_groups[group_key][first_letter] += group
+            else:
+                collated_groups[group_key][first_letter] = group
+        else:
+            collated_groups[group_key] = {first_letter: group}
+
+    num_groups = 1  # we only want one group
+    subgroup_size = len(collated_groups) // num_groups  # size of each subgroup
+
+    # divide the collated groups into multiple equal-sized subgroups
+    subgroups = list(more_itertools.chunked(collated_groups.items(), subgroup_size))
+
+    # combine all the groups into one
+    combined_groups = {}
+    for subgroup in subgroups:
+        for group_size, group_dict in subgroup:
+            for first_letter, group in group_dict.items():
+                combined_groups[first_letter] = group
+
+    # print the combined groups
+    for first_letter, group in combined_groups.items():
+        log.info(f"{first_letter}: {group}")
+    # Divide the subjects into 3 subgroups
+    num_subgroups = 3
+    subgroup_size = (len(combined_groups) + num_subgroups - 1) // num_subgroups
+    subgroups = [dict(list(combined_groups.items())[i:i + subgroup_size]) for i in
+                 range(0, len(combined_groups), subgroup_size)]
+
+    # Sort each subgroup by key
+    for subgroup in subgroups:
+        sorted_subgroup = dict(sorted(subgroup.items()))
+        log.info(sorted_subgroup)
+    lines_to_read = 47
+    report = ""
+    line_count = 0
+    with open(st_abs_file_path + 'report.html', "r") as myfile:
+        for line in myfile:
+            if line_count == lines_to_read:
+                break
+            report += line
+            line_count += 1
+
+
 async def generate_report(uid: UUID) -> None:
     script_dir = os.path.dirname(__file__)
     st_abs_file_path = os.path.join(script_dir, "static/")
@@ -120,6 +180,7 @@ async def generate_report(uid: UUID) -> None:
     report_ids: Dict[int, str] = {}
     topics = await crud.get_group_of_topics(uid)
     log.info(topics)
+    subject = await Subject.create(name="Companies")
     for topic in topics:
         category_counter = 1
         report_exists = False
@@ -277,6 +338,7 @@ async def generate_report(uid: UUID) -> None:
                                                              "meta.setAttribute(\"content\",\"" + topic_name + " " + category_meta + "\" );" \
                                                                                                                                      "document.head.appendChild(meta);" \
                                                                                                                                      "}); </script></body></html>"
+        await Topic.create(name=topic_name, description=knowledge_graph.description, subject=subject)
         report += myreport
         report_name = topic_name
         if report_exists:
