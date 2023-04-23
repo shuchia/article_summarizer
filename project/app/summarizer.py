@@ -199,7 +199,7 @@ async def generate_report(uid: UUID) -> None:
             log.info("Inside reports doesnt exist" + str(uid))
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             log.info(categories)
-        lines_to_read = 47
+        lines_to_read = 53
         report = ""
         line_count = 0
         with open(st_abs_file_path + 'report.html', "r") as myfile:
