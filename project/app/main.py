@@ -8,7 +8,6 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-
 import os
 
 from app.api import ping, summaries
@@ -135,13 +134,13 @@ async def shutdown_event():
 
 @app.get('/')
 async def hello_world():
-    return FileResponse(st_abs_file_path + 'report.html')
+    return summaries.router.url_path_for('reports')
 
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
     favicon_path = 'favicon.ico'
-    return FileResponse(st_abs_file_path  + favicon_path)
+    return FileResponse(st_abs_file_path + favicon_path)
 
 
 @app.get('/api/access/auth', dependencies=[Depends(authorize)])

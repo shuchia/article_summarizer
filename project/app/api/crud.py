@@ -4,7 +4,7 @@
 from typing import Union, List
 import logging
 from app.models.pydantic import SummaryPayloadSchema
-from app.models.tortoise import TextSummary, Report, Summary, Usage
+from app.models.tortoise import TextSummary, Report, Summary, Usage, Subject
 from uuid import UUID
 
 from pydantic import ValidationError
@@ -141,6 +141,23 @@ async def get_all_for_a_task(uid: UUID) -> List:
 
 async def get_group_of_topics(uid: UUID) -> List:
     topics = await TextSummary.filter(uid=uid).all().group_by("topic").values("topic")
+    return topics
+
+
+async def get_unique_list_of_topics() -> List:
+    topics = await TextSummary.filter().distinct('topic').values_list('topic', flat=True)
+    return topics
+
+
+async def get_unique_list_of_subjects() -> List:
+    subjects = await Subject.filter().distinct('name').values_list('name', flat=True)
+    return subjects
+
+
+async def get_topics_for_subject(subject: str) -> List:
+    subject = await Subject.filter(name=subject).first()
+    if subject:
+        topics = subject.topics
     return topics
 
 

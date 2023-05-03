@@ -33,8 +33,7 @@ from app.models.pydantic import (
 )
 
 from app.models.tortoise import SummarySchema, ReportSchema, URLSummarySchema, UsageSchema
-from app.summarizer import generate_summary, generate_bulk_summary, generate_report, get_reports, get_reports_for_topic, \
-    log_requests
+from app.summarizer import generate_summary, generate_bulk_summary, generate_report, get_reports, get_reports_for_topic, get_reports_landing ,log_requests
 from pydantic import ValidationError
 
 SECRET_KEY = "a9032cb3b87e7ad1d842e1a20fbf22901a2826d359a63ab6a6b6a8a7d1e9c019"
@@ -207,6 +206,11 @@ async def get_report_topic(topic: str) -> HTMLResponse:
         return HTMLResponse(content=report_content, status_code=200)
     else:
         return HTMLResponse(content="Report Doesnt' exist", status_code=200)
+
+
+@router.get("/reports")
+async def get_all_reports() -> HTMLResponse:
+    return await get_reports_landing()
 
 
 @router.get("/getUsage", response_model=List[UsageSchema])

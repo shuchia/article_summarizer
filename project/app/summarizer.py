@@ -113,7 +113,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
     task.status = "Completed"
 
 
-async def get_report_landing() -> None:
+async def get_reports_landing() -> None:
     script_dir = os.path.dirname(__file__)
     st_abs_file_path = os.path.join(script_dir, "static/")
     topics = await crud.get_unique_list_of_topics()
@@ -329,7 +329,7 @@ async def generate_report(uid: UUID) -> None:
             report += "</div></div></div></div>"
         report += "</div></div>"
         with open(st_abs_file_path + 'report.html', mode='r') as myfile:
-            myreportfooter = myfile.readlines()[201:]  # Read all lines starting from line 201
+            myreportfooter = myfile.readlines()[208:]  # Read all lines starting from line 201
             myreport = ''.join(myreportfooter)
             myreport += "window.addEventListener(\'DOMContentLoaded\', function()  {" \
                         "document.title = \"" + topic_name + "\" ;" \
