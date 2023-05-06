@@ -20,7 +20,7 @@ import base64
 from app.oauth2 import fake_users_db, get_user
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-from summaries import router as my_router
+from app.api.summaries import router as my_router
 
 log = logging.getLogger(__name__)
 
