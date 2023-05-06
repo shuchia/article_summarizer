@@ -7,6 +7,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi import APIRouter
 
 import os
 
@@ -19,6 +20,7 @@ import base64
 from app.oauth2 import fake_users_db, get_user
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from summaries import router as my_router
 
 log = logging.getLogger(__name__)
 
@@ -133,8 +135,8 @@ async def shutdown_event():
 
 
 @app.get('/')
-async def hello_world():
-    return summaries.router.url_path_for('reports')
+async def root(router: APIRouter = Depends(lambda: my_router)):
+    return router.url_path_for('reports', _force_url=True)
 
 
 @app.get('/favicon.ico', include_in_schema=False)
