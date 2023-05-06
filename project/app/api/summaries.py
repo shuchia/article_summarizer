@@ -44,7 +44,7 @@ security = HTTPBasic()
 
 log = logging.getLogger(__name__)
 
-router = APIRouter(prefix='/summaries')
+router = APIRouter()
 jobs: Dict[UUID, Job] = {}
 
 
