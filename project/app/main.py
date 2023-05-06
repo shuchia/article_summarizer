@@ -136,7 +136,7 @@ async def shutdown_event():
 
 @app.get('/')
 async def root(router: APIRouter = Depends(lambda: my_router)):
-    return router.url_path_for('reports', _force_url=True)
+    return router.url_path_for('reports', with_prefix=True)
 
 
 @app.get('/favicon.ico', include_in_schema=False)
