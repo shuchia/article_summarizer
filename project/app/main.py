@@ -136,7 +136,7 @@ async def shutdown_event():
 
 @app.get('/')
 async def root(request: Request):
-    url = request.url_for('reports', **request.query_params)
+    url = request.url_for('/summaries/reports', **request.query_params)
     return {'url': url}
 
 
