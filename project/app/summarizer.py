@@ -116,52 +116,7 @@ async def generate_bulk_summary(task: Job, modelname: str, file: UploadFile, ema
 async def get_reports_landing() -> None:
     script_dir = os.path.dirname(__file__)
     st_abs_file_path = os.path.join(script_dir, "static/")
-    topics = await crud.get_unique_list_of_topics()
-    groups = {}
-    for subject in topics:
-        first_letter = subject[0].upper()
-        if first_letter in groups:
-            groups[first_letter].append(subject)
-        else:
-            groups[first_letter] = [subject]
-
-    collated_groups = {}
-    for first_letter, group in groups.items():
-        group_key = len(group)
-        if group_key in collated_groups:
-            if first_letter in collated_groups[group_key]:
-                collated_groups[group_key][first_letter] += group
-            else:
-                collated_groups[group_key][first_letter] = group
-        else:
-            collated_groups[group_key] = {first_letter: group}
-
-    num_groups = 1  # we only want one group
-    subgroup_size = len(collated_groups) // num_groups  # size of each subgroup
-
-    # divide the collated groups into multiple equal-sized subgroups
-    subgroups = list(more_itertools.chunked(collated_groups.items(), subgroup_size))
-
-    # combine all the groups into one
-    combined_groups = {}
-    for subgroup in subgroups:
-        for group_size, group_dict in subgroup:
-            for first_letter, group in group_dict.items():
-                combined_groups[first_letter] = group
-
-    # print the combined groups
-    for first_letter, group in combined_groups.items():
-        log.info(f"{first_letter}: {group}")
-    # Divide the subjects into 3 subgroups
-    num_subgroups = 3
-    subgroup_size = (len(combined_groups) + num_subgroups - 1) // num_subgroups
-    subgroups = [dict(list(combined_groups.items())[i:i + subgroup_size]) for i in
-                 range(0, len(combined_groups), subgroup_size)]
-
-    # Sort each subgroup by key
-    for subgroup in subgroups:
-        sorted_subgroup = dict(sorted(subgroup.items()))
-        log.info(sorted_subgroup)
+    subjects = await crud.get_unique_list_of_subjects()
     lines_to_read = 47
     report = ""
     line_count = 0
@@ -171,6 +126,87 @@ async def get_reports_landing() -> None:
                 break
             report += line
             line_count += 1
+    report += "<aside id=\"menu\"><div id=\"navigation\">"
+    report += "<ul class=\"nav\" id=\"side-menu\">"
+    subject_list = []
+    subject_meta = ""
+    for subject in subjects:
+        subject_name = subject["name"]
+        subject_list.append(subject_name)
+        subject_name_replaced = subject_name.replace(" ", "")
+        # Escape the characters "&" and "-"
+        subject_name_ref = subject_name_replaced.replace("&", "\\&").replace("-", "\\-")
+        report += "<li><a href=\"#\" class=\"toggle-button\" data-target=" + subject_name_ref + "><span " \
+                                                                                                "class=\"nav" \
+                                                                                                "-label\">" + \
+                  "&nbsp;" + subject_name + "</span></a>"
+
+        subject_meta += subject_name + " "
+    report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-8\"><div " \
+              "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
+              "role=\"tablist\" aria-multiselectable=\"true\"> "
+    counter_subject = 1
+    for subject_title in subject_list:
+        subject_name_replaced = subject_title.replace(" ", "")
+        subject_name_ref = subject_name_replaced.replace("&", "\\&").replace("-", "\\-")
+        topics = await crud.get_topics_for_subject(subject_title)
+        count = NUMBERS[str(counter_subject)]
+
+        if count == "&#x2776;":
+            report += "<div id=" + "\"" + subject_name_ref + "\" class=\"panel " \
+                                                             "panel-default " \
+                                                             "toggle-content\">"
+        else:
+            report += "<div id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"panel " \
+                                                             "panel-default " \
+                                                             "toggle-content\">"
+        counter_subject += 1
+        groups = {}
+        for topic in topics:
+            topic_name = topic["name"]
+            first_letter = topic_name[0].upper()
+            if first_letter in groups:
+                groups[first_letter].append(topic_name)
+            else:
+                groups[first_letter] = [topic_name]
+
+            collated_groups = {}
+            for first_letter, group in groups.items():
+                group_key = len(group)
+                if group_key in collated_groups:
+                    if first_letter in collated_groups[group_key]:
+                        collated_groups[group_key][first_letter] += group
+                    else:
+                        collated_groups[group_key][first_letter] = group
+            else:
+                collated_groups[group_key] = {first_letter: group}
+
+        num_groups = 1  # we only want one group
+        subgroup_size = len(collated_groups) // num_groups  # size of each subgroup
+
+        # divide the collated groups into multiple equal-sized subgroups
+        subgroups = list(more_itertools.chunked(collated_groups.items(), subgroup_size))
+
+        # combine all the groups into one
+        combined_groups = {}
+        for subgroup in subgroups:
+            for group_size, group_dict in subgroup:
+                for first_letter, group in group_dict.items():
+                    combined_groups[first_letter] = group
+
+        # print the combined groups
+        for first_letter, group in combined_groups.items():
+            log.info(f"{first_letter}: {group}")
+        # Divide the subjects into 3 subgroups
+        num_subgroups = 3
+        subgroup_size = (len(combined_groups) + num_subgroups - 1) // num_subgroups
+        subgroups = [dict(list(combined_groups.items())[i:i + subgroup_size]) for i in
+                    range(0, len(combined_groups), subgroup_size)]
+
+        # Sort each subgroup by key
+        for subgroup in subgroups:
+            sorted_subgroup = dict(sorted(subgroup.items()))
+            log.info(sorted_subgroup)
 
 
 async def generate_report(uid: UUID) -> None:
@@ -336,8 +372,8 @@ async def generate_report(uid: UUID) -> None:
                                                              "var meta = document.createElement(\"meta\");" \
                                                              "meta.setAttribute(\"name\",\"description\");" \
                                                              "meta.setAttribute(\"content\",\"" + topic_name + " " + category_meta + "\" );" \
-                                                             "document.head.appendChild(meta);" \
-                                                             "}); </script></body></html>"
+                                                                                                                                     "document.head.appendChild(meta);" \
+                                                                                                                                     "}); </script></body></html>"
         if knowledge_graph is not None:
             await Topic.create(name=topic_name, description=knowledge_graph.description, subject=subject)
         else:
