@@ -155,7 +155,7 @@ async def get_unique_list_of_subjects() -> List:
 
 
 async def get_topics_for_subject(subject: str) -> List:
-    subject = await Subject.filter(name=subject).first()
+    subject = await Subject.filter(subject=subject).first()
     if subject:
         topics = subject.topics
     return topics
