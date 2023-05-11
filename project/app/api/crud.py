@@ -150,7 +150,8 @@ async def get_unique_list_of_topics() -> List:
 
 
 async def get_unique_list_of_subjects() -> List:
-    subjects = await Subject.all().distinct('name').values_list('name', flat=True)
+    queryset = await Subject.distinct('name').values_list('name', flat=True)
+    subjects = await queryset.all()
     return subjects
 
 
