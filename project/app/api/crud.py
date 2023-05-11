@@ -150,7 +150,7 @@ async def get_unique_list_of_topics() -> List:
 
 
 async def get_unique_list_of_subjects() -> List:
-    subjects = await Subject.all.values()
+    subjects = await Subject.all().values()
     return subjects
 
 

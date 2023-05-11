@@ -30,6 +30,7 @@ class TextSummary(models.Model):
 
 
 class Subject(models.Model):
+    id = fields.IntField(pk=True)
     name = fields.TextField()
 
 
