@@ -132,6 +132,7 @@ async def get_reports_landing() -> None:
     subject_meta = ""
     for subject in subjects:
         subject_name = subject["name"]
+        log.info(subject_name)
         subject_list.append(subject_name)
         subject_name_replaced = subject_name.replace(" ", "")
         # Escape the characters "&" and "-"
@@ -147,6 +148,7 @@ async def get_reports_landing() -> None:
               "role=\"tablist\" aria-multiselectable=\"true\"> "
     counter_subject = 1
     for subject_title in subject_list:
+        log.info(subject_title)
         subject_name_replaced = subject_title.replace(" ", "")
         subject_name_ref = subject_name_replaced.replace("&", "\\&").replace("-", "\\-")
         topics = await crud.get_topics_for_subject(subject_title)
