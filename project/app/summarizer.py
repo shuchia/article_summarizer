@@ -132,7 +132,7 @@ async def get_reports_landing() -> None:
     subject_meta = ""
     for subject in subjects:
         subject_name = subject["name"]
-        log.info(subject_name)
+
         subject_list.append(subject_name)
         subject_name_replaced = subject_name.replace(" ", "")
         # Escape the characters "&" and "-"
@@ -153,7 +153,7 @@ async def get_reports_landing() -> None:
         subject_name_ref = subject_name_replaced.replace("&", "\\&").replace("-", "\\-")
         subject = await Subject.get(name=subject_title)
         topics = await subject.topics
-
+        log.info(topics.length)
         count = NUMBERS[str(counter_subject)]
 
         if count == "&#x2776;":
