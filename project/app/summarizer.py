@@ -153,6 +153,7 @@ async def get_reports_landing() -> None:
         subject_name_ref = subject_name_replaced.replace("&", "\\&").replace("-", "\\-")
         subject = await Subject.get(name=subject_title)
         topics = await subject.topics
+
         count = NUMBERS[str(counter_subject)]
 
         if count == "&#x2776;":
