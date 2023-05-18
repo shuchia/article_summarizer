@@ -167,7 +167,7 @@ async def get_reports_landing() -> None:
         counter_subject += 1
         groups = {}
         for topic in topics:
-            topic_name = topic["name"]
+            topic_name = topic.name
             first_letter = topic_name[0].upper()
             if first_letter in groups:
                 groups[first_letter].append(topic_name)
