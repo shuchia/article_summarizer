@@ -153,7 +153,7 @@ async def get_reports_landing() -> None:
         subject_name_ref = subject_name_replaced.replace("&", "\\&").replace("-", "\\-")
         subject = await Subject.get(name=subject_title)
         topics = await subject.topics
-        log.info(len(topics))
+        log.info(topics)
         count = NUMBERS[str(counter_subject)]
 
         if count == "&#x2776;":
@@ -205,7 +205,7 @@ async def get_reports_landing() -> None:
             num_subgroups = 3
             subgroup_size = (len(combined_groups) + num_subgroups - 1) // num_subgroups
             subgroups = [dict(list(combined_groups.items())[i:i + subgroup_size]) for i in
-                     range(0, len(combined_groups), subgroup_size)]
+                         range(0, len(combined_groups), subgroup_size)]
 
             # Sort each subgroup by key
             for subgroup in subgroups:
