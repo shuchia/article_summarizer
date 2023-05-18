@@ -185,32 +185,32 @@ async def get_reports_landing() -> None:
             else:
                 collated_groups[group_key] = {first_letter: group}
 
-        num_groups = 1  # we only want one group
-        subgroup_size = len(collated_groups) // num_groups  # size of each subgroup
+            num_groups = 1  # we only want one group
+            subgroup_size = len(collated_groups) // num_groups  # size of each subgroup
 
-        # divide the collated groups into multiple equal-sized subgroups
-        subgroups = list(more_itertools.chunked(collated_groups.items(), subgroup_size))
+            # divide the collated groups into multiple equal-sized subgroups
+            subgroups = list(more_itertools.chunked(collated_groups.items(), subgroup_size))
 
-        # combine all the groups into one
-        combined_groups = {}
-        for subgroup in subgroups:
-            for group_size, group_dict in subgroup:
-                for first_letter, group in group_dict.items():
-                    combined_groups[first_letter] = group
+            # combine all the groups into one
+            combined_groups = {}
+            for subgroup in subgroups:
+                for group_size, group_dict in subgroup:
+                    for first_letter, group in group_dict.items():
+                        combined_groups[first_letter] = group
 
-        # print the combined groups
-        for first_letter, group in combined_groups.items():
-            log.info(f"{first_letter}: {group}")
-        # Divide the subjects into 3 subgroups
-        num_subgroups = 3
-        subgroup_size = (len(combined_groups) + num_subgroups - 1) // num_subgroups
-        subgroups = [dict(list(combined_groups.items())[i:i + subgroup_size]) for i in
+            # print the combined groups
+            for first_letter, group in combined_groups.items():
+                log.info(f"{first_letter}: {group}")
+            # Divide the subjects into 3 subgroups
+            num_subgroups = 3
+            subgroup_size = (len(combined_groups) + num_subgroups - 1) // num_subgroups
+            subgroups = [dict(list(combined_groups.items())[i:i + subgroup_size]) for i in
                      range(0, len(combined_groups), subgroup_size)]
 
-        # Sort each subgroup by key
-        for subgroup in subgroups:
-            sorted_subgroup = dict(sorted(subgroup.items()))
-            log.info(sorted_subgroup)
+            # Sort each subgroup by key
+            for subgroup in subgroups:
+                sorted_subgroup = dict(sorted(subgroup.items()))
+                log.info(sorted_subgroup)
 
 
 async def generate_report(uid: UUID) -> None:
