@@ -8,6 +8,7 @@ import logging
 from app.summarypro import SummarizerProcessor
 from app.send_email import send_email
 from fastapi import File, UploadFile, Request
+from fastapi.responses import HTMLResponse
 
 from app.models.tortoise import TextSummary, Summary, Topic, Subject
 from app.models.pydantic import Job
@@ -143,9 +144,7 @@ async def get_reports_landing() -> None:
                   "&nbsp;" + subject_name + "</span></a>"
 
         subject_meta += subject_name + " "
-    report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"><div class=\"col-lg-8\"><div " \
-              "class=\"hpanel\"><div class=\"panel-body\"><div class=\"panel-group\" id=\"accordion\" " \
-              "role=\"tablist\" aria-multiselectable=\"true\"> "
+    report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"> "
     counter_subject = 1
     for subject_title in subject_list:
         log.info(subject_title)
@@ -199,8 +198,8 @@ async def get_reports_landing() -> None:
                     combined_groups[first_letter] = group
 
         # print the combined groups
-        #for first_letter, group in combined_groups.items():
-            #log.info(f"{first_letter}: {group}")
+        # for first_letter, group in combined_groups.items():
+        # log.info(f"{first_letter}: {group}")
         # Divide the subjects into 3 subgroups
         num_subgroups = 3
         subgroup_size = (len(combined_groups) + num_subgroups - 1) // num_subgroups
@@ -211,6 +210,21 @@ async def get_reports_landing() -> None:
         for subgroup in subgroups:
             sorted_subgroup = dict(sorted(subgroup.items()))
             log.info(sorted_subgroup)
+        for key, value_list in sorted_subgroup.items():
+            report += "< div class =\"col-lg-8\"><div " \
+                      "class=\"hpanel\"><div class=\"panel-body\"><div class=\"dd\" id=\"nestable2\"> " \
+                      "<ol class=\"dd-list\"> " \
+                      "<li class=\"dd-item\" data-id=\"1\"> " \
+                      "<div class=\"dd-handle\"> " \
+                      "<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-users\"></i></span>" + key + "</div>" \
+                      "<ol class=\"dd-list\">"
+            for value in value_list:
+                report += "<li class =\"dd-item\" data-id=\"2\" >< div class =\"dd-handle\" > " \
+                          "< span class =\"label h-bg-navy-blue\" > <i class =\"fa fa-cog\"></i></span> " + value + \
+                          "</div></li>"
+            report += "</ol></li> "
+        report += "</ol></div></div></div></div>"
+    return HTMLResponse(content=report, status_code=200)
 
 
 async def generate_report(uid: UUID) -> None:
@@ -329,10 +343,11 @@ async def generate_report(uid: UUID) -> None:
                                                                                     "data-parent=\"#accordion\" href=\"" + "#collapse" + category_name_ref + month_year + "\" " \
                                                                                                                                                                           "aria-expanded=\"true\" " \
                                                                                                                                                                           "aria-controls=\"" + "#collapse" + category_name_ref + month_year + "\">" + month_year + \
-                          "</a></h4></div><div id=\"collapse" + category_name_ref + month_year + "\" class=\"panel-collapse collapse\" " \
-                                                                                                 "role=\"tabpanel\" " \
-                                                                                                 "aria-labelledby=\"" + "heading" + category_name_ref + month_year + "\"><div " \
-                                                                                                                                                                     "class=\"panel-body\"><ul> "
+                          "</a></h4></div><div id=\"collapse" \
+                          + category_name_ref + month_year + "\" class=\"panel-collapse collapse\" " \
+                                                             "role=\"tabpanel\" " \
+                                                             "aria-labelledby=\"" + "heading" + category_name_ref + month_year + "\"><div " \
+                                                                                                                                 "class=\"panel-body\"><ul> "
                 if isinstance(text, list):
                     for item in text:
                         report += f"<li>{item}</li>"
