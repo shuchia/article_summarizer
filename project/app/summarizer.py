@@ -210,7 +210,7 @@ async def get_reports_landing() -> None:
         for subgroup in subgroups:
             sorted_subgroup = dict(sorted(subgroup.items()))
             log.info(sorted_subgroup)
-            report += "<div class=\"col-lg-6\"><div class=\"hpanel\"><div class=\"panel-body\">" \
+            report += "<div class=\"col-lg-4\"><div class=\"hpanel\"><div class=\"panel-body\">" \
 
             for key, value_list in sorted_subgroup.items():
                 report += "<div class=\"dd\" id=\"nestable2\"><ol class=\"dd-list\">" \
