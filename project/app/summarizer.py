@@ -223,7 +223,7 @@ async def get_reports_landing() -> None:
                       "<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-cog\"></i></span>" + value + "</div></li>"
 
                 report += "</ol></li></ol></div>"
-            report += "</div></div></div></div>"
+            report += "</div></div></div>"
         report += "</div></div>"
 
     return HTMLResponse(content=report, status_code=200)
