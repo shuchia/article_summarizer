@@ -222,8 +222,8 @@ async def get_reports_landing() -> None:
                     report += "<li class=\"dd-item\" data-id=\"2\"><div class=\"dd-handle\">" \
                       "<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-cog\"></i></span>" + value + "</div></li>"
 
-            report += "</ol></li></ol></div></div></div></div>"
-    report += "</div>"
+                report += "</ol></li></ol></div></div></div></div>"
+        report += "</div>"
 
     return HTMLResponse(content=report, status_code=200)
 
