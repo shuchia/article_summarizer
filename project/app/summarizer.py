@@ -212,13 +212,7 @@ async def get_reports_landing() -> None:
             log.info(sorted_subgroup)
             report += "<div class=\"col-lg-4\"><div class=\"hpanel\"><div class=\"panel-body\">" \
 
-            for subgroup_index, subgroup in enumerate(subgroups):
-                sorted_subgroup = dict(sorted(subgroup.items()))
-                log.info(sorted_subgroup)
-
-                report += f"<div class=\"col-lg-6\"><div class=\"hpanel\"><div class=\"panel-body\">"
-
-                for key_index, (key, value_list) in enumerate(sorted_subgroup.items()):
+            for key_index, (key, value_list) in enumerate(sorted_subgroup.items()):
                     list_header_id = f"list-header-{subgroup_index}-{key_index}"
                     list_items_id = f"list-items-{subgroup_index}-{key_index}"
 
@@ -239,7 +233,7 @@ async def get_reports_landing() -> None:
                                   f"</div>" \
                                   f"</li>"
 
-                report += "</ol></li></ol></div>"
+                    report += "</ol></li></ol></div>"
             report += "</div></div></div>"
         report += "</div></div>"
         report += """
