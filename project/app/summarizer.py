@@ -226,7 +226,7 @@ async def get_reports_landing() -> None:
                     report += f"<div class=\"dd\" id=\"nestable2\">" \
                               f"<ol class=\"dd-list\">" \
                               f"<li class=\"dd-item\" data-id=\"{subgroup_index + 1}\" data-toggle=\"collapse\" " \
-                              f"data-target=\"#nested-list-{list_items_id}\" aria-expanded=\"false\">" \
+                              f"data-target=\"#nested-list-{list_header_id}\" aria-expanded=\"false\">" \
                               f"<div class=\"dd-handle\">" \
                               f"<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-users\"></i></span>{key}" \
                               f"</div>" \
