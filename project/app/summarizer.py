@@ -251,7 +251,10 @@ async def get_reports_landing() -> None:
             });
         </script>
         """
-
+        with open(st_abs_file_path + 'report.html', mode='r') as myfile:
+            myreportfooter = myfile.readlines()[208:]  # Read all lines starting from line 201
+            myreport = ''.join(myreportfooter)
+        report += myreport
     return HTMLResponse(content=report, status_code=200)
 
 
