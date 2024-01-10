@@ -229,7 +229,7 @@ async def get_reports_landing() -> None:
                     for value_index, value in enumerate(value_list):
                         report += f"<li class=\"dd-item\" data-id=\"{subgroup_index + 1}-{key_index + 1}-{value_index + 1}\">" \
                                   f"<div class=\"dd-handle\">" \
-                                  f"<a href=\"../getReport?topic="+{value} + "target=\"_blank\">"\
+                                  f"<a href=\"../getReport?topic={value}\" target=\"_blank\">" \
                                   f"<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-cog\"></i></span>{value}</a>" \
                                   f"</div>" \
                                   f"</li>"
