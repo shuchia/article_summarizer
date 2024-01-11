@@ -155,14 +155,14 @@ async def get_reports_landing() -> None:
         # log.info(topics)
         count = NUMBERS[str(counter_subject)]
 
-        if count == "&#x2776;":
-            report += "<div id=" + "\"" + subject_name_ref + "\" class=\"panel " \
-                                                             "panel-default " \
-                                                             "toggle-content\">"
-        else:
-            report += "<div id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"panel " \
-                                                             "panel-default " \
-                                                             "toggle-content\">"
+        # if count == "&#x2776;":
+        #     report += "<div id=" + "\"" + subject_name_ref + "\" class=\"panel " \
+        #                                                      "panel-default " \
+        #                                                      "toggle-content\">"
+        # else:
+        #     report += "<div id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"panel " \
+        #                                                      "panel-default " \
+        #                                                      "toggle-content\">"
         counter_subject += 1
         groups = {}
         for topic in topics:
@@ -236,7 +236,7 @@ async def get_reports_landing() -> None:
 
                     report += "</ol></li></ol></div>"
             report += "</div></div></div>"
-        report += "</div></div></div>"
+        report += "</div></div>"
         report += """
         <script>
             document.addEventListener("DOMContentLoaded", function () {
