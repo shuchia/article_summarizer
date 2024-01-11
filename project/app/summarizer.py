@@ -144,7 +144,7 @@ async def get_reports_landing() -> None:
                   "&nbsp;" + subject_name + "</span></a>"
 
         subject_meta += subject_name + " "
-    report += "</ul></div></aside><div id=\"wrapper\"><div class=\"row\"> "
+    report += "</ul></div></aside><div id=\"wrapper\"> "
     counter_subject = 1
     for subject_title in subject_list:
         log.info(subject_title)
@@ -156,9 +156,9 @@ async def get_reports_landing() -> None:
         count = NUMBERS[str(counter_subject)]
 
         if count == "&#x2776;":
-            report += "<div id=" + "\"" + subject_name_ref + "\" class=\"toggle-content\">"
+            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" class=\"toggle-content\">"
         else:
-            report += "<div id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"toggle-content\">"
+            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"toggle-content\">"
         counter_subject += 1
         groups = {}
         for topic in topics:
@@ -209,30 +209,30 @@ async def get_reports_landing() -> None:
             report += "<div class=\"col-lg-4\"><div class=\"hpanel\"><div class=\"panel-body\">" \
 
             for key_index, (key, value_list) in enumerate(sorted_subgroup.items()):
-                    list_header_id = f"list-header-{subgroup_index}-{key_index}"
-                    list_items_id = f"list-items-{subgroup_index}-{key_index}"
+                list_header_id = f"list-header-{subgroup_index}-{key_index}"
+                list_items_id = f"list-items-{subgroup_index}-{key_index}"
 
-                    # Add data-toggle and data-target attributes for Bootstrap Collapse
-                    report += f"<div class=\"dd\" id=\"nestable2\">" \
-                              f"<ol class=\"dd-list\">" \
-                              f"<li class=\"dd-item\" data-id=\"{subgroup_index + 1}\" data-toggle=\"collapse\" " \
-                              f"data-target=\"#nested-list-{list_items_id}\" aria-expanded=\"false\">" \
+                # Add data-toggle and data-target attributes for Bootstrap Collapse
+                report += f"<div class=\"dd\" id=\"nestable2\">" \
+                          f"<ol class=\"dd-list\">" \
+                          f"<li class=\"dd-item\" data-id=\"{subgroup_index + 1}\" data-toggle=\"collapse\" " \
+                          f"data-target=\"#nested-list-{list_items_id}\" aria-expanded=\"false\">" \
+                          f"<div class=\"dd-handle\">" \
+                          f"<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-users\"></i></span>{key}" \
+                          f"</div>" \
+                          f"<ol id=\"nested-list-{list_items_id}\" class=\"collapse dd-list\">"
+
+                for value_index, value in enumerate(value_list):
+                    report += f"<li class=\"dd-item\" data-id=\"{subgroup_index + 1}-{key_index + 1}-{value_index + 1}\">" \
                               f"<div class=\"dd-handle\">" \
-                              f"<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-users\"></i></span>{key}" \
+                              f"<a href=\"getReport?topic={value}\" target=\"_blank\">" \
+                              f"<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-cog\"></i></span>{value}</a>" \
                               f"</div>" \
-                              f"<ol id=\"nested-list-{list_items_id}\" class=\"collapse dd-list\">"
+                              f"</li>"
 
-                    for value_index, value in enumerate(value_list):
-                        report += f"<li class=\"dd-item\" data-id=\"{subgroup_index + 1}-{key_index + 1}-{value_index + 1}\">" \
-                                  f"<div class=\"dd-handle\">" \
-                                  f"<a href=\"getReport?topic={value}\" target=\"_blank\">" \
-                                  f"<span class=\"label h-bg-navy-blue\"><i class=\"fa fa-cog\"></i></span>{value}</a>" \
-                                  f"</div>" \
-                                  f"</li>"
-
-                    report += "</ol></li></ol></div>"
-            report += "</div></div></div>"
-        report += "</div></div>"
+                report += "</ol></li></ol></div>"
+            report += "</div></div>"
+        report += "</div></div></div>"
         report += """
         <script>
             document.addEventListener("DOMContentLoaded", function () {
