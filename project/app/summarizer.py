@@ -236,7 +236,7 @@ async def get_reports_landing() -> None:
 
                     report += "</ol></li></ol></div>"
             report += "</div></div></div>"
-        report += "</div></div>"
+        report += "</div></div></div>"
         report += """
         <script>
             document.addEventListener("DOMContentLoaded", function () {
