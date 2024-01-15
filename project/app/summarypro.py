@@ -208,7 +208,7 @@ class SummarizerProcessor:
             # log.info(api_key)
             # log.info(self.text)
             response = openai.Completion.create(
-                engine="text-davinci-003",
+                engine="gpt-3.5-turbo-instruct",
                 prompt="Please summarize the following article: " + self.text,
                 max_tokens=200,
                 n=1,
