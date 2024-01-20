@@ -156,9 +156,9 @@ async def get_reports_landing() -> None:
         count = NUMBERS[str(counter_subject)]
 
         if count == "&#x2776;":
-            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" class=\"toggle-content\"></div>"
+            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" class=\"toggle-content\">"
         else:
-            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"toggle-content\"></div>"
+            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"toggle-content\">"
         counter_subject += 1
         groups = {}
         for topic in topics:
@@ -231,8 +231,8 @@ async def get_reports_landing() -> None:
                               f"</li>"
 
                 report += "</ol></li></ol></div>"
+                report += "</div></div></div>"
             report += "</div></div></div>"
-        report += "</div></div></div>"
         report += """
         <script>
             document.addEventListener("DOMContentLoaded", function () {
