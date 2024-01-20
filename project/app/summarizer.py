@@ -141,7 +141,7 @@ async def get_reports_landing() -> None:
         report += "<li><a href=\"#\" class=\"toggle-button\" data-target=" + subject_name_ref + "><span " \
                                                                                                 "class=\"nav" \
                                                                                                 "-label\">" + \
-                  "&nbsp;" + subject_name + "</span></a>"
+                  "&nbsp;" + subject_name + "</span></a></li>"
 
         subject_meta += subject_name + " "
     report += "</ul></div></aside><div id=\"wrapper\"> "
@@ -232,7 +232,7 @@ async def get_reports_landing() -> None:
 
                 report += "</ol></li></ol></div>"
             report += "</div></div></div>"
-        report += "</div></div>"
+        report += "</div></div></div>"
         report += """
         <script>
             document.addEventListener("DOMContentLoaded", function () {
