@@ -118,7 +118,7 @@ async def get_reports_landing() -> None:
     script_dir = os.path.dirname(__file__)
     st_abs_file_path = os.path.join(script_dir, "static/")
     subjects = await crud.get_unique_list_of_subjects()
-    lines_to_read = 53
+    lines_to_read = 56
     report = ""
     line_count = 0
     with open(st_abs_file_path + 'report.html', "r") as myfile:
