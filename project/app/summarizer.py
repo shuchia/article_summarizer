@@ -230,9 +230,9 @@ async def get_reports_landing() -> None:
                               f"</div>" \
                               f"</li>"
 
-                    report += "</ol></li></ol></div>"
-                report += "</div></div></div>"
+                report += "</ol></li></ol></div>"
             report += "</div></div></div>"
+        report += "</div></div></div>"
         report += """
         <script>
             document.addEventListener("DOMContentLoaded", function () {
