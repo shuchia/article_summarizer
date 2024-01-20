@@ -156,9 +156,9 @@ async def get_reports_landing() -> None:
         count = NUMBERS[str(counter_subject)]
 
         if count == "&#x2776;":
-            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" class=\"toggle-content\">"
+            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" class=\"toggle-content\"></div>"
         else:
-            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"toggle-content\">"
+            report += "<div class=\"row\" id=" + "\"" + subject_name_ref + "\" style=\"display:none\" class=\"toggle-content\"></div>"
         counter_subject += 1
         groups = {}
         for topic in topics:
