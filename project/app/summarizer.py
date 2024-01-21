@@ -281,7 +281,7 @@ async def generate_report(uid: UUID) -> None:
             log.info("Inside reports doesnt exist" + str(uid))
             categories = await crud.get_group_of_categories_for_topic(uid, topic_name)
             log.info(categories)
-        lines_to_read = 53
+        lines_to_read = 55
         report = ""
         line_count = 0
         with open(st_abs_file_path + 'report.html', "r") as myfile:
@@ -412,7 +412,7 @@ async def generate_report(uid: UUID) -> None:
             report += "</div></div></div></div>"
         report += "</div></div>"
         with open(st_abs_file_path + 'report.html', mode='r') as myfile:
-            myreportfooter = myfile.readlines()[208:]  # Read all lines starting from line 201
+            myreportfooter = myfile.readlines()[212:]  # Read all lines starting from line 212
             myreport = ''.join(myreportfooter)
             myreport += "window.addEventListener(\'DOMContentLoaded\', function()  {" \
                         "document.title = \"" + topic_name + "\" ;" \
